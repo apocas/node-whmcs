@@ -1,0 +1,24 @@
+{
+  "name": "whmcs",
+  "description": "Node client implementation for WHMCS",
+  "version": "0.1.0",
+  "author": "Pedro Dias <petermdias@gmail.com>",
+  "maintainers": [
+    "apocas <petermdias@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/apocas/node-whmcs.git"
+  },
+  "keywords": [
+    "whmcs",
+    "hosting"
+  ],
+  "dependencies": {
+    "request": "2.21.x"
+  },
+  "main": "./lib/whmcs",
+  "engines": {
+    "node": ">= 0.4"
+  }
+}
