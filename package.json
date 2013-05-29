@@ -15,7 +15,8 @@
     "hosting"
   ],
   "dependencies": {
-    "request": "2.21.x"
+    "request": "2.21.x",
+    "jquery": "*"
   },
   "main": "./lib/whmcs",
   "engines": {
