@@ -1,7 +1,7 @@
 {
   "name": "whmcs",
-  "description": "Node client implementation for WHMCS",
-  "version": "0.1.0",
+  "description": "WHMCS API node implementation",
+  "version": "0.1.1",
   "author": "Pedro Dias <petermdias@gmail.com>",
   "maintainers": [
     "apocas <petermdias@gmail.com>"
