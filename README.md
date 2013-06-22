@@ -20,8 +20,6 @@ var config = {
 };
 
 var whmcs_client = whmcs.createClient(config);
-
-
 ```
 
 Using the previus created api client, call the methods you need.
