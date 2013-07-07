@@ -27,23 +27,23 @@ Using the previus created api client, call the methods you need.
 
 ```javascript
 
-whmcs_client.billing.getInvoice(invoiceid, function(invoice) {
+whmcs_client.billing.getInvoice(invoiceid, function(err, invoice) {
   ...
 });
 
-whmcs_client.billing.payInvoice(invoiceid, function(data) {
+whmcs_client.billing.payInvoice(invoiceid, function(err, data) {
   ...
 });
 
-whmcs_client.customers.validateLogin(email, password, function(data) {
+whmcs_client.customers.validateLogin(email, password, function(err, data) {
   ...
 });
 
-whmcs_client.customers.getTickets(clientid, status, function(tickets) {
+whmcs_client.customers.getTickets(clientid, status, function(err, tickets) {
   ...
 });
 
-whmcs_client.customers.getCustomerEmails(clientid, function(emails) {
+whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
   ...
 });
 
@@ -59,7 +59,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(emails) {
 - payInvoice: function (invoiceid, callback)
 - getInvoice: function (invoiceid, callback)
 
-### Customer
+### Customers
 
 - createCustomer: function (ocustomer, callback)
 - getCustomer: function (clientid, callback)
@@ -70,7 +70,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(emails) {
 - getTickets: function (clientid, status, callback)
 - validateLogin: function (email, password, callback)
 
-### Product
+### Products
 
 - getProduct: function (id, callback)
 - getProducts: function (gid, callback)
