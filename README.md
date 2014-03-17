@@ -56,6 +56,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 ### Billing
 
 - addOrder: function (clientid, order, callback)
+- addCredit: function (clientid, amount, description, callback)
 - payInvoice: function (invoiceid, callback)
 - getInvoice: function (invoiceid, callback)
 
