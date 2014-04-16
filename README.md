@@ -66,6 +66,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 
 - getContacts: function (clientid, callback)
 - createCustomer: function (ocustomer, callback)
+- updateCustomer: function (clientid, options, callback)
 - updateCustomerDomain: function (domainid, options, callback)
 - getCustomer: function (clientid, callback)
 - getCustomerProducts: function (clientid, productid, callback)
