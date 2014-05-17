@@ -2,7 +2,11 @@ var fs = require('fs');
 var libPath = __dirname + '/lib';
 
 
-
+/**
+ * Make a WHMCS client
+ * @param options
+ * @constructor
+ */
 var Client = function(options){
     var _this = this;
 
@@ -15,6 +19,7 @@ var Client = function(options){
     this.config = options;
     this.authorized = false;
 
+    // Add all the modules
     var files = fs.readdirSync(libPath);
     var i = 0;
     var len = files.length;
@@ -27,6 +32,10 @@ var Client = function(options){
     }
 };
 
+/**
+ * @module WHMCS Client
+ * @type {{createClient: createClient}}
+ */
 module.exports = {
     createClient: function(options){
         return new Client(options);
