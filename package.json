@@ -1,31 +1,41 @@
 {
-  "name": "whmcs",
-  "description": "WHMCS API node implementation",
-  "version": "0.2.8",
-  "author": "Pedro Dias <petermdias@gmail.com>",
-  "maintainers": [
-    "apocas <petermdias@gmail.com>"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/apocas/node-whmcs.git"
-  },
-  "keywords": [
-    "whmcs",
-    "hosting"
-  ],
-  "dependencies": {
-    "request": "2.21.x",
-    "underscore": "1.5.x"
-  },
-  "devDependencies": {
-    "mocha": "*"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "main": "./lib/whmcs",
-  "engines": {
-    "node": ">= 0.4"
-  }
+    "name":"whmcs",
+    "description":"WHMCS API node implementation",
+    "version":"1.2.8",
+    "author":"Pedro Dias <petermdias@gmail.com>",
+    "contributors": [
+        {
+            "name": "Pedro Dias",
+            "email": "petermdias@gmail.com"
+        },
+        {
+            "name": "Enzo Martin",
+            "email": "enzo.r.martin@gmail.com"
+        }
+    ],
+    "maintainers":[
+        "apocas <petermdias@gmail.com>"
+    ],
+    "repository":{
+        "type":"git",
+        "url":"http://github.com/apocas/node-whmcs.git"
+    },
+    "keywords":[
+        "whmcs",
+        "hosting"
+    ],
+    "dependencies":{
+        "request":"2.21.x",
+        "underscore":"1.5.x"
+    },
+    "devDependencies":{
+        "mocha":"*"
+    },
+    "scripts":{
+        "test":"make test"
+    },
+    "main":"./whmcs",
+    "engines":{
+        "node":">= 0.4"
+    }
 }
