@@ -25,7 +25,7 @@ var Client = function(options){
     var len = files.length;
     while(i < len){
         var name = files[i].replace('.js','');
-        _this[name] = require(libPath + '/' + name);
+        _this[name] = Object.create(require(libPath + '/' + name));
         _this[name].config = _this.config;
 
         i++;
