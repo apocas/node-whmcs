@@ -37,7 +37,6 @@ describe('product', function() {
         client.customers.deleteCustomer(customer.client.id, function(err, data) {
           if (err) throw err;
           console.log('Customer deleted');
-
           done();
         });
       });
