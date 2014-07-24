@@ -15,7 +15,8 @@ First create a api client.
 
 var config = {
   username: 'api_username',
-  apiKey: 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+  password: 'password_as_md5',
+  apiKey: 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzz', // if access without IP restriction
   serverUrl: 'http://127.0.0.1/includes/api.php'
 };
 
