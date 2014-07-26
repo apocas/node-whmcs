@@ -33,6 +33,7 @@ describe('authnok', function() {
   });
 
   it('should fail auth with wrong credentials', function(done) {
+    this.timeout(30000);
 
     client.products.getProduct(999, function(err, product) {
       if (!err) throw err;
