@@ -57,16 +57,19 @@ whmcs_client.customers.getCustomerEmails(clientid, {}, function(err, emails) {
 ### Billing
 
 - updateInvoice: function (invoiceid, options, callback)
+- acceptOrder: function (orderid, options, callback)
 - addOrder: function (clientid, order, [options], callback)
 - addCredit: function (clientid, amount, description, callback)
 - payInvoice: function (invoiceid, [options], callback)
 - getInvoice: function (invoiceid, [options], callback)
+- getInvoices: function (userid, status, limit, callback)
 - cancelOrder: function (orderid, [options], callback)
 
 ### Customers
 
 - getContacts: function (clientid, callback)
 - createCustomer: function (ocustomer, callback)
+- deleteCustomer: function (clientid, options, callback)
 - updateCustomer: function (clientid, options, callback)
 - updateCustomerDomain: function (domainid, options, [options], callback)
 - getCustomer: function (clientid, [options], callback)
@@ -76,11 +79,13 @@ whmcs_client.customers.getCustomerEmails(clientid, {}, function(err, emails) {
 - getCustomerInvoices: function (clientid, [options], callback)
 - getTickets: function (clientid, status, [options], callback)
 - validateLogin: function (email, password, callback)
+- sendEmail: function (id, email, options, callback)
 
 ### Products
 
 - getProduct: function (id, [options], callback)
 - getProducts: function (gid, [options], callback)
+- getOrders: function (id, status, limit, callback)
 
 
 ### Support
@@ -96,3 +101,4 @@ whmcs_client.customers.getCustomerEmails(clientid, {}, function(err, emails) {
 - setDomainLockStatus: function (domainid, status, callback)
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
+- getDomainPricing: function (tld, type, callback)
