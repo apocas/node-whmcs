@@ -1,4 +1,4 @@
-WHMCS node module
+WHMCS Node Module
 =========
 
 WHMCS's API implementation in Node.js
@@ -9,7 +9,7 @@ npm install whmcs
 
 ## Usage
 
-First create a api client.
+First create an API Client.
 
 ```javascript
 
@@ -23,16 +23,16 @@ var config = {
 var whmcs_client = whmcs.createClient(config);
 ```
 
-Using the previus created api client, call the methods you need.
+Using the previous created API Client, call the methods you need, example:
 
 
 ```javascript
 
-whmcs_client.billing.getInvoice(invoiceid, {}, function(err, invoice) {
+whmcs_client.billing.getInvoice(invoiceid, function(err, invoice) {
   ...
 });
 
-whmcs_client.billing.payInvoice(invoiceid, {}, function(err, data) {
+whmcs_client.billing.payInvoice(invoiceid, 'full', function(err, data) {
   ...
 });
 
@@ -40,11 +40,11 @@ whmcs_client.customers.validateLogin(email, password, function(err, data) {
   ...
 });
 
-whmcs_client.customers.getTickets(clientid, status, {}, function(err, tickets) {
+whmcs_client.customers.getTickets(function(err, tickets) {
   ...
 });
 
-whmcs_client.customers.getCustomerEmails(clientid, {}, function(err, emails) {
+whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
   ...
 });
 
@@ -58,44 +58,45 @@ whmcs_client.customers.getCustomerEmails(clientid, {}, function(err, emails) {
 
 - updateInvoice: function (invoiceid, options, callback)
 - acceptOrder: function (orderid, options, callback)
-- addOrder: function (clientid, order, [options], callback)
+- addOrder: function (clientid, order, callback)
 - addCredit: function (clientid, amount, description, callback)
-- payInvoice: function (invoiceid, [options], callback)
-- getInvoice: function (invoiceid, [options], callback)
-- getInvoices: function (userid, status, limit, callback)
-- cancelOrder: function (orderid, [options], callback)
+- payInvoice: function (invoiceid,amount, callback)
+- getInvoice: function (invoiceid, callback)
+- getInvoices: function (userid, [options], callback)
+- cancelOrder: function (orderid, callback)
 
 ### Customers
 
-- getContacts: function (clientid, callback)
+- getContacts: function (clientid, [options], callback)
 - createContact: function (options, callback)
 - deleteContact: function (contactid, callback)
 - updateContact: function (contactid, options, callback)
 - createCustomer: function (options, callback)
-- deleteCustomer: function (clientid, options, callback)
+- deleteCustomer: function (clientid, callback)
 - updateCustomer: function (clientid, options, callback)
-- updateCustomerDomain: function (domainid, options, [options], callback)
+- updateCustomerDomain: function (domainid, options, callback)
 - getCustomer: function (clientid, [options], callback)
-- getCustomerProducts: function (clientid, productid, [options], callback)
-- getCustomerDomains: function (clientid, domainid, [options], callback)
+- getCustomerProducts: function (clientid, [options], callback)
+- getCustomerDomains: function ([options], callback)
 - getCustomerEmails: function (clientid, [options], callback)
-- getCustomerInvoices: function (clientid, [options], callback)
-- getTickets: function (clientid, status, [options], callback)
+- getCustomerInvoices: function ([options], callback)
+- getTickets: function ([options], callback)
 - validateLogin: function (email, password, callback)
-- sendEmail: function (id, email, options, callback)
+- sendEmail: function (id, options, callback)
 
 ### Products
 
-- getProduct: function (id, [options], callback)
-- getProducts: function (gid, [options], callback)
-- getOrders: function (id, status, limit, callback)
+- getProduct: function (id, callback)
+- getProducts: function (gid, callback)
+- getProductsByType: function (type, id, callback)
+- getOrders: function (method, id, offset, limit, callback)
 
 
 ### Support
 
-- openTicket: function (clientid, department, subject, message, callback)
+- openTicket: function (clientid, department, subject, message, [options], callback)
 - getTicket: function (ticketid, callback)
-- replyTicket: function (clientid, ticketid, message, callback)
+- replyTicket: function (ticketid, message, [options], callback)
 
 
 ### Domains

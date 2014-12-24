@@ -1,5 +1,5 @@
 var assert = require('assert'),
-  whmcs = require('./../lib/whmcs'),
+  whmcs = require('./whmcs'),
   config = require('./config');
 
 
