@@ -9,14 +9,14 @@ var libPath = __dirname + '/modules';
 var Client = function(options){
     var _this = this;
 
-    ['username','serverUrl'].forEach(function(required){
+    ['username','serverUrl','password'].forEach(function(required){
         if(!options[required]){
             throw new Error('options.' + required + ' is a required argument.');
         }
     });
 
-    if(typeof options.password !== 'string' && typeof options.apiKey !== 'string'){
-        throw new Error('You must specify a password or apiKey');
+    if(typeof options.password !== 'string' && typeof options.apiKey === 'string'){
+        throw new Error('You must specify a password with your apiKey');
     }
 
     this.config = options;
