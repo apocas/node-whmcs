@@ -1,7 +1,6 @@
 var utils = require('../lib/utils');
 var _ = require('underscore');
 
-
 var Support = function(config) {
   this.config = config;
 };
