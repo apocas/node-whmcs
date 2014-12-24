@@ -189,22 +189,22 @@ Billing.prototype.getInvoice = function (invoiceid, callback) {
 /**
  * Get invoices - http://docs.whmcs.com/API:Get_Invoices
  * @param userid String|Number
- * @param [data] Object
- * @param [data.userid] String
- * @param [data.status] String Status to filter for: Paid, Unpaid, Cancelled, Overdue, etc.
- * @param [data.limitstart] String
- * @param [data.limitnum] String Default is 25
+ * @param [opts] Object
+ * @param [opts.userid] String
+ * @param [opts.status] String Status to filter for: Paid, Unpaid, Cancelled, Overdue, etc.
+ * @param [opts.limitstart] String
+ * @param [opts.limitnum] String Default is 25
  * @param callback
  */
-Billing.prototype.getInvoices = function (userid, data, callback) {
+Billing.prototype.getInvoices = function (userid, opts, callback) {
   var options = {
     action:'getinvoices'
   };
 
-  if(typeof data === 'function'){
-    callback = data;
+  if(typeof opts === 'function'){
+    callback = opts;
   } else {
-    _.extend(options,data);
+    _.extend(options,opts);
   }
 
   var createOptions = {
