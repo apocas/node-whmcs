@@ -1,20 +1,44 @@
-var utils = require('./../lib/utils');
+var utils = require('../lib/utils');
+var _ = require('underscore');
 
 
 var Support = function(config) {
   this.config = config;
 };
 
-Support.prototype.openTicket = function (clientid, department, subject, message, callback) {
-  var self = this;
-  var options = {};
+/**
+ * Open ticket - http://docs.whmcs.com/API:Open_Ticket
+ * @param clientid String|Number
+ * @param department Number
+ * @param subject String
+ * @param message String
+ * @param [opts] Object
+ * @param [opts.priority] String Low, Medium, High, etc. (Default = Low)
+ * @param [opts.contactid] String|Number ID of the contact to associate the ticket with
+ * @param [opts.name] String Required if not a registered client (clientid must be set to 0)
+ * @param [opts.email] String Rquired if not a registered client
+ * @param [opts.admin] String
+ * @param [opts.serviceid] String
+ * @param [opts.domainid] String
+ * @param [opts.customfields] String Base 64 serialized array of field IDs => values
+ * @param [opts.noemail] Boolean
+ * @param callback
+ */
+Support.prototype.openTicket = function (clientid, department, subject, message, opts, callback) {
+  var options = {
+    action: 'openticket',
+    clientid: clientid,
+    deptid: department,
+    subject: subject,
+    message: message
+  };
 
-  options.action = 'openticket';
-  options.clientid = clientid;
-  options.deptid = department;
-  options.subject = subject;
-  options.message = message;
-  options.responsetype = "json";
+  if(typeof opts === 'function'){
+    callback = opts;
+    opts = undefined;
+  } else {
+    _.extend(options,opts);
+  }
 
   var createOptions = {
     client: this,
@@ -24,13 +48,16 @@ Support.prototype.openTicket = function (clientid, department, subject, message,
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Get ticket - http://docs.whmcs.com/API:Get_Ticket
+ * @param ticketid String|Number
+ * @param callback
+ */
 Support.prototype.getTicket = function (ticketid, callback) {
-  var self = this;
-  var options = {};
-
-  options.action = 'getticket';
-  options.ticketid = ticketid;
-  options.responsetype = "json";
+  var options = {
+    action: 'getticket',
+    ticketid: ticketid
+  };
 
   var createOptions = {
     client: this,
@@ -40,37 +67,37 @@ Support.prototype.getTicket = function (ticketid, callback) {
   utils.modem(createOptions, callback);
 };
 
-Support.prototype.replyTicket = function (data, callback) {
-  var self = this;
-  var options = {};
+/**
+ * Reply to ticket - http://docs.whmcs.com/API:Reply_Ticket
+ * @param ticketid String|Number
+ * @param message String
+ * @param [opts] Object
+ * @param [opts.clientid] String|Number Required if adding reply as a client
+ * @param [opts.contactid] String|Number ID of contact for client if replying as a client
+ * @param [opts.name] String Required to be set to 0 if not a registered client
+ * @param [opts.email] String Required if not a registered client
+ * @param [opts.adminusername] String Name to show on message
+ * @param [opts.status] String
+ * @param [opts.customfields] String Base64 encoded serialized array of custom fields
+ * @param callback
+ */
+Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
+  var options = {
+    action: 'addticketreply',
+    ticketid: ticketid,
+    message: message
+  };
 
-  options.action = 'addticketreply';
-
-  options.ticketid = data.ticketid;
-  options.message = data.message;
-  options.adminusername = data.adminusername || 'Auto-response';
-
-  if(typeof data.clientid !== 'undefined'){
-      options.clientid = data.clientid;
+  if(typeof opts === 'function'){
+    callback = opts;
+    opts = undefined;
+  } else {
+    _.extend(options, opts);
   }
 
-  if(data.status){
-      options.status = data.status;
+  if(!options.adminusername){
+    options.adminusername = 'Auto-response';
   }
-
-  if(data.email){
-      options.email = data.emails;
-  }
-
-  if(data.name){
-      options.name = data.name;
-  }
-
-  if(data.customfields){
-      options.customfields = data.customfields;
-  }
-
-  options.responsetype = "json";
 
   var createOptions = {
     client: this,
