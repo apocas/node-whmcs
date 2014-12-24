@@ -34,7 +34,6 @@ Support.prototype.openTicket = function (clientid, department, subject, message,
 
   if(typeof opts === 'function'){
     callback = opts;
-    opts = undefined;
   } else {
     _.extend(options,opts);
   }
@@ -89,7 +88,6 @@ Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
 
   if(typeof opts === 'function'){
     callback = opts;
-    opts = undefined;
   } else {
     _.extend(options, opts);
   }
