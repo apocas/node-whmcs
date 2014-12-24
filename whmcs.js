@@ -1,7 +1,6 @@
 var fs = require('fs');
 var libPath = __dirname + '/lib';
 
-
 /**
  * Make a WHMCS client
  * @param options
@@ -25,7 +24,8 @@ var Client = function(options){
     var len = files.length;
     while(i < len){
         var name = files[i].replace('.js','');
-        _this[name] = Object.create(require(libPath + '/' + name));
+        var Item = require(libPath + '/' + name);
+        _this[name] = new Item();
         _this[name].config = _this.config;
 
         i++;
