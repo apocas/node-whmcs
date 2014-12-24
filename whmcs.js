@@ -1,5 +1,5 @@
 var fs = require('fs');
-var libPath = __dirname + '/lib';
+var libPath = __dirname + '/modules';
 
 /**
  * Make a WHMCS client
@@ -9,11 +9,15 @@ var libPath = __dirname + '/lib';
 var Client = function(options){
     var _this = this;
 
-    ['username','apiKey','serverUrl'].forEach(function(required){
+    ['username','serverUrl'].forEach(function(required){
         if(!options[required]){
             throw new Error('options.' + required + ' is a required argument.');
         }
     });
+
+    if(typeof options.password !== 'string' && typeof options.apiKey !== 'string'){
+        throw new Error('You must specify a password or apiKey');
+    }
 
     this.config = options;
     this.authorized = false;

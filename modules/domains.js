@@ -1,4 +1,4 @@
-var utils = require('./utils');
+var utils = require('./../lib/utils');
 
 var Domains = function(config) {
   this.config = config;
