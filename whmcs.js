@@ -3,7 +3,7 @@ var libPath = __dirname + '/modules';
 
 /**
  * Make a WHMCS client
- * @param options
+ * @param options {{username:String,serverUrl:String,password:String,apiKey:[String]}}
  * @constructor
  */
 var Client = function(options){
@@ -38,7 +38,7 @@ var Client = function(options){
 
 /**
  * @module WHMCS Client
- * @type {{createClient: createClient}}
+ * @type {{createClient: Function}}
  */
 module.exports = {
     createClient: function(options){
