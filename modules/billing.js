@@ -94,6 +94,25 @@ Billing.prototype.acceptOrder = function (orderid, opts, callback) {
 };
 
 /**
+* Delete order - http://docs.whmcs.com/API:Cancel_Order
+* @param orderid String|Number
+* @param callback
+*/
+Billing.prototype.deleteOrder = function (orderid, callback) {
+  var options = {
+    action: 'deleteorder',
+    orderid: orderid
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
  * Cancel order - http://docs.whmcs.com/API:Cancel_Order
  * @param orderid String|Number
  * @param callback

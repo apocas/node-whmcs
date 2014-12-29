@@ -2,7 +2,7 @@ var assert = require('assert'),
   client = require('./spec_helper').client;
 
 
-describe('product', function() {
+describe('customers', function() {
 
   it('should create, get and delete a customer', function(done) {
     this.timeout(15000);

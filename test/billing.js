@@ -2,9 +2,9 @@ var assert = require('assert'),
 client = require('./spec_helper').client;
 
 
-describe('support', function() {
+describe('billing', function() {
 
-  it('should create, get and delete a ticket', function(done) {
+  it('should create and delete an order', function(done) {
     this.timeout(15000);
 
     var opts = {
@@ -23,10 +23,17 @@ describe('support', function() {
     client.customers.createCustomer(opts, function(err, customer) {
       if (err) throw err;
 
-      client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
+      var ordero = {
+        'paymentmethod': 'banktransfer'
+      };
+      ordero['pid[0]'] = 1;
+      ordero['domain[0]'] = 'xpto.com';
+      ordero['billingcycle[0]'] = 'monthly';
+
+      client.billing.addOrder(customer.clientid, ordero, function(err, order) {
         if (err) throw err;
 
-        client.support.deleteTicket(ticket.id, function(err, data) {
+        client.billing.deleteOrder(order.orderid, function(err, data) {
           if (err) throw err;
 
           client.customers.deleteCustomer(customer.clientid, function(err, data) {
