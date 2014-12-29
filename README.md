@@ -9,7 +9,7 @@ npm install whmcs
 
 ## Usage
 
-First create an API Client.
+First you need to instantiate it.
 
 ```javascript
 
@@ -20,10 +20,10 @@ var config = {
   serverUrl: 'http://127.0.0.1/includes/api.php'
 };
 
-var whmcs_client = whmcs.createClient(config);
+var wclient = new WHMCS(config);
 ```
 
-Using the previous created API Client, call the methods you need, example:
+Using the created client, call the methods you need, example:
 
 
 ```javascript
@@ -60,7 +60,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - acceptOrder: function (orderid, options, callback)
 - addOrder: function (clientid, order, callback)
 - addCredit: function (clientid, amount, description, callback)
-- payInvoice: function (invoiceid,amount, callback)
+- payInvoice: function (invoiceid, amount, callback)
 - getInvoice: function (invoiceid, callback)
 - getInvoices: function (userid, [options], callback)
 - cancelOrder: function (orderid, callback)
@@ -80,9 +80,9 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getCustomerDomains: function ([options], callback)
 - getCustomerEmails: function (clientid, [options], callback)
 - getCustomerInvoices: function ([options], callback)
-- getTickets: function ([options], callback)
 - validateLogin: function (email, password, callback)
 - sendEmail: function (id, options, callback)
+
 
 ### Products
 
@@ -96,7 +96,9 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 
 - openTicket: function (clientid, department, subject, message, [options], callback)
 - getTicket: function (ticketid, callback)
+- deleteTicket: function (ticketid, callback)
 - replyTicket: function (ticketid, message, [options], callback)
+- getTickets: function ([options], callback)
 
 
 ### Domains

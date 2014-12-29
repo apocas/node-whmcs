@@ -1,10 +1,10 @@
 var assert = require('assert'),
-  client = require('./spec_helper').client;
+client = require('./spec_helper').client;
 
 
 describe('product', function() {
 
-  it('should create and get a customer back', function(done) {
+  it('should create, get and delete a ticket', function(done) {
     this.timeout(15000);
 
     var opts = {
@@ -22,16 +22,17 @@ describe('product', function() {
 
     client.customers.createCustomer(opts, function(err, customer) {
       if (err) throw err;
-      console.log('Customer created');
 
-      client.customers.getCustomer(customer.clientid, function(err, customer) {
+      client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
         if (err) throw err;
-        console.log('Customer retrieved');
 
-        client.customers.deleteCustomer(customer.client.id, function(err, data) {
+        client.support.deleteTicket(ticket.id, function(err, data) {
           if (err) throw err;
-          console.log('Customer deleted');
-          done();
+
+          client.customers.deleteCustomer(customer.clientid, function(err, data) {
+            if (err) throw err;
+            done();
+          });
         });
       });
     });

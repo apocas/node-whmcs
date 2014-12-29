@@ -623,38 +623,6 @@ Customers.prototype.getCustomerOrders = function (opts, callback) {
 };
 
 /**
- * Get tickets - http://docs.whmcs.com/API:Get_Tickets
- * @param [opts] Object
- * @param [opts.limitstart] String where to start the records. Used for pagination
- * @param [opts.limitnum] String the number of records to retrieve. Default = 25
- * @param [opts.clientid] String
- * @param [opts.email] String
- * @param [opts.deptid] String
- * @param [opts.status] String
- * @param [opts.subject] String
- * @param [opts.ignore_dept_assignments] Boolean
- * @param callback
- */
-Customers.prototype.getTickets = function (opts, callback) {
-  var options = {
-    action: 'gettickets'
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    _.extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
-};
-
-/**
  * Validate login - http://docs.whmcs.com/API:Validate_Login
  * @param email String
  * @param password String

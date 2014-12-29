@@ -13,8 +13,6 @@ var invalidConfig = {
   serverUrl: 'http://192.168.1.1/includes/api.php'
 };
 
-console.log(validConfig);
-
 module.exports = {
   'client': new WHMCS(validConfig),
   'iclient': new WHMCS(invalidConfig)
