@@ -39,4 +39,11 @@ describe('support', function() {
     });
   });
 
+  it('should get tickets', function(done) {
+    client.support.getTickets(function(err, tickets) {
+      expect(err).to.be.undefined;
+      done();
+    });
+  });
+
 });
