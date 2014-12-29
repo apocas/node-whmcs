@@ -1,14 +1,8 @@
 var assert = require('assert'),
-  whmcs = require('./whmcs'),
-  config = require('./config');
+  client = require('./spec_helper').client;
 
 
 describe('product', function() {
-
-  before(function(done){
-    client = whmcs.createClient(config.validConfig);
-    done();
-  });
 
   it('should create and get a customer back', function(done) {
     this.timeout(15000);

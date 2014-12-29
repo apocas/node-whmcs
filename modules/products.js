@@ -10,8 +10,8 @@ var Products = function(config) {
  * @todo Deprecate this in favor of getProductsByType
  * @param callback
  */
-Products.prototype.getProduct = function (id, callback) {
-  Products.getProductsByType('product',id,callback);
+Products.prototype.getProduct = function(id, callback) {
+  this.getProductsByType('product', id, callback);
 };
 
 /**
@@ -20,8 +20,8 @@ Products.prototype.getProduct = function (id, callback) {
  * @todo Deprecate this in favor of getProductsByType
  * @param callback
  */
-Products.prototype.getProducts = function (gid, callback) {
-  Products.getProductsByType('group',gid,callback);
+Products.prototype.getProducts = function(gid, callback) {
+  this.getProductsByType('group', gid, callback);
 };
 
 /**
@@ -30,12 +30,12 @@ Products.prototype.getProducts = function (gid, callback) {
  * @param id String|Number
  * @param callback
  */
-Products.prototype.getProductsByType = function(type, id, callback){
+Products.prototype.getProductsByType = function(type, id, callback) {
   var options = {
     action: 'getproducts'
   };
 
-  switch(type){
+  switch (type) {
     case 'product':
       options.pid = id;
       break;
@@ -63,7 +63,7 @@ Products.prototype.getProductsByType = function(type, id, callback){
  * @param [limit] String|Number Default is 25
  * @param callback
  */
-Products.prototype.getOrders = function (method, id, offset, limit, callback) {
+Products.prototype.getOrders = function(method, id, offset, limit, callback) {
   var options = {
     action: 'getorders'
   };
@@ -81,15 +81,15 @@ Products.prototype.getOrders = function (method, id, offset, limit, callback) {
   offset = args.shift();
   limit = args.shift();
 
-  if(typeof offset !== 'undefined'){
+  if (typeof offset !== 'undefined') {
     options.offset = offset;
   }
 
-  if(typeof limit !== 'undefined'){
+  if (typeof limit !== 'undefined') {
     options.limit = limit;
   }
 
-  switch(method){
+  switch (method) {
     case 'id':
       options.id = id;
       break;

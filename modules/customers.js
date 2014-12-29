@@ -344,7 +344,7 @@ Customers.prototype.getCustomer = function (clientid, opts, callback) {
     stats: true
   };
 
-  if(clientid.indexOf('@') === -1){
+  if(typeof clientid === 'number' || clientid.indexOf('@') === -1){
     options.clientid = clientid;
   } else {
     options.email = clientid;
