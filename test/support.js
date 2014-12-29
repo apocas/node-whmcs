@@ -1,5 +1,6 @@
 var assert = require('assert'),
-client = require('./spec_helper').client;
+  expect = require('chai').expect,
+  client = require('./spec_helper').client;
 
 
 describe('support', function() {
@@ -21,16 +22,16 @@ describe('support', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      if (err) throw err;
+      expect(err).to.be.undefined;
 
       client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
-        if (err) throw err;
+        expect(err).to.be.undefined;
 
         client.support.deleteTicket(ticket.id, function(err, data) {
-          if (err) throw err;
+          expect(err).to.be.undefined;
 
           client.customers.deleteCustomer(customer.clientid, function(err, data) {
-            if (err) throw err;
+            expect(err).to.be.undefined;
             done();
           });
         });

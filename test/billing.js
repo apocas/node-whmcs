@@ -1,5 +1,6 @@
 var assert = require('assert'),
-client = require('./spec_helper').client;
+  expect = require('chai').expect,
+  client = require('./spec_helper').client;
 
 
 describe('billing', function() {
@@ -21,7 +22,7 @@ describe('billing', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      if (err) throw err;
+      expect(err).to.be.undefined;
 
       var ordero = {
         'paymentmethod': 'banktransfer'
@@ -31,13 +32,13 @@ describe('billing', function() {
       ordero['billingcycle[0]'] = 'monthly';
 
       client.billing.addOrder(customer.clientid, ordero, function(err, order) {
-        if (err) throw err;
+        expect(err).to.be.undefined;
 
         client.billing.deleteOrder(order.orderid, function(err, data) {
-          if (err) throw err;
+          expect(err).to.be.undefined;
 
           client.customers.deleteCustomer(customer.clientid, function(err, data) {
-            if (err) throw err;
+            expect(err).to.be.undefined;
             done();
           });
         });

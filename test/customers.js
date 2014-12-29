@@ -1,4 +1,5 @@
 var assert = require('assert'),
+  expect = require('chai').expect,
   client = require('./spec_helper').client;
 
 
@@ -21,13 +22,13 @@ describe('customers', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      if (err) throw err;
+      expect(err).to.be.undefined;
 
       client.customers.getCustomer(customer.clientid, function(err, customer) {
-        if (err) throw err;
+        expect(err).to.be.undefined;
 
         client.customers.deleteCustomer(customer.client.id, function(err, data) {
-          if (err) throw err;
+          expect(err).to.be.undefined;
           done();
         });
       });
