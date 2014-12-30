@@ -52,7 +52,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 
 ```
 
-## Implemented methods
+## Implemented functions
 
 ### Billing
 
@@ -111,7 +111,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - setDomainNameservers: function (domainid, nameservers, callback)
 - getDomainPricing: function (tld, type, callback)
 
-## Custom API endpoints
+## Custom API functions
 
 ### Nodejs
 
