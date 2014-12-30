@@ -35,4 +35,14 @@ describe('customers', function() {
     });
   });
 
+  it('should get credits', function(done) {
+    this.timeout(15000);
+
+    client.customers.getCredits(1, function(err, credits) {
+      expect(err).to.be.undefined;
+
+      done();
+    });
+  });
+
 });

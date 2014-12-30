@@ -142,6 +142,20 @@ Customers.prototype.deleteContact = function (contactid, callback) {
   utils.modem(deleteOptions, callback);
 };
 
+Customers.prototype.getCredits = function (userid, callback) {
+  var options = {
+    action: 'getcredits',
+    clientid: userid
+  };
+
+  var creditOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(creditOptions, callback);
+};
+
 /**
  * Update contact - http://docs.whmcs.com/API:Update_Contact
  * @param contactid String

@@ -86,6 +86,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getCustomerInvoices: function (clientid, [options], callback)
 - validateLogin: function (email, password, callback)
 - sendEmail: function (id, options, callback)
+- getCredits: function (userid, callback)
 
 
 ### Products
@@ -153,10 +154,10 @@ if(!$error) {
   $json["result"] = "success";
   $output = json_encode($json);
 } else {
-  $output = '{"error": "supply a tld"}';
+  $output = '{"error": "error description ..."}';
 }
 
-echo ;
+echo $output;
 ?>
 
 ```
