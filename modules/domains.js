@@ -86,7 +86,7 @@ Domains.prototype.setDomainNameservers = function (domainid, nameservers, callba
     domainid: domainid
   };
 
-  if(_.isArray(nameservers)){
+  if(nameservers.constructor === Array){
     var len = nameservers.length;
     for(var i = 0; i < len; i++){
       options['ns' + (i + 1)] = nameservers[i];

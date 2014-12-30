@@ -66,7 +66,7 @@ Billing.prototype.createInvoice = function (clientid, invoice, callback) {
     userid: clientid
   };
 
-  _.extend(options, invoice);
+  options = extend(options, invoice);
 
   var createOptions = {
     client: this,

@@ -144,7 +144,7 @@ Support.prototype.getTickets = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
