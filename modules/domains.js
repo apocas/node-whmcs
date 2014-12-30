@@ -6,32 +6,6 @@ var Domains = function(config) {
 };
 
 /**
- * Get domain pricing - http://docs.whmcs.com/API:???
- * @param tld
- * @param [type]
- * @param callback
- */
-Domains.prototype.getDomainPricing = function (tld, type, callback) {
-  var options = {
-    action: 'getdomainpricing',
-    tld: tld
-  };
-
-  if(typeof type === 'function'){
-    callback = type;
-  } else {
-    options.type = type;
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
-};
-
-/**
  * Get domain lock status - http://docs.whmcs.com/API:Domain_Locking_Status
  * @param domainid String|Number
  * @param callback

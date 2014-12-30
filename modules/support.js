@@ -47,6 +47,25 @@ Support.prototype.openTicket = function (clientid, department, subject, message,
 };
 
 /**
+* Delete ticket - http://docs.whmcs.com/API:Delete_Ticket
+* @param ticketid String|Number
+* @param callback
+*/
+Support.prototype.deleteTicket = function (ticketid, callback) {
+  var options = {
+    action: 'deleteticket',
+    ticketid: ticketid
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
  * Get ticket - http://docs.whmcs.com/API:Get_Ticket
  * @param ticketid String|Number
  * @param callback
@@ -94,6 +113,38 @@ Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
 
   if(!options.adminusername){
     options.adminusername = 'Auto-response';
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
+* Get tickets - http://docs.whmcs.com/API:Get_Tickets
+* @param [opts] Object
+* @param [opts.limitstart] String where to start the records. Used for pagination
+* @param [opts.limitnum] String the number of records to retrieve. Default = 25
+* @param [opts.clientid] String
+* @param [opts.email] String
+* @param [opts.deptid] String
+* @param [opts.status] String
+* @param [opts.subject] String
+* @param [opts.ignore_dept_assignments] Boolean
+* @param callback
+*/
+Support.prototype.getTickets = function (opts, callback) {
+  var options = {
+    action: 'gettickets'
+  };
+
+  if(typeof opts === 'function'){
+    callback = opts;
+  } else {
+    _.extend(options, opts);
   }
 
   var createOptions = {

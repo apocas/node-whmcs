@@ -344,7 +344,7 @@ Customers.prototype.getCustomer = function (clientid, opts, callback) {
     stats: true
   };
 
-  if(clientid.indexOf('@') === -1){
+  if(typeof clientid === 'number' || clientid.indexOf('@') === -1){
     options.clientid = clientid;
   } else {
     options.email = clientid;
@@ -575,9 +575,10 @@ Customers.prototype.getCustomerEmails = function (clientid, opts, callback) {
  * @param [opts.limitnum] String the number of records to retrieve. Default = 25
  * @param callback
  */
-Customers.prototype.getCustomerInvoices = function (opts, callback) {
+Customers.prototype.getCustomerInvoices = function (userid, opts, callback) {
   var options = {
-    action: 'getinvoices'
+    action: 'getinvoices',
+    userid: userid
   };
 
   if(typeof opts === 'function'){
@@ -606,38 +607,6 @@ Customers.prototype.getCustomerInvoices = function (opts, callback) {
 Customers.prototype.getCustomerOrders = function (opts, callback) {
   var options = {
     action: 'getorders'
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
-};
-
-/**
- * Get tickets - http://docs.whmcs.com/API:Get_Tickets
- * @param [opts] Object
- * @param [opts.limitstart] String where to start the records. Used for pagination
- * @param [opts.limitnum] String the number of records to retrieve. Default = 25
- * @param [opts.clientid] String
- * @param [opts.email] String
- * @param [opts.deptid] String
- * @param [opts.status] String
- * @param [opts.subject] String
- * @param [opts.ignore_dept_assignments] Boolean
- * @param callback
- */
-Customers.prototype.getTickets = function (opts, callback) {
-  var options = {
-    action: 'gettickets'
   };
 
   if(typeof opts === 'function'){

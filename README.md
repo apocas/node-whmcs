@@ -1,7 +1,9 @@
 WHMCS Node Module
 =========
 
-WHMCS's API implementation in Node.js
+WHMCS's API Node client.
+
+## Installation
 
 ```
 npm install whmcs
@@ -9,7 +11,7 @@ npm install whmcs
 
 ## Usage
 
-First create an API Client.
+First you need to instantiate it.
 
 ```javascript
 
@@ -20,10 +22,10 @@ var config = {
   serverUrl: 'http://127.0.0.1/includes/api.php'
 };
 
-var whmcs_client = whmcs.createClient(config);
+var wclient = new WHMCS(config);
 ```
 
-Using the previous created API Client, call the methods you need, example:
+Using the created client, call the methods you need, example:
 
 
 ```javascript
@@ -52,7 +54,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 
 ```
 
-## Implemented methods
+## Implemented functions
 
 ### Billing
 
@@ -60,10 +62,12 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - acceptOrder: function (orderid, options, callback)
 - addOrder: function (clientid, order, callback)
 - addCredit: function (clientid, amount, description, callback)
-- payInvoice: function (invoiceid,amount, callback)
+- payInvoice: function (invoiceid, amount, callback)
 - getInvoice: function (invoiceid, callback)
-- getInvoices: function (userid, [options], callback)
+- getInvoices: function ([options], callback)
 - cancelOrder: function (orderid, callback)
+- deleteOrder: function (orderid, callback)
+- createInvoice: function (clientid, invoice, callback)
 
 ### Customers
 
@@ -79,10 +83,10 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getCustomerProducts: function (clientid, [options], callback)
 - getCustomerDomains: function ([options], callback)
 - getCustomerEmails: function (clientid, [options], callback)
-- getCustomerInvoices: function ([options], callback)
-- getTickets: function ([options], callback)
+- getCustomerInvoices: function (clientid, [options], callback)
 - validateLogin: function (email, password, callback)
 - sendEmail: function (id, options, callback)
+
 
 ### Products
 
@@ -96,7 +100,9 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 
 - openTicket: function (clientid, department, subject, message, [options], callback)
 - getTicket: function (ticketid, callback)
+- deleteTicket: function (ticketid, callback)
 - replyTicket: function (ticketid, message, [options], callback)
+- getTickets: function ([options], callback)
 
 
 ### Domains
@@ -106,3 +112,69 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
 - getDomainPricing: function (tld, type, callback)
+
+## Custom API functions
+
+### Nodejs
+
+```javascript
+//...
+var wclient = new WHMCS(config);
+
+wclient.customers.getTopCustomer = function (callback) {
+  var options = {
+    action: 'gettopcustomer'
+  };
+
+  var opts = {
+    client: this,
+    body: options
+  };
+
+  wclient.utils.modem(opts, callback);
+};
+```
+
+### WHMCS Side
+
+whmcs_root/includes/api/gettopcustomer.php
+
+```php
+<?php
+
+if (!defined("WHMCS")) {
+  exit("This file cannot be accessed directly");
+}
+
+//...
+
+if(!$error) {
+  $json["customer"] = 1234;
+  $json["result"] = "success";
+  $output = json_encode($json);
+} else {
+  $output = '{"error": "supply a tld"}';
+}
+
+echo ;
+?>
+
+```
+
+## Tests
+
+Tests are implemented using `mocha` and `chai`. Run them with `npm test`.
+
+## Examples
+
+Check the test folder for more specific use cases examples.
+
+## License
+
+Pedro Dias - [@pedromdias](https://twitter.com/pedromdias)
+
+Licensed under the Apache license, version 2.0 (the "license"); You may not use this file except in compliance with the license. You may obtain a copy of the license at:
+
+http://www.apache.org/licenses/LICENSE-2.0.html
+
+Unless required by applicable law or agreed to in writing, software distributed under the license is distributed on an "as is" basis, without warranties or conditions of any kind, either express or implied. See the license for the specific language governing permissions and limitations under the license.

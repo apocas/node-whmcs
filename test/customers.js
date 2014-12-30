@@ -1,16 +1,11 @@
 var assert = require('assert'),
-  whmcs = require('./whmcs'),
-  config = require('./config');
+  expect = require('chai').expect,
+  client = require('./spec_helper').client;
 
 
-describe('product', function() {
+describe('customers', function() {
 
-  before(function(done){
-    client = whmcs.createClient(config.validConfig);
-    done();
-  });
-
-  it('should create and get a customer back', function(done) {
+  it('should create, get and delete a customer', function(done) {
     this.timeout(15000);
 
     var opts = {
@@ -27,16 +22,13 @@ describe('product', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      if (err) throw err;
-      console.log('Customer created');
+      expect(err).to.be.undefined;
 
       client.customers.getCustomer(customer.clientid, function(err, customer) {
-        if (err) throw err;
-        console.log('Customer retrieved');
+        expect(err).to.be.undefined;
 
         client.customers.deleteCustomer(customer.client.id, function(err, data) {
-          if (err) throw err;
-          console.log('Customer deleted');
+          expect(err).to.be.undefined;
           done();
         });
       });

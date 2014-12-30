@@ -60,6 +60,22 @@ Billing.prototype.addOrder = function (clientid, order, callback) {
   utils.modem(createOptions, callback);
 };
 
+Billing.prototype.createInvoice = function (clientid, invoice, callback) {
+  var options = {
+    action: 'createinvoice',
+    userid: clientid
+  };
+
+  _.extend(options, invoice);
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
 /**
  * Accept order - http://docs.whmcs.com/API:Accept_Order
  * @param orderid String|Number
@@ -84,6 +100,25 @@ Billing.prototype.acceptOrder = function (orderid, opts, callback) {
   } else {
     options = extend(options, opts);
   }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
+* Delete order - http://docs.whmcs.com/API:Cancel_Order
+* @param orderid String|Number
+* @param callback
+*/
+Billing.prototype.deleteOrder = function (orderid, callback) {
+  var options = {
+    action: 'deleteorder',
+    orderid: orderid
+  };
 
   var createOptions = {
     client: this,
@@ -196,7 +231,7 @@ Billing.prototype.getInvoice = function (invoiceid, callback) {
  * @param [opts.limitnum] String Default is 25
  * @param callback
  */
-Billing.prototype.getInvoices = function (userid, opts, callback) {
+Billing.prototype.getInvoices = function (opts, callback) {
   var options = {
     action:'getinvoices'
   };
