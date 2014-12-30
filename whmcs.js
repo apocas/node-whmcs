@@ -9,6 +9,8 @@ var libPath = __dirname + '/modules';
 var WHMCS = function(options) {
   var _this = this;
 
+  this.utils = require('./lib/utils');
+
   ['username', 'serverUrl', 'password'].forEach(function(required) {
     if (!options[required]) {
       throw new Error('options.' + required + ' is a required argument.');

@@ -65,6 +65,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getInvoices: function (userid, [options], callback)
 - cancelOrder: function (orderid, callback)
 - deleteOrder: function (orderid, callback)
+- createInvoice: function (clientid, invoice, callback)
 
 ### Customers
 

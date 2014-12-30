@@ -60,6 +60,22 @@ Billing.prototype.addOrder = function (clientid, order, callback) {
   utils.modem(createOptions, callback);
 };
 
+Billing.prototype.createInvoice = function (clientid, invoice, callback) {
+  var options = {
+    action: 'createinvoice',
+    userid: clientid
+  };
+
+  _.extend(options, invoice);
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
 /**
  * Accept order - http://docs.whmcs.com/API:Accept_Order
  * @param orderid String|Number
