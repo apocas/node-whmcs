@@ -110,3 +110,50 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
 - getDomainPricing: function (tld, type, callback)
+
+## Custom API endpoints
+
+### Nodejs
+
+```javascript
+var wclient = new WHMCS(config);
+
+wclient.customers.getTopCustomer = function (callback) {
+  var options = {
+    action: 'gettopcustomer'
+  };
+
+  var opts = {
+    client: this,
+    body: options
+  };
+
+  exports.whmcs.utils.modem(opts, callback);
+};
+```
+
+### WHMCS Side
+
+whmcs_root/includes/api/gettopcustomer.php
+
+```php
+<?php
+
+if (!defined("WHMCS")) {
+  exit("This file cannot be accessed directly");
+}
+
+//...
+
+if(!$error) {
+  $json["customer"] = 1234;
+  $json["result"] = "success";
+  $output = json_encode($json);
+} else {
+  $output = '{"error": "supply a tld"}';
+}
+
+echo ;
+?>
+
+```
