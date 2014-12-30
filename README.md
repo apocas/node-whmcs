@@ -1,7 +1,9 @@
 WHMCS Node Module
 =========
 
-WHMCS's API implementation in Node.js
+WHMCS's API Node client.
+
+## Installation
 
 ```
 npm install whmcs
