@@ -128,7 +128,7 @@ wclient.customers.getTopCustomer = function (callback) {
     body: options
   };
 
-  exports.whmcs.utils.modem(opts, callback);
+  wclient.utils.modem(opts, callback);
 };
 ```
 
