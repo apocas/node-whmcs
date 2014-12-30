@@ -64,7 +64,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - addCredit: function (clientid, amount, description, callback)
 - payInvoice: function (invoiceid, amount, callback)
 - getInvoice: function (invoiceid, callback)
-- getInvoices: function (userid, [options], callback)
+- getInvoices: function ([options], callback)
 - cancelOrder: function (orderid, callback)
 - deleteOrder: function (orderid, callback)
 - createInvoice: function (clientid, invoice, callback)
@@ -83,7 +83,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getCustomerProducts: function (clientid, [options], callback)
 - getCustomerDomains: function ([options], callback)
 - getCustomerEmails: function (clientid, [options], callback)
-- getCustomerInvoices: function ([options], callback)
+- getCustomerInvoices: function (clientid, [options], callback)
 - validateLogin: function (email, password, callback)
 - sendEmail: function (id, options, callback)
 

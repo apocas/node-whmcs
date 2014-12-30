@@ -231,7 +231,7 @@ Billing.prototype.getInvoice = function (invoiceid, callback) {
  * @param [opts.limitnum] String Default is 25
  * @param callback
  */
-Billing.prototype.getInvoices = function (userid, opts, callback) {
+Billing.prototype.getInvoices = function (opts, callback) {
   var options = {
     action:'getinvoices'
   };

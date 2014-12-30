@@ -575,9 +575,10 @@ Customers.prototype.getCustomerEmails = function (clientid, opts, callback) {
  * @param [opts.limitnum] String the number of records to retrieve. Default = 25
  * @param callback
  */
-Customers.prototype.getCustomerInvoices = function (opts, callback) {
+Customers.prototype.getCustomerInvoices = function (userid, opts, callback) {
   var options = {
-    action: 'getinvoices'
+    action: 'getinvoices',
+    userid: userid
   };
 
   if(typeof opts === 'function'){
