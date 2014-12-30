@@ -1,5 +1,5 @@
 var utils = require('../lib/utils');
-var _ = require('underscore');
+var extend = require('util')._extend;
 
 var Support = function(config) {
   this.config = config;
@@ -35,7 +35,7 @@ Support.prototype.openTicket = function (clientid, department, subject, message,
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options,opts);
+    options = extend(options,opts);
   }
 
   var createOptions = {
@@ -89,7 +89,7 @@ Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   if(!options.adminusername){

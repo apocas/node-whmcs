@@ -1,5 +1,5 @@
 var utils = require('../lib/utils');
-var _ = require('underscore');
+var extend = require('util')._extend;
 
 var Customers = function(config) {
   this.config = config;
@@ -42,7 +42,7 @@ Customers.prototype.createCustomer = function (customer, callback) {
     action: 'addclient'
   };
 
-  _.extend(options, customer);
+  options = extend(options, customer);
 
   var createOptions = {
     client: this,
@@ -81,7 +81,7 @@ Customers.prototype.createContact = function (contact, callback) {
     action: 'addcontact'
   };
 
-  _.extend(options, contact);
+  options = extend(options, contact);
 
   var createOptions = {
     client: this,
@@ -113,7 +113,7 @@ Customers.prototype.updateService = function(serviceid, data, callback) {
     serviceid: serviceid
   };
 
-  _.extend(options, data);
+  options = extend(options, data);
 
   var updateOptions = {
     client: this,
@@ -173,7 +173,7 @@ Customers.prototype.updateContact = function (contactid, contact, callback) {
     contactid: contactid
   };
 
-  _.extend(options, contact);
+  options = extend(options, contact);
 
   var updateOptions = {
     client: this,
@@ -224,7 +224,7 @@ Customers.prototype.updateCustomer = function (clientid, customer, callback) {
     clientid: clientid
   };
 
-  _.extend(options, customer);
+  options = extend(options, customer);
 
   var createOptions = {
     client: this,
@@ -280,7 +280,7 @@ Customers.prototype.updateCustomerDomain = function (domainid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -321,7 +321,7 @@ Customers.prototype.getContacts = function (userid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -353,7 +353,7 @@ Customers.prototype.getCustomer = function (clientid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -414,7 +414,7 @@ Customers.prototype.getCustomerProducts = function (clientid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -464,7 +464,7 @@ Customers.prototype.updateCustomerProduct = function (serviceid, service, callba
   if(typeof service === 'function'){
     callback = service;
   } else {
-    _.extend(options, service);
+    options = extend(options, service);
   }
 
   var createOptions = {
@@ -495,7 +495,7 @@ Customers.prototype.sendEmail = function (id, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -525,7 +525,7 @@ Customers.prototype.getCustomerDomains = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -555,7 +555,7 @@ Customers.prototype.getCustomerEmails = function (clientid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -583,7 +583,7 @@ Customers.prototype.getCustomerInvoices = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -611,7 +611,7 @@ Customers.prototype.getCustomerOrders = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -643,7 +643,7 @@ Customers.prototype.getTickets = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {

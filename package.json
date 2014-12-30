@@ -1,7 +1,7 @@
 {
   "name": "whmcs",
   "description": "WHMCS API node implementation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Pedro Dias <petermdias@gmail.com>",
   "maintainers": [
     "apocas <petermdias@gmail.com>"
@@ -15,8 +15,7 @@
     "hosting"
   ],
   "dependencies": {
-    "request": "2.21.x",
-    "underscore": "1.5.x"
+    "request": "2.21.x"
   },
   "devDependencies": {
     "mocha": "*"

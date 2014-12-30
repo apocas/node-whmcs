@@ -1,4 +1,5 @@
 var utils = require('../lib/utils');
+var extend = require('util')._extend;
 
 var Domains = function(config) {
   this.config = config;
@@ -117,7 +118,7 @@ Domains.prototype.setDomainNameservers = function (domainid, nameservers, callba
       options['ns' + (i + 1)] = nameservers[i];
     }
   } else if(typeof nameservers === 'object') {
-    _.extend(options,nameservers);
+    options = extend(options,nameservers);
   }
 
   var createOptions = {
