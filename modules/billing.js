@@ -1,5 +1,5 @@
 var utils = require('../lib/utils');
-var _ = require('underscore');
+var extend = utils.extend;
 
 var Billing = function(config) {
   this.config = config;
@@ -50,7 +50,7 @@ Billing.prototype.addOrder = function (clientid, order, callback) {
     clientid: clientid
   };
 
-  _.extend(options, order);
+  options = extend(options, order);
 
   var createOptions = {
     client: this,
@@ -66,7 +66,7 @@ Billing.prototype.createInvoice = function (clientid, invoice, callback) {
     userid: clientid
   };
 
-  _.extend(options, invoice);
+  options = extend(options, invoice);
 
   var createOptions = {
     client: this,
@@ -98,7 +98,7 @@ Billing.prototype.acceptOrder = function (orderid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {
@@ -239,7 +239,7 @@ Billing.prototype.getInvoices = function (opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options,opts);
+    options = extend(options,opts);
   }
 
   var createOptions = {
@@ -278,7 +278,7 @@ Billing.prototype.updateInvoice = function (invoiceid, opts, callback) {
   if(typeof opts === 'function'){
     callback = opts;
   } else {
-    _.extend(options, opts);
+    options = extend(options, opts);
   }
 
   var createOptions = {

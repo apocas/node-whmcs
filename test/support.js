@@ -22,16 +22,16 @@ describe('support', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
-        expect(err).to.be.undefined;
+        expect(err).to.be.null;
 
         client.support.deleteTicket(ticket.id, function(err, data) {
-          expect(err).to.be.undefined;
+          expect(err).to.be.null;
 
           client.customers.deleteCustomer(customer.clientid, function(err, data) {
-            expect(err).to.be.undefined;
+            expect(err).to.be.null;
             done();
           });
         });
@@ -41,7 +41,7 @@ describe('support', function() {
 
   it('should get tickets', function(done) {
     client.support.getTickets(function(err, tickets) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
       done();
     });
   });

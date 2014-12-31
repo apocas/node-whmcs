@@ -22,13 +22,13 @@ describe('customers', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       client.customers.getCustomer(customer.clientid, function(err, customer) {
-        expect(err).to.be.undefined;
+        expect(err).to.be.null;
 
         client.customers.deleteCustomer(customer.client.id, function(err, data) {
-          expect(err).to.be.undefined;
+          expect(err).to.be.null;
           done();
         });
       });

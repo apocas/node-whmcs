@@ -22,7 +22,7 @@ describe('billing', function() {
     };
 
     client.customers.createCustomer(opts, function(err, customer) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       var ordero = {
         'paymentmethod': 'banktransfer'
@@ -32,13 +32,13 @@ describe('billing', function() {
       ordero['billingcycle[0]'] = 'monthly';
 
       client.billing.addOrder(customer.clientid, ordero, function(err, order) {
-        expect(err).to.be.undefined;
+        expect(err).to.be.null;
 
         client.billing.deleteOrder(order.orderid, function(err, data) {
-          expect(err).to.be.undefined;
+          expect(err).to.be.null;
 
           client.customers.deleteCustomer(customer.clientid, function(err, data) {
-            expect(err).to.be.undefined;
+            expect(err).to.be.null;
             done();
           });
         });
@@ -57,13 +57,13 @@ describe('billing', function() {
     };
 
     client.billing.createInvoice(1, invoiceo, function(err, invoice) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       client.billing.updateInvoice(invoice.invoiceid, {'status': 'Cancelled'}, function(err, data) {
-        expect(err).to.be.undefined;
+        expect(err).to.be.null;
 
         client.billing.getInvoice(invoice.invoiceid, function(err, invoice) {
-          expect(err).to.be.undefined;
+          expect(err).to.be.null;
 
           expect(invoice.status).to.equal('Cancelled');
 
