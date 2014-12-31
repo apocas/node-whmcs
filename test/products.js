@@ -9,7 +9,7 @@ describe('products', function() {
     this.timeout(15000);
 
     client.products.getProduct(1, function(err, customer) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       done();
     });
@@ -19,7 +19,7 @@ describe('products', function() {
     this.timeout(15000);
 
     client.products.getProducts(1, function(err, customer) {
-      expect(err).to.be.undefined;
+      expect(err).to.be.null;
 
       done();
     });

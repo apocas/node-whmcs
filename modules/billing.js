@@ -1,5 +1,5 @@
 var utils = require('../lib/utils');
-var extend = require('util')._extend;
+var extend = utils.extend;
 
 var Billing = function(config) {
   this.config = config;

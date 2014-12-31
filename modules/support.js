@@ -1,5 +1,5 @@
 var utils = require('../lib/utils');
-var extend = require('util')._extend;
+var extend = utils.extend;
 
 var Support = function(config) {
   this.config = config;
