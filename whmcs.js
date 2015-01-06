@@ -30,9 +30,7 @@ var WHMCS = function(options) {
   while (i < len) {
     var name = files[i].replace('.js', '');
     var Item = require(libPath + '/' + name);
-    _this[name] = new Item();
-    _this[name].config = _this.config;
-
+    _this[name] = new Item(this.config);
     i++;
   }
 };
