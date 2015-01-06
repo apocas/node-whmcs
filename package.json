@@ -6,6 +6,10 @@
   "maintainers": [
     "apocas <petermdias@gmail.com>"
   ],
+  "contributors": [
+    "Pedro Dias <petermdias@gmail.com>",
+    "Enzo Martin <enzo.r.martin@gmail.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/apocas/node-whmcs.git"
