@@ -2,9 +2,8 @@ var fs = require('fs');
 var libPath = __dirname + '/modules';
 
 /**
- * Create new WHMCS client
+ * WHMCS client
  * @param options {{username:String,serverUrl:String,password:String,apiKey:[String]}}
- * @returns {WHMCS}
  */
 var WHMCS = function(options) {
   var _this = this;
@@ -36,7 +35,6 @@ var WHMCS = function(options) {
 
     i++;
   }
-  return this;
 };
 
 module.exports = WHMCS;
