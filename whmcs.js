@@ -2,9 +2,8 @@ var fs = require('fs');
 var libPath = __dirname + '/modules';
 
 /**
- * Create new WHMCS client
+ * WHMCS client
  * @param options {{username:String,serverUrl:String,password:String,apiKey:[String]}}
- * @returns {Client}
  */
 var WHMCS = function(options) {
   var _this = this;
@@ -31,9 +30,7 @@ var WHMCS = function(options) {
   while (i < len) {
     var name = files[i].replace('.js', '');
     var Item = require(libPath + '/' + name);
-    _this[name] = new Item();
-    _this[name].config = _this.config;
-
+    _this[name] = new Item(this.config);
     i++;
   }
 };
