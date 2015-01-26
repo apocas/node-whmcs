@@ -19,7 +19,8 @@
     "hosting"
   ],
   "dependencies": {
-    "request": "2.21.x"
+    "request": "2.21.x",
+    "xml2js": "0.4.x"
   },
   "devDependencies": {
     "chai": "~1.7.0",

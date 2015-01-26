@@ -10,15 +10,11 @@ var WHMCS = function(options) {
 
   this.utils = require('./lib/utils');
 
-  ['username', 'serverUrl', 'password'].forEach(function(required) {
+  ['username', 'serverUrl'].forEach(function(required) {
     if (!options[required]) {
       throw new Error('options.' + required + ' is a required argument.');
     }
   });
-
-  if (typeof options.password !== 'string' && typeof options.apiKey === 'string') {
-    throw new Error('You must specify a password with your apiKey');
-  }
 
   this.config = options;
   this.authorized = false;
