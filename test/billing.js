@@ -47,6 +47,8 @@ describe('billing', function() {
   });
 
   it('should create an invoice and cancel it', function(done) {
+    this.timeout(15000);
+    
     var invoiceo = {
       'paymentmethod': 'banktransfer',
       'date': '20141230',
