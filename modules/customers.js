@@ -422,7 +422,8 @@ Customers.prototype.deleteCustomer = function (clientid, callback) {
  */
 Customers.prototype.getCustomerProducts = function (clientid, opts, callback) {
   var options = {
-    action: 'getclientsproducts'
+    action: 'getclientsproducts',
+    clientid: clientid
   };
 
   if(typeof opts === 'function'){
@@ -531,9 +532,10 @@ Customers.prototype.sendEmail = function (id, opts, callback) {
  * @param [opts.getnameservers] Boolean
  * @param callback
  */
-Customers.prototype.getCustomerDomains = function (opts, callback) {
+Customers.prototype.getCustomerDomains = function (clientid, opts, callback) {
   var options = {
-    action: 'getclientsdomains'
+    action: 'getclientsdomains',
+    clientid: clientid
   };
 
   if(typeof opts === 'function'){
