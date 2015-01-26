@@ -168,7 +168,7 @@ Tests are implemented using `mocha` and `chai`. Run them with `npm test`.
 
 ## Examples
 
-Check the test folder for more specific use cases examples.
+Check the test and examples folder for more specific use cases examples.
 
 ## License
 

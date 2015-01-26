@@ -9,7 +9,7 @@ var config = {
 var wcexample = new WHMCS(config);
 
 
-wcexample.licenses.listlicenses(function(err, data){
+wcexample.licenses.listLicenses(function(err, data){
   if (err) {
     console.log('ERROR');
     console.log(err);

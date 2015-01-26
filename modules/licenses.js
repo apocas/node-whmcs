@@ -11,7 +11,7 @@ var Licenses = function(config) {
  * @param type - License type (branding/nobranding)
  * @param callback
  */
-Licenses.prototype.addlicense = function (type, callback) {
+Licenses.prototype.addLicense = function (type, callback) {
   var options = {
     action: 'addlicense',
     type: type || 'branding',
@@ -33,7 +33,7 @@ again. It will terminate it immediately and not allow it to be reactivated.
  * @param key - License Key to be cancelled
  * @param callback
  */
-Licenses.prototype.cancellicense = function (key, callback) {
+Licenses.prototype.cancelLicense = function (key, callback) {
   var options = {
     action: 'cancel',
     key: key,
@@ -56,7 +56,7 @@ The no branding status will be true/false. And the license status either Active,
 Reissued, or Suspended. Expired keys are excluded.
  * @param callback
  */
-Licenses.prototype.listlicenses = function (callback) {
+Licenses.prototype.listLicenses = function (callback) {
   var options = {
     action: 'listlicenses',
     responsetype: 'xml'
@@ -78,7 +78,7 @@ the associated installation.
  * @param key - License Key to be reissued.
  * @param callback
  */
-Licenses.prototype.reissuelicense = function (key, callback) {
+Licenses.prototype.reissueLicense = function (key, callback) {
   var options = {
     action: 'reissue',
     key: key,
@@ -110,7 +110,7 @@ key.
  * @param [opts.directory] Comma separated list of allowed directories
  * @param callback
  */
-Licenses.prototype.modifylicense = function (key, opts, callback) {
+Licenses.prototype.modifyLicense = function (key, opts, callback) {
   var options = {
     action: 'modify',
     key: key,
@@ -136,7 +136,7 @@ Licenses.prototype.modifylicense = function (key, opts, callback) {
  * The Get Pricing can be used to retrieve pricing information for your account.
  * @param callback
  */
-Licenses.prototype.getpricinglicense = function (callback) {
+Licenses.prototype.getPricingLicense = function (callback) {
   var options = {
     action: 'getpricing',
     responsetype: 'xml'
@@ -168,7 +168,7 @@ At least one criteria must be submitted.
  * @param [opts.ipaddr] (Optional) Obtain results of a specific IP address
  * @param callback
  */
-Licenses.prototype.searchlicense = function (opts, callback) {
+Licenses.prototype.searchLicense = function (opts, callback) {
   var options = {
     action: 'searchlicenses',
     responsetype: 'xml'
@@ -195,7 +195,7 @@ Licenses.prototype.searchlicense = function (opts, callback) {
  * @param key License Key
  * @param callback
  */
-Licenses.prototype.brandinglicense = function (action, key, callback) {
+Licenses.prototype.brandingLicense = function (action, key, callback) {
   // action The function to perform [brandingenable/brandingdisable]
   if (action && action === true) {
     action = 'brandingenable';
