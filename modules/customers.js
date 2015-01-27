@@ -37,7 +37,7 @@ var Customers = function(config) {
  * @param [customer.skipvalidation] Boolean
  * @param callback
  */
-Customers.prototype.createCustomer = function (customer, callback) {
+Customers.prototype.createCustomer = function(customer, callback) {
   var options = {
     action: 'addclient'
   };
@@ -76,7 +76,7 @@ Customers.prototype.createCustomer = function (customer, callback) {
  * @param [contact.supportemails] Boolean
  * @param callback
  */
-Customers.prototype.createContact = function (contact, callback) {
+Customers.prototype.createContact = function(contact, callback) {
   var options = {
     action: 'addcontact'
   };
@@ -128,7 +128,7 @@ Customers.prototype.updateService = function(serviceid, data, callback) {
  * @param contactid String
  * @param callback
  */
-Customers.prototype.deleteContact = function (contactid, callback) {
+Customers.prototype.deleteContact = function(contactid, callback) {
   var options = {
     action: 'deletecontact',
     contactid: contactid
@@ -142,7 +142,7 @@ Customers.prototype.deleteContact = function (contactid, callback) {
   utils.modem(deleteOptions, callback);
 };
 
-Customers.prototype.getCredits = function (userid, callback) {
+Customers.prototype.getCredits = function(userid, callback) {
   var options = {
     action: 'getcredits',
     clientid: userid
@@ -181,7 +181,7 @@ Customers.prototype.getCredits = function (userid, callback) {
  * @param [contact.supportemails] Boolean
  * @param callback
  */
-Customers.prototype.updateContact = function (contactid, contact, callback) {
+Customers.prototype.updateContact = function(contactid, contact, callback) {
   var options = {
     action: 'updatecontact',
     contactid: contactid
@@ -232,7 +232,7 @@ Customers.prototype.updateContact = function (contactid, contact, callback) {
  * @param[customer.disableautocc] Boolean
  * @param callback
  */
-Customers.prototype.updateCustomer = function (clientid, customer, callback) {
+Customers.prototype.updateCustomer = function(clientid, customer, callback) {
   var options = {
     action: 'updateclient',
     clientid: clientid
@@ -280,18 +280,18 @@ Customers.prototype.updateCustomer = function (clientid, customer, callback) {
  * @param [opts.notes] String
  * @param callback
  */
-Customers.prototype.updateCustomerDomain = function (domainid, opts, callback) {
+Customers.prototype.updateCustomerDomain = function(domainid, opts, callback) {
   var options = {
     action: 'updateclientdomain'
   };
 
-  if(isNaN(parseInt(domainid,10))){
-    options.domain  = domainid;
+  if (isNaN(parseInt(domainid, 10))) {
+    options.domain = domainid;
   } else {
     options.domainid = domainid;
   }
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -326,13 +326,13 @@ Customers.prototype.updateCustomerDomain = function (domainid, opts, callback) {
  * @param [opts.subaccount] Boolean
  * @param callback
  */
-Customers.prototype.getContacts = function (userid, opts, callback) {
+Customers.prototype.getContacts = function(userid, opts, callback) {
   var options = {
     action: 'getcontacts',
     userid: userid
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -352,19 +352,19 @@ Customers.prototype.getContacts = function (userid, opts, callback) {
  * @param [opts] Object
  * @param callback
  */
-Customers.prototype.getCustomer = function (clientid, opts, callback) {
+Customers.prototype.getCustomer = function(clientid, opts, callback) {
   var options = {
     action: 'getclientsdetails',
     stats: true
   };
 
-  if(typeof clientid === 'number' || clientid.indexOf('@') === -1){
+  if (typeof clientid === 'number' || clientid.indexOf('@') === -1) {
     options.clientid = clientid;
   } else {
     options.email = clientid;
   }
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -384,8 +384,25 @@ Customers.prototype.getCustomer = function (clientid, opts, callback) {
  * @param [opts] Object
  * @param callback
  */
-Customers.prototype.getCustomerByEmail = function (email, opts, callback) {
-  Customers.getContacts(email,opts,callback);
+Customers.prototype.getCustomerByEmail = function(email, opts, callback) {
+  var options = {
+    action: 'getclientsdetails',
+    stats: true,
+    email: email
+  };
+
+  if (typeof opts === 'function') {
+    callback = opts;
+  } else {
+    extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
 };
 
 /**
@@ -393,7 +410,7 @@ Customers.prototype.getCustomerByEmail = function (email, opts, callback) {
  * @param clientid String
  * @param callback
  */
-Customers.prototype.deleteCustomer = function (clientid, callback) {
+Customers.prototype.deleteCustomer = function(clientid, callback) {
   var options = {
     action: 'deleteclient',
     clientid: clientid
@@ -420,13 +437,13 @@ Customers.prototype.deleteCustomer = function (clientid, callback) {
  * @param [opts.limitnum] String Number of records to retrieve, Default = 999999
  * @param callback
  */
-Customers.prototype.getCustomerProducts = function (clientid, opts, callback) {
+Customers.prototype.getCustomerProducts = function(clientid, opts, callback) {
   var options = {
     action: 'getclientsproducts',
     clientid: clientid
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -470,13 +487,13 @@ Customers.prototype.getCustomerProducts = function (clientid, opts, callback) {
  * @param [service.configoptions] String Base64 encoded string of configurable options values
  * @param callback
  */
-Customers.prototype.updateCustomerProduct = function (serviceid, service, callback) {
+Customers.prototype.updateCustomerProduct = function(serviceid, service, callback) {
   var options = {
     action: 'updateclientproduct',
     serviceid: serviceid
   };
 
-  if(typeof service === 'function'){
+  if (typeof service === 'function') {
     callback = service;
   } else {
     options = extend(options, service);
@@ -501,13 +518,13 @@ Customers.prototype.updateCustomerProduct = function (serviceid, service, callba
  * @param [opts.customvars] String Base64 encoded serialized string of custom message variables
  * @param callback
  */
-Customers.prototype.sendEmail = function (id, opts, callback) {
+Customers.prototype.sendEmail = function(id, opts, callback) {
   var options = {
     action: 'sendemail',
     id: id
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -532,13 +549,13 @@ Customers.prototype.sendEmail = function (id, opts, callback) {
  * @param [opts.getnameservers] Boolean
  * @param callback
  */
-Customers.prototype.getCustomerDomains = function (clientid, opts, callback) {
+Customers.prototype.getCustomerDomains = function(clientid, opts, callback) {
   var options = {
     action: 'getclientsdomains',
     clientid: clientid
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -562,13 +579,13 @@ Customers.prototype.getCustomerDomains = function (clientid, opts, callback) {
  * @param [opts.limitnum] String the number of records to retrieve. Default = 25
  * @param callback
  */
-Customers.prototype.getCustomerEmails = function (clientid, opts, callback) {
+Customers.prototype.getCustomerEmails = function(clientid, opts, callback) {
   var options = {
     action: 'getemails',
     clientid: clientid
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -591,13 +608,13 @@ Customers.prototype.getCustomerEmails = function (clientid, opts, callback) {
  * @param [opts.limitnum] String the number of records to retrieve. Default = 25
  * @param callback
  */
-Customers.prototype.getCustomerInvoices = function (userid, opts, callback) {
+Customers.prototype.getCustomerInvoices = function(userid, opts, callback) {
   var options = {
     action: 'getinvoices',
     userid: userid
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -620,12 +637,12 @@ Customers.prototype.getCustomerInvoices = function (userid, opts, callback) {
  * @param [opts.limitnum] String the number of records to retrieve. Default = 25
  * @param callback
  */
-Customers.prototype.getCustomerOrders = function (opts, callback) {
+Customers.prototype.getCustomerOrders = function(opts, callback) {
   var options = {
     action: 'getorders'
   };
 
-  if(typeof opts === 'function'){
+  if (typeof opts === 'function') {
     callback = opts;
   } else {
     options = extend(options, opts);
@@ -645,7 +662,7 @@ Customers.prototype.getCustomerOrders = function (opts, callback) {
  * @param password String
  * @param callback
  */
-Customers.prototype.validateLogin = function (email, password, callback) {
+Customers.prototype.validateLogin = function(email, password, callback) {
   var options = {
     action: 'validatelogin',
     email: email,
