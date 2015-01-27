@@ -48,7 +48,7 @@ describe('billing', function() {
 
   it('should create an invoice and cancel it', function(done) {
     this.timeout(15000);
-    
+
     var invoiceo = {
       'paymentmethod': 'banktransfer',
       'date': '20141230',
@@ -58,7 +58,7 @@ describe('billing', function() {
       'itemtaxed1': true
     };
 
-    client.billing.createInvoice(1, invoiceo, function(err, invoice) {
+    client.billing.createInvoice(2, invoiceo, function(err, invoice) {
       expect(err).to.be.null;
 
       client.billing.updateInvoice(invoice.invoiceid, {'status': 'Cancelled'}, function(err, data) {
