@@ -104,6 +104,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - deleteTicket: function (ticketid, callback)
 - replyTicket: function (ticketid, message, [options], callback)
 - getTickets: function ([options], callback)
+- updateTicket: function (options, callback)
 
 
 ### Domains

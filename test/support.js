@@ -27,12 +27,16 @@ describe('support', function() {
       client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
         expect(err).to.be.null;
 
-        client.support.deleteTicket(ticket.id, function(err, data) {
+        client.support.updateTicket({ticketid:ticket.id,subject:'test change subject'}, function(err) {
           expect(err).to.be.null;
 
-          client.customers.deleteCustomer(customer.clientid, function(err, data) {
+          client.support.deleteTicket(ticket.id, function(err, data) {
             expect(err).to.be.null;
-            done();
+
+            client.customers.deleteCustomer(customer.clientid, function(err, data) {
+              expect(err).to.be.null;
+              done();
+            });
           });
         });
       });
