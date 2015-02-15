@@ -155,4 +155,37 @@ Support.prototype.getTickets = function (opts, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+* Update ticket - http://docs.whmcs.com/API:Update_Ticket
+* @param opts Object
+* @param opts.ticketid String ID of the ticket to update
+* @param [opts.deptid] String Update the assigned department
+* @param [opts.subject] String Update the subject of the ticket
+* @param [opts.priority] String Low, Medium, High
+* @param [opts.status] String Open, Answered, Closed, etc.
+* @param [opts.userid] String Change the user that the ticket is assigned to
+* @param [opts.email] String Change the email address that opened the ticket (only when userid is not used)
+* @param [opts.cc] String Add CC emails to the ticket
+* @param [opts.flag] String Flag to an adminid
+* @param callback
+*/
+Support.prototype.updateTicket = function (opts, callback) {
+  var options = {
+    action: 'updateticket'
+  };
+
+  if(typeof opts === 'function'){
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
 module.exports = Support;
