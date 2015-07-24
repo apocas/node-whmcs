@@ -85,12 +85,6 @@ Licenses.prototype.reissueLicense = function (key, callback) {
     responsetype: 'xml'
   };
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options,opts);
-  }
-
   var createOptions = {
     client: this,
     body: options
