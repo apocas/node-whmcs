@@ -114,6 +114,19 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
 
+
+### Licenses
+
+- addLicense: function (type, callback)
+- cancelLicense: function (key, callback)
+- listLicenses: function (callback)
+- reissueLicense: function (key, callback)
+- modifyLicense: function (key, opts, callback)
+- getPricingLicense: function (callback)
+- searchLicense: function (opts, callback)
+- brandingLicense: function (action, key, callback)
+
+
 ## Custom API functions
 
 ### Nodejs
