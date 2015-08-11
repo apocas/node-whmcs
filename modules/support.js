@@ -111,7 +111,7 @@ Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
     options = extend(options, opts);
   }
 
-  if(!options.adminusername){
+  if(typeof options.adminusername === 'undefined' && typeof options.clientid === 'undefined'){
     options.adminusername = 'Auto-response';
   }
 
