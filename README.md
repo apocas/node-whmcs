@@ -114,6 +114,9 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
 
+### Utilities
+
+- getToDoItems: function (status, offset, limit, callback)
 
 ### Licenses
 
