@@ -82,11 +82,11 @@ Products.prototype.getOrders = function(method, id, offset, limit, callback) {
   limit = args.shift();
 
   if (typeof offset !== 'undefined') {
-    options.offset = offset;
+    options.limitstart = offset;
   }
 
   if (typeof limit !== 'undefined') {
-    options.limit = limit;
+    options.limitnum = limit;
   }
 
   switch (method) {
