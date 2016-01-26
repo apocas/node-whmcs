@@ -75,5 +75,40 @@ describe('billing', function() {
     });
   });
 
-
+  it('should create an invoice, capture payment and cancel it', function(done) {
+    this.timeout(15000);
+    
+        
+    var invoiceo = {
+      'paymentmethod': 'banktransfer',
+      'date': '20141230',
+      'duedate': '20141230',
+      'itemdescription1': 'test item',
+      'itemamount1': 1,
+      'itemtaxed1': true
+    };
+        
+    client.billing.createInvoice(2, invoiceo, function(err, invoice) { 
+      expect(err).to.be.null;
+      
+      client.billing.capturepayment({invoiceid:invoice.invoiceid}, function(err, billing) {
+        expect(billing.result).to.equal('success');
+        
+        expect(err).to.be.null;
+        
+        client.billing.updateInvoice(invoice.invoiceid, {'status': 'Cancelled'}, function(err, data) {
+          expect(err).to.be.null;
+          
+          client.billing.getInvoice(invoice.invoiceid, function(err, invoice) {
+            expect(err).to.be.null;
+            
+            expect(invoice.status).to.equal('Cancelled');
+            
+            done();
+          });
+        });
+      });
+    });
+  });
+  
 });

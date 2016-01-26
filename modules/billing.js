@@ -289,4 +289,31 @@ Billing.prototype.updateInvoice = function (invoiceid, opts, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Capture payment - http://docs.whmcs.com/API:Capture_Payment
+ * @param invoiceid String|Number
+ * @param [opts] Object
+ * @param [opts.invoiceid] String|Number
+ * @param [opts.cvv] String
+ * @param callback
+ */
+Billing.prototype.capturepayment = function (opts, callback) {
+  var options = {
+    action:'capturepayment'
+  };
+
+  if(typeof opts === 'function'){
+    callback = opts;
+  } else {
+    options = extend(options,opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
 module.exports = Billing;
