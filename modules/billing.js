@@ -312,7 +312,7 @@ Billing.prototype.capturepayment = function (invoiceid, opts, callback) {
     client: this,
     body: options
   };
-console.log(createOptions.body);
+  
   utils.modem(createOptions, callback);
 };
 
