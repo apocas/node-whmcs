@@ -38,17 +38,17 @@ describe('products', function() {
 
     client.products.getProduct(1, function(err, customer) {
       expect(err).to.be.null;
+      
       opts.newproductid = customer.products.product[0].pid;
+      
       client.products.upgradeproduct(opts, function(err, product_info) {
-          expect(product_info.result).to.equal('success');
+        expect(product_info.result).to.equal('success');
           
-          expect(err).to.be.null;
+        expect(err).to.be.null;
     
-          done();
+        done();
       });
     });
-
- 
   });
 
 });
