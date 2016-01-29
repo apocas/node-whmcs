@@ -109,4 +109,35 @@ Products.prototype.getOrders = function(method, id, offset, limit, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Calculate the cost for an upgrade or downgrade of a product/service, and create an order for it.
+ * @param attributes Object
+ * @param [product.clientid] String
+ * @param [product.serviceid] String
+ * @param [product.type] String either "product" or "configoptions"
+ * @param [product.newproductid ] String
+ * @param [product.newproductbillingcycle ] String Must be unique if creating a sub-account
+ * @param [product.configoptions[x]] Array
+ * @param [product.paymentmethod ] String
+ * @param [product.promocode ] String optional
+ * @param [product.calconly ] String  optional
+ * @param [product.ordernotes ] String  optional
+ * @param callback
+ */
+Products.prototype.upgradeproduct = function (product, callback) {
+ var options = {
+    action: 'upgradeproduct'
+  };
+
+  for(var i in product){
+    options[i] = product[i];
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+  utils.modem(createOptions, callback);
+};
+
 module.exports = Products;
