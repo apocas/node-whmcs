@@ -124,7 +124,7 @@ Products.prototype.getOrders = function(method, id, offset, limit, callback) {
  * @param [product.ordernotes ] String  optional
  * @param callback
  */
-Products.prototype.upgradeproduct = function (product, callback) {
+Products.prototype.upgradeProduct = function (product, callback) {
  var options = {
     action: 'upgradeproduct'
   };

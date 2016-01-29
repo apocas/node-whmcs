@@ -41,7 +41,7 @@ describe('products', function() {
       
       opts.newproductid = customer.products.product[0].pid;
       
-      client.products.upgradeproduct(opts, function(err, product_info) {
+      client.products.upgradeProduct(opts, function(err, product_info) {
         expect(product_info.result).to.equal('success');
           
         expect(err).to.be.null;

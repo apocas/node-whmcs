@@ -296,7 +296,7 @@ Billing.prototype.updateInvoice = function (invoiceid, opts, callback) {
  * @param [opts.cvv] String
  * @param callback
  */
-Billing.prototype.capturepayment = function (invoiceid, opts, callback) {
+Billing.prototype.capturePayment = function (invoiceid, opts, callback) {
   var options = {
     action:'capturepayment',
     invoiceid:invoiceid

@@ -90,7 +90,7 @@ describe('billing', function() {
     client.billing.createInvoice(2, invoiceo, function(err, invoice) {
       expect(err).to.be.null;
       
-      client.billing.capturepayment(invoice.invoiceid,{cvv:'123'}, function(err, billing) {
+      client.billing.capturePayment(invoice.invoiceid,{cvv:'123'}, function(err, billing) {
         expect(err).to.be.null;
         
         expect(billing.result).to.equal('success');
