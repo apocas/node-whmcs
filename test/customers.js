@@ -2,7 +2,6 @@ var assert = require('assert'),
   expect = require('chai').expect,
   client = require('./spec_helper').client;
 
-
 describe('customers', function() {
 
   it('should create, get and delete a customer', function(done) {
@@ -72,6 +71,35 @@ describe('customers', function() {
       expect(err).to.be.null;
 
       done();
+    });
+  });
+
+  it('should get customer password', function (done) {
+    this.timeout(15000);
+    var opts = {
+      firstname: 'John',
+      lastname: 'Doe',
+      email: 'johndoepwd@john.doee',
+      address1: 'Mars',
+      city: 'Phobos',
+      state: 'Crater',
+      postcode: '9999-999',
+      country: 'US',
+      phonenumber: '123456789',
+      password2: '123qwe'
+    };
+    client.customers.createCustomer(opts, function(err, customer) {
+      expect(err).to.be.null;
+      client.customers.getCustomerByEmail('johndoepwd@john.doee', function(err, customer) {
+        expect(err).to.be.null;
+        client.customers.getClientPassword(customer.client.id, function (err, res) {
+          expect(res.password).to.equal('123qwe');
+        });
+        client.customers.deleteCustomer(customer.client.id, function(err, data) {
+          expect(err).to.be.null;
+          done();
+        });
+      });
     });
   });
 
