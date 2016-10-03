@@ -104,46 +104,6 @@ Domains.prototype.setDomainNameservers = function (domainid, nameservers, callba
 };
 
 /**
- * Obtain the WHOIS of a domain from the registrar - http://docs.whmcs.com/API:Get_Domain_WHOIS
- * @param domainid String|Number
- * @param callback
- */
-Domains.prototype.getDomainWHOIS = function (domainid, callback) {
-  var options = {
-    action: 'domaingetwhoisinfo',
-    domainid: domainid
-  };
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
-};
-
-/**
- * Set the contact information on a domain - http://docs.whmcs.com/API:Domain_Update_WHOIS
- * @param domainid String|Number
- * @param xml XML
- * @param callback
- */
-Domains.prototype.setDomainWHOIS = function (domainid, xml, callback) {
-  var options = {
-    action: 'domainupdatewhoisinfo',
-    domainid: domainid,
-    xml: xml
-  };
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
-};
-
-/**
  * Send a transfer command to the registrar - http://docs.whmcs.com/API:Transfer_Domain
  * @param domainid String|Number Pass in domain id or name
  * @param eppcode String
