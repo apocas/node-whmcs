@@ -88,6 +88,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - validateLogin: function (email, password, callback)
 - sendEmail: function (id, options, callback)
 - getCredits: function (userid, callback)
+- getClientPassword: function (userid, callback)
 
 
 ### Products
@@ -115,6 +116,8 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - setDomainLockStatus: function (domainid, status, callback)
 - getDomainNameservers: function (domainid, callback)
 - setDomainNameservers: function (domainid, nameservers, callback)
+- setDomainTransfer: function (domainid, eppcode, callback)
+
 
 ### Utilities
 

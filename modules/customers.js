@@ -676,4 +676,22 @@ Customers.prototype.validateLogin = function(email, password, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Validate login - http://docs.whmcs.com/API:Get_Clients_Password
+ * @param userid  Int
+ * @param callback
+ */
+Customers.prototype.getClientPassword = function(userid, callback) {
+  var options = {
+    action: 'getclientpassword',
+    userid: userid
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+  utils.modem(createOptions, callback);
+};
+
 module.exports = Customers;

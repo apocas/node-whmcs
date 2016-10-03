@@ -103,4 +103,35 @@ Domains.prototype.setDomainNameservers = function (domainid, nameservers, callba
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Send a transfer command to the registrar - http://docs.whmcs.com/API:Transfer_Domain
+ * @param domainid String|Number Pass in domain id or name
+ * @param eppcode String
+ * @param callback
+ */
+Domains.prototype.setDomainTransfer = function (domainid, eppcode, callback) {
+  var options = {
+    action: 'domaintransfer'
+  };
+
+  if (isNaN(parseInt(domainid, 10))) {
+    options.domain = domainid;
+  } else {
+    options.domainid = domainid;
+  }
+
+  if (typeof eppcode === 'function') {
+    callback = eppcode;
+  } else {
+    options.eppcode = eppcode;
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
 module.exports = Domains;
