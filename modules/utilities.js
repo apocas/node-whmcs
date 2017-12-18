@@ -30,4 +30,21 @@ Utilities.prototype.getToDoItems = function(status, offset, limit, callback) {
   utils.modem(createOptions, callback);
 };
 
+Utilities.prototype.getModuleQueue = function(type, module, action, since, callback) {
+  var options = {
+    action: 'getmodulequeue',
+    module: module,
+    action: action,
+    since: since
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+
 module.exports = Utilities;
