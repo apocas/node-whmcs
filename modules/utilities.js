@@ -33,8 +33,8 @@ Utilities.prototype.getToDoItems = function(status, offset, limit, callback) {
 Utilities.prototype.getModuleQueue = function(type, module, action, since, callback) {
   var options = {
     action: 'getmodulequeue',
-    module: module,
-    action: action,
+    moduleName: module,
+    moduleAction: action,
     since: since
   };
 
