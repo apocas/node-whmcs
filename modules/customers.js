@@ -676,4 +676,92 @@ Customers.prototype.validateLogin = function(email, password, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+ * Obtain the Clients Product Addons that match passed criteria - https://developers.whmcs.com/api-reference/getclientsaddons/
+ * @param [opts] Object
+ * @param [opts.serviceid] Int - The service id(s) to obtain the client product addons for. Single number or comma separated list
+ * @param [opts.clientid] Int - The client to obtain the client product addons for
+ * @param [opts.addonid] Int - The predefined addon id to obtain the client product addons for
+ * @param callback
+ */
+Customers.prototype.getClientsAddons = function(opts, callback) {
+  var options = {
+    action: 'GetClientsAddons'
+  };
+
+  if (typeof opts === 'function') {
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
+ * Obtain quotes matching the passed criteria - https://developers.whmcs.com/api-reference/getquotes/
+ * @param [opts] Object
+ * @param [opts.limitstart] Int - The offset for the returned quote data (default: 0)
+ * @param [opts.limitnum] Int - The number of records to return (default: 25)
+ * @param [opts.quoteid] Int - Obtain a specific quote id
+ * @param [opts.userid] Int - Find quotes for a specific client id
+ * @param [opts.subject] String - Find quotes for a specific subject
+ * @param [opts.stage] String - Find quotes for a specific stage (‘Draft’,‘Delivered’,‘On Hold’,‘Accepted’,‘Lost’,‘Dead’)
+ * @param [opts.datecreated] String - Find quotes for a specific created date. Format: Y-m-d
+ * @param [opts.lastmodified] String - Find quotes for a specific last modified date. Format: Y-m-d
+ * @param [opts.validuntil] String - Find quotes for a specific valid until date. Format: Y-m-d
+ * @param callback
+ */
+Customers.prototype.getQuotes = function(opts, callback) {
+  var options = {
+    action: 'GetQuotes'
+  };
+
+  if (typeof opts === 'function') {
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
+ * Obtain transactions matching the passed criteria - https://developers.whmcs.com/api-reference/gettransactions/
+ * @param [opts] Object
+ * @param [opts.invoiceid] Int - Obtain transactions for a specific invoice id
+ * @param [opts.clientid] Int - Find transactions for a specific client id
+ * @param [opts.transid] String - Find transactions for a specific transaction id
+ * @param callback
+ */
+Customers.prototype.getTransactions = function(opts, callback) {
+  var options = {
+    action: 'GetTransactions'
+  };
+
+  if (typeof opts === 'function') {
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+
 module.exports = Customers;
