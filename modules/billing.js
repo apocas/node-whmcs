@@ -290,6 +290,24 @@ Billing.prototype.updateInvoice = function (invoiceid, opts, callback) {
 };
 
 /**
+ * Get Payment Methods - https://developers.whmcs.com/api-reference/getpaymentmethods/
+ * @param callback Function
+ */
+Billing.prototype.getPaymentMethods = function (callback) {
+  var options = {
+    action: 'getpaymentmethods',
+  };
+
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
  * Capture payment - http://docs.whmcs.com/API:Capture_Payment
  * @param invoiceid String|Number
  * @param [opts] Object
