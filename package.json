@@ -20,12 +20,12 @@
     "hosting"
   ],
   "dependencies": {
-    "request": "2.21.x",
+    "request": "^2.88.0",
     "xml2js": "0.4.x"
   },
   "devDependencies": {
     "chai": "~1.7.0",
-    "mocha": "~1.12.0"
+    "mocha": "^6.2.0"
   },
   "scripts": {
     "test": "make test"
