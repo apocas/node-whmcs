@@ -148,6 +148,25 @@ Billing.prototype.cancelOrder = function (orderid, callback) {
 };
 
 /**
+ * Pending order - http://docs.whmcs.com/API:Pending_Order
+ * @param orderid String|Number
+ * @param callback
+ */
+Billing.prototype.pendingOrder = function (orderid, callback) {
+  var options = {
+    action: 'PendingOrder',
+    orderid: orderid
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+/**
  * Add credit - http://docs.whmcs.com/API:Add_Credit
  * @param clientid String|Number
  * @param amount String|Number
