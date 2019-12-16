@@ -133,10 +133,11 @@ Billing.prototype.deleteOrder = function (orderid, callback) {
  * @param orderid String|Number
  * @param callback
  */
-Billing.prototype.cancelOrder = function (orderid, callback) {
+Billing.prototype.cancelOrder = function (orderid,cancelsub, callback) {
   var options = {
     action: 'cancelorder',
-    orderid: orderid
+    orderid: orderid,
+    cancelsub:cancelsub
   };
 
   var createOptions = {
