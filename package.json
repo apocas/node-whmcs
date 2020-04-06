@@ -6,11 +6,6 @@
   "maintainers": [
     "apocas <petermdias@gmail.com>"
   ],
-  "contributors": [
-    "Pedro Dias <petermdias@gmail.com>",
-    "Enzo Martin <enzo.r.martin@gmail.com>",
-    "Pedro Pacheco <pedro.mpp@gmail.com>"
-  ],
   "repository": {
     "type": "git",
     "url": "http://github.com/apocas/node-whmcs.git"
@@ -24,8 +19,8 @@
     "xml2js": "0.4.x"
   },
   "devDependencies": {
-    "chai": "~1.7.0",
-    "mocha": "^6.2.0"
+    "chai": "~4.2.0",
+    "mocha": "^7.1.0"
   },
   "scripts": {
     "test": "make test"
