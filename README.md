@@ -69,6 +69,7 @@ whmcs_client.customers.getCustomerEmails(clientid, function(err, emails) {
 - deleteOrder: function (orderid, callback)
 - createInvoice: function (clientid, invoice, callback)
 - capturePayment: function (invoiceid, options, callback)
+- getPaymentMethods: function (callback)
 
 ### Customers
 
