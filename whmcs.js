@@ -3,7 +3,7 @@ var libPath = __dirname + '/modules';
 
 /**
  * WHMCS client
- * @param options {{username:String,serverUrl:String,password:String,apiKey:[String]}}
+ * @param options {{username:String,serverUrl:String,password:String,proxy_url:String,apiKey:[String]}}
  */
 var WHMCS = function(options) {
   var _this = this;
