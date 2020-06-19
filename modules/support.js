@@ -188,4 +188,29 @@ Support.prototype.updateTicket = function (opts, callback) {
   utils.modem(createOptions, callback);
 };
 
+/**
+ * get Support Departments - https://developers.whmcs.com/api-reference/getsupportdepartments/
+ * @param opts Object
+ * @param [opts.ignore_dept_assignments] Boolean Pass as true to not adhere to the departments the API user is a member of.
+ * @param callback
+ */
+Support.prototype.getSupportDepartments = function(opts, callback) {
+  var options = {
+    action: 'getsupportdepartments'
+  };
+
+  if(typeof opts === 'function'){
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+}
+
 module.exports = Support;
