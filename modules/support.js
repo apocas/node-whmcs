@@ -189,6 +189,37 @@ Support.prototype.updateTicket = function (opts, callback) {
 };
 
 /**
+ * getTicketAttachment: Retrieve a single attachment of ticket.
+ * @param relatedId  Number   The unique id for the type
+ * @param type String One of ticket, reply, note
+ * @param index Number  The numerical index of the attachment to get
+ * @param opts extra options
+ * @param callback
+ * 
+ */
+Support.prototype.getTicketAttachment = function (relatedId, type, index, opts, callback) {
+  var options = {
+    action: 'getticketattachment',
+    relatedid: relatedId,
+    type: type,
+    index: index
+  }
+
+  if(typeof opts === 'function'){
+    callback = opts;
+  } else {
+    options = extend(options, opts);
+  }
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+}
+
+/**
  * get Support Departments - https://developers.whmcs.com/api-reference/getsupportdepartments/
  * @param opts Object
  * @param [opts.ignore_dept_assignments] Boolean Pass as true to not adhere to the departments the API user is a member of.
