@@ -5,39 +5,8 @@ var Customers = function(config) {
   this.config = config;
 };
 
-/**
- * Create customer - http://docs.whmcs.com/API:Add_Client
- * @param customer Object
- * @param customer.firstname] String
- * @param customer.lastname] String
- * @param customer.email] String
- * @param customer.address1] String
- * @param customer.city] String
- * @param customer.state] String
- * @param customer.postcode] String
- * @param customer.country] String Two letter ISO country code
- * @param customer.phonenumber] String
- * @param customer.password2] String
- * @param [customer.companyname] String
- * @param [customer.address2] String
- * @param [customer.currency] String
- * @param [customer.clientip] String
- * @param [customer.language] String
- * @param [customer.groupid] String
- * @param [customer.securityqid] String
- * @param [customer.securityqans] String
- * @param [customer.notes] String
- * @param [customer.cctype] String
- * @param [customer.cardnum] String
- * @param [customer.expdate] String
- * @param [customer.startdate] String
- * @param [customer.issuenumber] String
- * @param [customer.customfields] String Base64 encoded string custom field values
- * @param [customer.noemail] Boolean
- * @param [customer.skipvalidation] Boolean
- * @param callback
- */
-Customers.prototype.createCustomer = function(customer, callback) {
+//https://developers.whmcs.com/api-reference/addclient/
+Customers.prototype.addClient = function(customer, callback) {
   var options = {
     action: 'addclient'
   };
@@ -52,31 +21,8 @@ Customers.prototype.createCustomer = function(customer, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Create contact - http://docs.whmcs.com/API:Add_Contact
- * @param contact Object
- * @param contact.clientid String
- * @param [contact.firstname] String
- * @param [contact.lastname] String
- * @param [contact.companyname] String
- * @param [contact.email] String Must be unique if creating a sub-account
- * @param [contact.address1] String
- * @param [contact.address2] String
- * @param [contact.city] String
- * @param [contact.state] String
- * @param [contact.postcode] String
- * @param [contact.country] String Two letter ISO country code
- * @param [contact.phonenumber] String
- * @param [contact.password2] String
- * @param [contact.permissions] String manageproducts, managedomains, etc.
- * @param [contact.generalemails] Boolean
- * @param [contact.productemails] Boolean
- * @param [contact.domainemails] Boolean
- * @param [contact.invoiceemails] Boolean
- * @param [contact.supportemails] Boolean
- * @param callback
- */
-Customers.prototype.createContact = function(contact, callback) {
+//https://developers.whmcs.com/api-reference/addcontact/
+Customers.prototype.addContact = function(contact, callback) {
   var options = {
     action: 'addcontact'
   };
@@ -91,23 +37,8 @@ Customers.prototype.createContact = function(contact, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Upgrade product - http://docs.whmcs.com/API:Upgrade_Product
- * @param serviceid String
- * @param data Object
- * @param data.clientid String
- * @param data.serviceid String
- * @param data.type String product or configoptions
- * @param data.newproductid String
- * @param data.newproductbillingcycle
- * @param data.configoptions String|Array Array of config options if upgrade type is configoptions
- * @param data.paymentmethod String
- * @param [data.promocode] String
- * @param [data.calconly] Boolean Set true to just validate upgrade and get price, false to create order
- * @param [data.ordernotes] String
- * @param callback
- */
-Customers.prototype.updateService = function(serviceid, data, callback) {
+//https://developers.whmcs.com/api-reference/upgradeproduct/
+Customers.prototype.upgradeProduct = function(serviceid, data, callback) {
   var options = {
     action: 'upgradeproduct',
     serviceid: serviceid
@@ -123,11 +54,7 @@ Customers.prototype.updateService = function(serviceid, data, callback) {
   utils.modem(updateOptions, callback);
 };
 
-/**
- * Delete contact - http://docs.whmcs.com/API:Delete_Contact
- * @param contactid String
- * @param callback
- */
+//https://developers.whmcs.com/api-reference/deletecontact/
 Customers.prototype.deleteContact = function(contactid, callback) {
   var options = {
     action: 'deletecontact',
@@ -142,6 +69,7 @@ Customers.prototype.deleteContact = function(contactid, callback) {
   utils.modem(deleteOptions, callback);
 };
 
+//https://developers.whmcs.com/api-reference/getcredits/
 Customers.prototype.getCredits = function(userid, callback) {
   var options = {
     action: 'getcredits',
@@ -156,31 +84,7 @@ Customers.prototype.getCredits = function(userid, callback) {
   utils.modem(creditOptions, callback);
 };
 
-/**
- * Update contact - http://docs.whmcs.com/API:Update_Contact
- * @param contactid String
- * @param contact Object
- * @param contact.clientid String
- * @param [contact.firstname] String
- * @param [contact.lastname] String
- * @param [contact.companyname] String
- * @param [contact.email] String Must be unique if creating a sub-account
- * @param [contact.address1] String
- * @param [contact.address2] String
- * @param [contact.city] String
- * @param [contact.state] String
- * @param [contact.postcode] String
- * @param [contact.country] String Two letter ISO country code
- * @param [contact.phonenumber] String
- * @param [contact.password2] String
- * @param [contact.permissions] String manageproducts, managedomains, etc.
- * @param [contact.generalemails] Boolean
- * @param [contact.productemails] Boolean
- * @param [contact.domainemails] Boolean
- * @param [contact.invoiceemails] Boolean
- * @param [contact.supportemails] Boolean
- * @param callback
- */
+//https://developers.whmcs.com/api-reference/updatecontact/
 Customers.prototype.updateContact = function(contactid, contact, callback) {
   var options = {
     action: 'updatecontact',
@@ -197,42 +101,8 @@ Customers.prototype.updateContact = function(contactid, contact, callback) {
   utils.modem(updateOptions, callback);
 };
 
-/**
- * Update customer - http://docs.whmcs.com/API:Update_Client
- * @param clientid String
- * @param customer Object
- * @param[customer.firstname] String
- * @param[customer.lastname] String
- * @param[customer.companyname] String
- * @param[customer.email] String
- * @param[customer.address1] String
- * @param[customer.address2] String
- * @param[customer.city] String
- * @param[customer.state] String
- * @param[customer.postcode] String
- * @param[customer.country] String Two letter ISO country code
- * @param[customer.phonenumber] String
- * @param[customer.password2] String
- * @param[customer.credit] String Credit balance
- * @param[customer.taxexempt] Boolean
- * @param[customer.notes] String
- * @param[customer.cardtype] String
- * @param[customer.cardnum] String CC number
- * @param[customer.expdate] String CC expiry date
- * @param[customer.startdate] String CC start date
- * @param[customer.issuenumber] String CC issue number
- * @param[customer.clearcreditcard] Boolean
- * @param[customer.language] String
- * @param[customer.customfields] String Base64 encoded string of custom field values
- * @param[customer.status] Boolean
- * @param[customer.taxexempt] Boolean
- * @param[customer.latefeeoveride] Boolean
- * @param[customer.overideduenotices] Boolean
- * @param[customer.separateinvoices] Boolean
- * @param[customer.disableautocc] Boolean
- * @param callback
- */
-Customers.prototype.updateCustomer = function(clientid, customer, callback) {
+//https://developers.whmcs.com/api-reference/updateclient/
+Customers.prototype.updateClient = function(clientid, customer, callback) {
   var options = {
     action: 'updateclient',
     clientid: clientid
@@ -248,39 +118,8 @@ Customers.prototype.updateCustomer = function(clientid, customer, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Update customer domain - http://docs.whmcs.com/API:Update_Client_Domain
- * @param domainid String|Number Pass in domain id or name
- * @param [opts] Object
- * @param [opts.type] String Register or Transfer
- * @param [opts.autorecalc] Boolean
- * @param [opts.regdate] String Update the registration date yyyymmdd
- * @param [opts.domain] String Update the domain name
- * @param [opts.firstpaymentamount] String Set the first payment amount. No symbol, just xx.xx
- * @param [opts.recurringamount] String Setup fee cost. No symbol, just xx.xx
- * @param [opts.registrar] String Update the registrar assigned to the domain
- * @param [opts.billingcycle] String One of Free Account, One Time, Monthly, Quarterly, Semi-Annually, Annually, Biennially or Triennially
- * @param [opts.status] String One of Active, Pending, Pending Transfer, Expired, Cancelled, Fraud
- * @param [opts.nextduedate] String Update the next due date yyyymmdd
- * @param [opts.nextinvoicedate] String Update the next invoice date yyyymmdd
- * @param [opts.expirydate] String Update the expiry date yyyymmdd
- * @param [opts.regperiod] String Update the reg period for the domain. 1-10
- * @param [opts.paymentmethod] String set the payment method
- * @param [opts.subscriptionid] String allocate a subscription ID
- * @param [opts.dnsmanagement] Boolean
- * @param [opts.emailforwarding] Boolean
- * @param [opts.idprotection] Boolean
- * @param [opts.donotrenew] Boolean
- * @param [opts.updatens] Boolean Set to true to update Nameservers
- * @param [opts.ns1] String
- * @param [opts.ns2] String
- * @param [opts.ns3] String
- * @param [opts.ns4] String
- * @param [opts.ns5] String
- * @param [opts.notes] String
- * @param callback
- */
-Customers.prototype.updateCustomerDomain = function(domainid, opts, callback) {
+//https://developers.whmcs.com/api-reference/updateclientdomain/
+Customers.prototype.updateClientDomain = function(domainid, opts, callback) {
   var options = {
     action: 'updateclientdomain'
   };
@@ -305,27 +144,7 @@ Customers.prototype.updateCustomerDomain = function(domainid, opts, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Get contacts - http://docs.whmcs.com/API:Get_Contacts
- * @param userid String
- * @param [opts] Object
- * @param [opts.limitstart] String
- * @param [opts.limitnum] String Default is 25
- * @param [opts.userid] String
- * @param [opts.firstname] String
- * @param [opts.lastname] String
- * @param [opts.companyname] String
- * @param [opts.email] String
- * @param [opts.address1] String
- * @param [opts.address2] String
- * @param [opts.city] String
- * @param [opts.state] String
- * @param [opts.postcode] String
- * @param [opts.country] String
- * @param [opts.phonenumber] String
- * @param [opts.subaccount] Boolean
- * @param callback
- */
+//https://developers.whmcs.com/api-reference/getcontacts/
 Customers.prototype.getContacts = function(userid, opts, callback) {
   var options = {
     action: 'getcontacts',
@@ -346,13 +165,8 @@ Customers.prototype.getContacts = function(userid, opts, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Get customer - http://docs.whmcs.com/API:Get_Clients_Details
- * @param clientid String Client ID or email
- * @param [opts] Object
- * @param callback
- */
-Customers.prototype.getCustomer = function(clientid, opts, callback) {
+//https://developers.whmcs.com/api-reference/getclientsdetails/
+Customers.prototype.getClientsDetails = function(clientid, opts, callback) {
   var options = {
     action: 'getclientsdetails',
     stats: true
