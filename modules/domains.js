@@ -5,11 +5,7 @@ var Domains = function(config) {
   this.config = config;
 };
 
-/**
- * Get domain lock status - http://docs.whmcs.com/API:Domain_Locking_Status
- * @param domainid String|Number
- * @param callback
- */
+//https://developers.whmcs.com/api-reference/domaingetlockingstatus/
 Domains.prototype.getDomainLockStatus = function (domainid, callback) {
   var options = {
     action: 'domaingetlockingstatus',
@@ -24,12 +20,7 @@ Domains.prototype.getDomainLockStatus = function (domainid, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Set domain lock status - http://docs.whmcs.com/API:Domain_Update_Lock
- * @param domainid String|Number
- * @param [status] String|Number 1 to lock, 0 to unlock, defaults to 0
- * @param callback
- */
+//http://docs.whmcs.com/API:Domain_Update_Lock
 Domains.prototype.setDomainLockStatus = function (domainid, status, callback) {
   if(typeof status === 'function'){
     callback = status;
@@ -50,11 +41,22 @@ Domains.prototype.setDomainLockStatus = function (domainid, status, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Get domain nameservers - http://docs.whmcs.com/API:Domain_Nameservers
- * @param domainid String|Number
- * @param callback
- */
+//https://developers.whmcs.com/api-reference/domaingetwhoisinfo/
+Domains.prototype.getWhoisInfo = function (domainid, callback) {
+  var options = {
+    action: 'domaingetwhoisinfo',
+    domainid: domainid
+  };
+
+  var createOptions = {
+    client: this,
+    body: options
+  };
+
+  utils.modem(createOptions, callback);
+};
+
+//https://developers.whmcs.com/api-reference/domaingetnameservers/
 Domains.prototype.getDomainNameservers = function (domainid, callback) {
   var options = {
     action: 'domaingetnameservers',
@@ -69,17 +71,7 @@ Domains.prototype.getDomainNameservers = function (domainid, callback) {
   utils.modem(createOptions, callback);
 };
 
-/**
- * Set domain nameservers - http://docs.whmcs.com/API:Domain_Update_Nameservers
- * @param domainid String|Number
- * @param nameservers Object|Array Pass in an object with ns* properties, or an array of nameservers
- * @param nameservers.ns1 String
- * @param nameservers.ns2 String
- * @param [nameservers.ns3] String
- * @param [nameservers.ns4] String
- * @param [nameservers.ns5] String
- * @param callback
- */
+//http://docs.whmcs.com/API:Domain_Update_Nameservers
 Domains.prototype.setDomainNameservers = function (domainid, nameservers, callback) {
   var options = {
     action: 'domainupdatenameservers',
