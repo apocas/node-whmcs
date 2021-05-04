@@ -1,229 +1,245 @@
-var utils = require('../lib/utils');
-var extend = utils.extend;
-
-var Billing = function(config) {
-  this.config = config;
+var Billing = function (whmcsHttpClient) {
+  this.whmcsHttpClient = whmcsHttpClient;
 };
 
-//https://developers.whmcs.com/api-reference/addorder/
-Billing.prototype.addOrder = function (clientid, order, callback) {
-  var options = {
-    action: 'addorder',
-    clientid: clientid
-  };
-
-  options = extend(options, order);
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Accepts a quote.
+ * https://developers.whmcs.com/api-reference/acceptquote/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.acceptQuote = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AcceptQuote', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/createinvoice/
-Billing.prototype.createInvoice = function (clientid, invoice, callback) {
-  var options = {
-    action: 'createinvoice',
-    userid: clientid
-  };
-
-  options = extend(options, invoice);
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Adds a Billable Item.
+ * https://developers.whmcs.com/api-reference/addbillableitem/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.addBillableItem = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AddBillableItem', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/acceptorder/
-Billing.prototype.acceptOrder = function (orderid, opts, callback) {
-  var options = {
-    action: 'acceptorder',
-    orderid: orderid
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Adds credit to a given client.
+ * https://developers.whmcs.com/api-reference/addcredit/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.addCredit = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AddCredit', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/deleteorder/
-Billing.prototype.deleteOrder = function (orderid, callback) {
-  var options = {
-    action: 'deleteorder',
-    orderid: orderid
-  };
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Adds payment to a given invoice.
+ * https://developers.whmcs.com/api-reference/addinvoicepayment/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.addInvoicePayment = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AddInvoicePayment', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/cancelorder/
-Billing.prototype.cancelOrder = function (orderid, opts, callback) {
-  var options = {
-    action: 'cancelorder',
-    orderid: orderid
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Add a Pay Method to a given client.
+ * https://developers.whmcs.com/api-reference/addpaymethod/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.addPayMethod = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AddPayMethod', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/addcredit/
-Billing.prototype.addCredit = function (clientid, amount, description, callback) {
-  var options = {
-    action: 'addcredit',
-    clientid: clientid,
-    amount: amount,
-    description: description || 'Added via API'
-  };
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Add a transaction to the system.
+ * https://developers.whmcs.com/api-reference/addtransaction/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.addTransaction = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('AddTransaction', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/applycredit/
-Billing.prototype.applyCredit = function (invoiceid, amount, callback) {
-  var options = {
-    action: 'applycredit',
-    invoiceid: invoiceid,
-    amount: typeof amount !== 'undefined'? amount : 'full'
-  };
-
-  if(typeof amount === 'function'){
-    callback = amount;
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Applies the Client’s Credit to an invoice.
+ * https://developers.whmcs.com/api-reference/applycredit/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.applyCredit = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('ApplyCredit', parameters, callback);
 };
 
-
-//https://developers.whmcs.com/api-reference/getinvoice/
-Billing.prototype.getInvoice = function (invoiceid, callback) {
-  var options = {
-    action: 'getinvoice',
-    invoiceid: invoiceid
-  };
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Attempt to capture a payment on an unpaid CC Invoice.
+ * https://developers.whmcs.com/api-reference/capturepayment/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.capturePayment = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('CapturePayment', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/getinvoices/
-Billing.prototype.getInvoices = function (opts, callback) {
-  var options = {
-    action:'getinvoices'
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options,opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Create an invoice using the provided parameters.
+ * https://developers.whmcs.com/api-reference/createinvoice/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.createInvoice = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('CreateInvoice', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/updateinvoice/
-Billing.prototype.updateInvoice = function (invoiceid, opts, callback) {
-  var options = {
-    action: 'updateinvoice',
-    invoiceid: invoiceid
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Creates a new quote.
+ * https://developers.whmcs.com/api-reference/createquote/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.createQuote = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('CreateQuote', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/getpaymentmethods/
-Billing.prototype.getPaymentMethods = function (callback) {
-  var options = {
-    action: 'getpaymentmethods',
-  };
-
-
-  var createOptions = {
-    client: this,
-    body: options
-  };
-
-  utils.modem(createOptions, callback);
+/**
+ * Delete a Pay Method.
+ * https://developers.whmcs.com/api-reference/deletepaymethod/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.deletePayMethod = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('DeletePayMethod', parameters, callback);
 };
 
-//https://developers.whmcs.com/api-reference/capturepayment/
-Billing.prototype.capturePayment = function (invoiceid, opts, callback) {
-  var options = {
-    action:'capturepayment',
-    invoiceid:invoiceid
-  };
+/**
+ * Deletes a quote.
+ * https://developers.whmcs.com/api-reference/deletequote/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.deleteQuote = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('DeleteQuote', parameters, callback);
+};
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options,opts);
-  }
+/**
+ * Generate any invoices that are due to be generated.
+ * https://developers.whmcs.com/api-reference/geninvoices/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.genInvoices = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GenInvoices', parameters, callback);
+};
 
-  var createOptions = {
-    client: this,
-    body: options
-  };
-  
-  utils.modem(createOptions, callback);
+/**
+ * Obtain the Credit Log for a Client Account.
+ * https://developers.whmcs.com/api-reference/getcredits/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getCredits = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetCredits', parameters, callback);
+};
+
+/**
+ * Retrieve a specific invoice.
+ * https://developers.whmcs.com/api-reference/getinvoice/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getInvoice = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetInvoice', parameters, callback);
+};
+
+/**
+ * Retrieve a list of invoices.
+ * https://developers.whmcs.com/api-reference/getinvoices/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getInvoices = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetInvoices', parameters, callback);
+};
+
+/**
+ * Obtain the Pay Methods associated with a provided client id.
+ * https://developers.whmcs.com/api-reference/getpaymethods/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getPayMethods = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetPayMethods', parameters, callback);
+};
+
+/**
+ * Obtain quotes matching the passed criteria.
+ * https://developers.whmcs.com/api-reference/getquotes/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getQuotes = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetQuotes', parameters, callback);
+};
+
+/**
+ * Obtain transactions matching the passed criteria.
+ * https://developers.whmcs.com/api-reference/gettransactions/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.getTransactions = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('GetTransactions', parameters, callback);
+};
+
+/**
+ * Send a quote to the associated client.
+ * https://developers.whmcs.com/api-reference/sendquote/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.sendQuote = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('SendQuote', parameters, callback);
+};
+
+/**
+ * Update an invoice using the provided parameters.
+ * https://developers.whmcs.com/api-reference/updateinvoice/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.updateInvoice = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('UpdateInvoice', parameters, callback);
+};
+
+/**
+ * Update a Credit Card Pay Method.
+ * https://developers.whmcs.com/api-reference/updatepaymethod/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.updatePayMethod = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('UpdatePayMethod', parameters, callback);
+};
+
+/**
+ * Updates an existing quote.
+ * https://developers.whmcs.com/api-reference/updatequote/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.updateQuote = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('UpdateQuote', parameters, callback);
+};
+
+/**
+ * Updates a transaction in the system.
+ * https://developers.whmcs.com/api-reference/updatetransaction/
+ * @param {Object} parameters Request parameters
+ * @param {Function} callback Optional callback. If not set the method returns a Promise
+ */
+Billing.prototype.updateTransaction = function (parameters, callback) {
+  return this.whmcsHttpClient.callApi('UpdateTransaction', parameters, callback);
 };
 
 module.exports = Billing;
