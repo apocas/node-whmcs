@@ -24,10 +24,10 @@
     "mocha": "^7.1.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "mocha --timeout 5000"
   },
   "main": "./whmcs",
   "engines": {
-    "node": ">= 0.4"
+    "node": ">= 12.0"
   }
 }

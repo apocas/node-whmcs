@@ -13,6 +13,6 @@ module.exports = {
   Domains: require('./domains.js'),
   Servers: require('./servers.js'),
   Tickets: require('./tickets.js'),
-  Services: require('./services.js'),
+  Service: require('./service.js'),
   Addons: require('./addons.js')
 }
