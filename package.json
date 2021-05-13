@@ -15,8 +15,9 @@
     "hosting"
   ],
   "dependencies": {
+    "axios": "^0.21.1",
+    "bluebird": "^3.7.2",
     "https-proxy-agent": "^5.0.0",
-    "request": "^2.88.0",
     "xml2js": "0.4.x"
   },
   "devDependencies": {
@@ -24,7 +25,7 @@
     "mocha": "^7.1.0"
   },
   "scripts": {
-    "test": "mocha --timeout 5000"
+    "test": "mocha --timeout 10000"
   },
   "main": "./whmcs",
   "engines": {

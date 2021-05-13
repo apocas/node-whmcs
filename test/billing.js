@@ -83,7 +83,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should accept a quote', function (done) {
-      this.timeout(20000);
+      this.timeout(30000);
       if (demoQuoteId == undefined) {
         this.skip();
       }
@@ -146,7 +146,7 @@ describe('Module "Billing"', function () {
   });
 
   it('should create an invoice', function (done) {
-    this.timeout(20000);
+    this.timeout(30000);
     var opts = {
       userid: conf.demoClientId,
       itemdescription0: 'this is a test invoice',
@@ -358,7 +358,7 @@ describe('Module "Billing"', function () {
   });
 
   it('should generate invoices that are due to be generated', function (done) {
-    this.timeout(20000);
+    this.timeout(30000);
     var opts = {
       clientid: conf.demoClientId
     };

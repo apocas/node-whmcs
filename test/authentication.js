@@ -17,7 +17,7 @@ describe('Module "Authentication"', function () {
   });
 
   it('should create, update, get and delete an OAuth credential', function (done) {
-    this.timeout(15000);
+    this.timeout(30000);
     var opts = {
       email: conf.demoUserDetails.email,
       grantType: 'authorization_code',

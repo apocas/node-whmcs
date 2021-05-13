@@ -1,7 +1,8 @@
 var expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WHMCS = require('../whmcs');
 
-describe('Custom actions', function () {
+describe('Internal', function () {
   it('should call an action by name', function (done) {
     var opts = {
       limitstart: 0,
@@ -44,5 +45,34 @@ describe('Custom actions', function () {
         expect(err).to.be.null;
         done();
       });
+  });
+
+  it('should throw an error if Promise library is invalid', function () {
+    var config = {
+      username: process.env.WHMCS_USER || 'username',
+      password: process.env.WHMCS_KEY || 'password',
+      apiKey: process.env.WHMCS_AK || 'accessKey',
+      serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
+      userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      Promise: {}
+    };
+
+    var fn = function () {
+      return new WHMCS(config);
+    };
+
+    expect(fn).to.throw(Error, 'Invalid promise library.');
+  });
+
+  it('should handle XML response', function (done) {
+    var opts = {
+      limitstart: 0,
+      limitnum: 1
+    }
+    conf.whmcsWithXml.system.getActivityLog(opts, function (err, details) {
+      expect(err).to.be.null;
+      expect(details).to.have.a.property('result').to.equal('success');
+      done();
+    });
   });
 });

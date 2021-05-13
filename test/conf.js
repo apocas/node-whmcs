@@ -1,10 +1,11 @@
-var WHMCS = require('../whmcs');
+var WHMCS = require('../whmcs'),
+  Bluebird = require('bluebird');
 
 var config = {
   username: process.env.WHMCS_USER || 'username',
   password: process.env.WHMCS_KEY || 'password',
   apiKey: process.env.WHMCS_AK || 'accessKey',
-  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1/includes/api.php',
+  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
   userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs'
 };
 
@@ -14,12 +15,23 @@ var config2 = {
   username: process.env.WHMCS_USER || 'username',
   password: process.env.WHMCS_KEY || 'password',
   apiKey: process.env.WHMCS_AK || 'accessKey',
-  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1/includes/api.php',
+  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
   userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
-  Promise: global.Promise
+  Promise: Bluebird,
 };
 
 var whmcsWithCustomPromise = new WHMCS(config2);
+
+var config3 = {
+  username: process.env.WHMCS_USER || 'username',
+  password: process.env.WHMCS_KEY || 'password',
+  apiKey: process.env.WHMCS_AK || 'accessKey',
+  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
+  userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+  responseType: 'xml'
+};
+
+var whmcsWithXml = new WHMCS(config3);
 
 var userDetails = {
   firstname: 'John',
@@ -53,7 +65,6 @@ function initialize(done) {
     if (err) {
       done(err);
     } else {
-      console.log(res);
       module.exports.demoUserId = res.owner_id;
       module.exports.demoClientId = res.clientid;
 
@@ -80,18 +91,17 @@ function rollback(done) {
     deletetransactions: true
   };
   whmcs.client.deleteClient(opts, function (err, res) {
-    console.log(res);
     done(err);
   });
 }
 
 before(function (done) {
-  this.timeout(10000);
+  this.timeout(60000);
   initialize(done);
 });
 
 after(function (done) {
-  this.timeout(10000);
+  this.timeout(60000);
   rollback(done);
 });
 
@@ -218,6 +228,7 @@ function serialize(mixed_value) {
 module.exports = {
   whmcs: whmcs,
   whmcsWithCustomPromise: whmcsWithCustomPromise,
+  whmcsWithXml: whmcsWithXml,
   demoUserDetails: userDetails,
   demoContactDetails: contactDetails,
   serialize: serialize

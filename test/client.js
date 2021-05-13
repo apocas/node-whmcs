@@ -4,7 +4,7 @@ var expect = require('chai').expect,
 describe('Module "Client"', function () {
 
   it('should create a client, create a contact, close the client and then delete both of them', function (done) {
-    this.timeout(15000);
+    this.timeout(30000);
     var opts = {
       firstname: 'Major',
       lastname: 'Tom',
@@ -212,7 +212,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients products', function (done) {
-    this.timeout(10000);
+    this.timeout(30000);
     var opts = {
       limitstart: 0,
       limitnum: 25
@@ -284,7 +284,6 @@ describe('Module "Client"', function () {
   });
 
   it('should update client by clientid', function (done) {
-    this.timeout(5000);
     var opts = {
       clientid: conf.demoClientId,
       lastname: 'updated1'
@@ -307,7 +306,6 @@ describe('Module "Client"', function () {
   });
 
   it('should update client by email', function (done) {
-    this.timeout(5000);
     var opts = {
       clientemail: conf.demoUserDetails.email,
       lastname: 'updated2'
