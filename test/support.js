@@ -1,52 +1,365 @@
-var assert = require('assert'),
-  expect = require('chai').expect,
-  client = require('./spec_helper').client;
+var expect = require('chai').expect,
+  conf = require('./conf');
 
+describe('Module "Support"', function () {
+  describe('Announcement', function () {
+    var demoAnnouncementId;
 
-describe('support', function() {
+    it('should add an announcement', function (done) {
+      var opts = {
+        date: '1969-07-11',
+        title: 'There\'s something wrong',
+        announcement: 'Your circuit\'s dead'
+      };
 
-  it('should create, get and delete a ticket', function(done) {
-    this.timeout(15000);
+      conf.whmcs.support.addAnnouncement(opts, function (err, details) {
+        expect(err).to.be.null;
+        expect(details).to.have.a.property('result').to.equal('success');
+        expect(details).to.have.a.property('announcementid');
+        demoAnnouncementId = details.announcementid;
+        done();
+      });
+    });
 
+    it('should get announcements', function (done) {
+      var opts = {
+        limitstart: 0,
+        limitnum: 1
+      };
+
+      conf.whmcs.support.getAnnouncements(opts, function (err, details) {
+        expect(err).to.be.null;
+        expect(details).to.have.a.property('result').to.equal('success');
+        expect(details).to.have.a.property('announcements').to.be.an.an('object');
+        expect(details.announcements).to.have.a.property('announcement').to.be.an('array').to.have.length.above(0);
+        done();
+      });
+    });
+
+    it('should delete an announcement', function (done) {
+      if (demoAnnouncementId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          announcementid: demoAnnouncementId
+        };
+
+        conf.whmcs.support.deleteAnnouncement(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
+        });
+      }
+    });
+
+  });
+
+  it('should add a cancel request', function (done) {
     var opts = {
-      firstname: 'John',
-      lastname: 'Doe',
-      email: 'johndoe@john.doe',
-      address1: 'Mars',
-      city: 'Phobos',
-      state: 'Crater',
-      postcode: '9999-999',
-      country: 'US',
-      phonenumber: '123456789',
-      password2: '123qwe'
+      serviceid: 1
     };
 
-    client.customers.createCustomer(opts, function(err, customer) {
-      expect(err).to.be.null;
-
-      client.support.openTicket(customer.clientid, 1, 'test subject', 'test message', function(err, ticket) {
+    conf.whmcs.support.addCancelRequest(opts, function (err, details) {
+      if (err && err.message.indexOf('Existing Cancellation Request Exists') > -1) {
+        done();
+      } else {
         expect(err).to.be.null;
+        expect(details).to.have.a.property('result').to.equal('success');
+        done();
+      }
+    });
+  });
 
-        client.support.updateTicket({ticketid:ticket.id,subject:'test change subject'}, function(err) {
+  it('should add a client note', function (done) {
+    var opts = {
+      userid: conf.demoClientId,
+      notes: 'Planet Earth is blue and there\'s nothing I can do'
+    };
+
+    conf.whmcs.support.addClientNote(opts, function (err, details) {
+      expect(err).to.be.null;
+      expect(details).to.have.a.property('result').to.equal('success');
+      done();
+    });
+  });
+
+  describe('Ticket', function () {
+    var demoTicketId;
+
+    it('should open a ticket', function (done) {
+      var opts = {
+        deptid: 1,
+        clientid: conf.demoClientId,
+        subject: 'this is a subject',
+        message: 'this is a message'
+      };
+
+      conf.whmcs.support.openTicket(opts, function (err, details) {
+        expect(err).to.be.null;
+        expect(details).to.have.a.property('result').to.equal('success');
+        expect(details).to.have.a.property('id');
+        expect(details).to.have.a.property('tid');
+        expect(details).to.have.a.property('c');
+        demoTicketId = details.id;
+        done();
+      });
+    });
+
+    it('should add a note to the ticket', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          message: 'this is a ticket note',
+          ticketid: demoTicketId
+        };
+
+        conf.whmcs.support.addTicketNote(opts, function (err, details) {
           expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
+        });
+      }
+    });
 
-          client.support.deleteTicket(ticket.id, function(err, data) {
+    it('should add a reply to the ticket', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          ticketid: demoTicketId,
+          clientid: conf.demoClientId,
+          message: 'this is a new reply'
+        };
+
+        conf.whmcs.support.addTicketReply(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
+        });
+      }
+    });
+
+    it('should block a ticket sender', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          ticketid: demoTicketId
+        };
+
+        conf.whmcs.support.blockTicketSender(opts, function (err, details) {
+          if (err && err.message.indexOf('A Client Cannot Be Blocked') > -1) {
+            done();
+          } else {
             expect(err).to.be.null;
+            expect(details).to.have.a.property('result').to.equal('success');
+            done();
+          }
+        });
+      }
+    });
 
-            client.customers.deleteCustomer(customer.clientid, function(err, data) {
-              expect(err).to.be.null;
-              done();
-            });
+    it('should update a ticket', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          ticketid: demoTicketId,
+          subject: 'this is an updated ticket'
+        };
+
+        conf.whmcs.support.updateTicket(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          expect(details).to.have.a.property('ticketid').to.equal(demoTicketId);
+          done();
+        });
+      }
+    });
+
+    it('should create another ticket and merge it', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          deptid: 1,
+          clientid: conf.demoClientId,
+          subject: 'this is another subject',
+          message: 'this is another message'
+        };
+
+        conf.whmcs.support.openTicket(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          expect(details).to.have.a.property('id');
+          expect(details).to.have.a.property('tid');
+          expect(details).to.have.a.property('c');
+
+          var opts = {
+            ticketid: demoTicketId,
+            mergeticketids: details.id,
+            newsubject: 'this is a merged ticket'
+          };
+
+          conf.whmcs.support.mergeTicket(opts, function (err, details) {
+            expect(err).to.be.null;
+            expect(details).to.have.a.property('result').to.equal('success');
+            expect(details).to.have.a.property('ticketid').to.equal(demoTicketId);
+            done();
           });
+        });
+      }
+    });
+
+    it('should delete a ticket', function (done) {
+      if (demoTicketId == undefined) {
+        this.skip();
+      } else {
+        var opts = {
+          ticketid: demoTicketId
+        };
+
+        conf.whmcs.support.deleteTicket(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
+        });
+      }
+    });
+  });
+
+  describe('Ticket reply', function () {
+    var demoTicketId, demoReplyId;
+
+    before(function (done) {
+      var opts = {
+        deptid: 1,
+        clientid: conf.demoClientId,
+        subject: 'this is a subject',
+        message: 'this is a message'
+      };
+
+      conf.whmcs.support.openTicket(opts, function (err, details) {
+        if (err) {
+          throw (err);
+        } else {
+          demoTicketId = details.id;
+
+          var opts = {
+            ticketid: demoTicketId,
+            clientid: conf.demoClientId,
+            message: 'this is a new reply'
+          };
+
+          conf.whmcs.support.addTicketReply(opts, function (err, details) {
+            if (err) {
+              throw err;
+            } else {
+              var opts = {
+                ticketid: demoTicketId
+              };
+
+              conf.whmcs.tickets.getTicket(opts, function (err, details) {
+                if (err) {
+                  throw err;
+                } else if (!details || !details.replies || !details.replies.reply || !details.replies.reply[0]) {
+                  throw new Error('Ticket must have a reply. Cannot proceed.');
+                } else {
+                  demoReplyId = details.replies.reply[0].replyid;
+                  done();
+                }
+              });
+            }
+          });
+        }
+      });
+
+      it('should update a ticket reply', function (done) {
+        var opts = {
+          replyid: demoReplyId,
+          //ticketid: demoTicketId,
+          message: 'this is an updated reply'
+        };
+
+        conf.whmcs.support.updateTicketReply(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
+        });
+      });
+
+      it('should delete a ticket reply', function (done) {
+        var opts = {
+          //ticketid: demoTicketId,
+          replyid: demoReplyId
+        };
+
+        conf.whmcs.support.deleteTicketReply(opts, function (err, details) {
+          expect(err).to.be.null;
+          expect(details).to.have.a.property('result').to.equal('success');
+          done();
         });
       });
     });
   });
 
-  it('should get tickets', function(done) {
-    client.support.getTickets(function(err, tickets) {
-      expect(err).to.be.null;
-      done();
+  describe('Ticket note', function () {
+    var demoTicketId, demoNoteId;
+
+    before(function (done) {
+      var opts = {
+        deptid: 1,
+        clientid: conf.demoClientId,
+        subject: 'this is a subject',
+        message: 'this is a message'
+      };
+
+      conf.whmcs.support.openTicket(opts, function (err, details) {
+        if (err) {
+          throw (err);
+        } else {
+          demoTicketId = details.id;
+
+          var opts = {
+            message: 'this is a ticket note',
+            ticketid: demoTicketId
+          };
+
+          conf.whmcs.support.addTicketNote(opts, function (err, details) {
+            if (err) {
+              throw err;
+            } else {
+              var opts = {
+                ticketid: demoTicketId
+              };
+
+              conf.whmcs.tickets.getTicket(opts, function (err, details) {
+                if (err) {
+                  throw err;
+                } else if (!details || !details.notes || !details.notes.note || !details.notes.note[0]) {
+                  throw new Error('Ticket must have a note. Cannot proceed.');
+                } else {
+                  demoNoteId = details.notes.note[0].noteid;
+                  done();
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+
+    it('should delete a ticket note', function (done) {
+      var opts = {
+        noteid: demoNoteId
+      };
+
+      conf.whmcs.support.deleteTicketNote(opts, function (err, details) {
+        expect(err).to.be.null;
+        expect(details).to.have.a.property('result').to.equal('success');
+        done();
+      });
     });
   });
 
