@@ -1,6 +1,7 @@
 var expect = require('chai').expect,
   conf = require('./conf'),
-  WHMCS = require('../whmcs');
+  WHMCS = require('../whmcs'),
+  Bluebird = require('bluebird');
 
 describe('Internal', function () {
   it('should call an action by name', function (done) {
@@ -19,7 +20,8 @@ describe('Internal', function () {
     var opts = {
       limitstart: 0,
       limitnum: 1
-    }
+    };
+    
     conf.whmcs.system.getActivityLog(opts)
       .then(function (details) {
         expect(details).to.have.a.property('result').to.equal('success');
@@ -32,11 +34,23 @@ describe('Internal', function () {
   });
 
   it('should handle custom promises library', function (done) {
+    var config = {
+      username: process.env.WHMCS_USER || 'username',
+      password: process.env.WHMCS_KEY || 'password',
+      apiKey: process.env.WHMCS_AK || 'accessKey',
+      serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
+      userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      Promise: Bluebird,
+    };
+    
+    var whmcs = new WHMCS(config);
+    
     var opts = {
       limitstart: 0,
       limitnum: 1
-    }
-    conf.whmcsWithCustomPromise.system.getActivityLog(opts)
+    };
+
+    whmcs.system.getActivityLog(opts)
       .then(function (details) {
         expect(details).to.have.a.property('result').to.equal('success');
         done();
@@ -65,11 +79,23 @@ describe('Internal', function () {
   });
 
   it('should handle XML response', function (done) {
+    var config = {
+      username: process.env.WHMCS_USER || 'username',
+      password: process.env.WHMCS_KEY || 'password',
+      apiKey: process.env.WHMCS_AK || 'accessKey',
+      serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
+      userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      responseType: 'xml'
+    };
+    
+    var whmcs = new WHMCS(config);
+
     var opts = {
       limitstart: 0,
       limitnum: 1
-    }
-    conf.whmcsWithXml.system.getActivityLog(opts, function (err, details) {
+    };
+
+    whmcs.system.getActivityLog(opts, function (err, details) {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
       done();

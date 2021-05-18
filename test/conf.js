@@ -1,5 +1,4 @@
-var WHMCS = require('../whmcs'),
-  Bluebird = require('bluebird');
+var WHMCS = require('../whmcs');
 
 var config = {
   username: process.env.WHMCS_USER || 'username',
@@ -10,28 +9,6 @@ var config = {
 };
 
 var whmcs = new WHMCS(config);
-
-var config2 = {
-  username: process.env.WHMCS_USER || 'username',
-  password: process.env.WHMCS_KEY || 'password',
-  apiKey: process.env.WHMCS_AK || 'accessKey',
-  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
-  userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
-  Promise: Bluebird,
-};
-
-var whmcsWithCustomPromise = new WHMCS(config2);
-
-var config3 = {
-  username: process.env.WHMCS_USER || 'username',
-  password: process.env.WHMCS_KEY || 'password',
-  apiKey: process.env.WHMCS_AK || 'accessKey',
-  serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
-  userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
-  responseType: 'xml'
-};
-
-var whmcsWithXml = new WHMCS(config3);
 
 var userDetails = {
   firstname: 'John',
@@ -227,8 +204,6 @@ function serialize(mixed_value) {
 
 module.exports = {
   whmcs: whmcs,
-  whmcsWithCustomPromise: whmcsWithCustomPromise,
-  whmcsWithXml: whmcsWithXml,
   demoUserDetails: userDetails,
   demoContactDetails: contactDetails,
   serialize: serialize
