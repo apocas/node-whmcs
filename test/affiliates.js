@@ -11,7 +11,7 @@ describe('Module "Affiliates"', function () {
     conf.whmcs.affiliates.getAffiliates(opts, function (err, details) {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('affiliates').to.be.an('array');
+      expect(details).to.have.a.property('affiliates').to.be.an('object');
       done();
     });
   });
