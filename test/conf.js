@@ -1,9 +1,8 @@
 var WHMCS = require('../whmcs');
 
 var config = {
-  username: process.env.WHMCS_USER || 'username',
-  password: process.env.WHMCS_KEY || 'password',
-  apiKey: process.env.WHMCS_AK || 'accessKey',
+  apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
+  apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
   serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
   userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs'
 };
