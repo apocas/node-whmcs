@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Module"', function () {
@@ -13,7 +13,7 @@ describe('Module "Module"', function () {
   });
 
   it('should get the module configuration parameters', function (done) {
-    var opts = {
+    let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
@@ -27,7 +27,7 @@ describe('Module "Module"', function () {
   });
 
   it('should activate a module', function (done) {
-    var opts = {
+    let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
@@ -44,7 +44,7 @@ describe('Module "Module"', function () {
   });
 
   it('should update module configuration parameters', function (done) {
-    var opts = {
+    let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
@@ -57,7 +57,7 @@ describe('Module "Module"', function () {
   });
 
   it('should deactivate a module', function (done) {
-    var opts = {
+    let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal',
       newGateway: 'paypal'

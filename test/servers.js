@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Servers"', function () {

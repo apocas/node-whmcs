@@ -1,12 +1,12 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Support"', function () {
   describe('Announcement', function () {
-    var demoAnnouncementId;
+    let demoAnnouncementId;
 
     it('should add an announcement', function (done) {
-      var opts = {
+      let opts = {
         date: '1969-07-11',
         title: 'There\'s something wrong',
         announcement: 'Your circuit\'s dead'
@@ -22,7 +22,7 @@ describe('Module "Support"', function () {
     });
 
     it('should get announcements', function (done) {
-      var opts = {
+      let opts = {
         limitstart: 0,
         limitnum: 1
       };
@@ -40,7 +40,7 @@ describe('Module "Support"', function () {
       if (demoAnnouncementId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           announcementid: demoAnnouncementId
         };
 
@@ -55,7 +55,7 @@ describe('Module "Support"', function () {
   });
 
   it('should add a cancel request', function (done) {
-    var opts = {
+    let opts = {
       serviceid: 1
     };
 
@@ -71,7 +71,7 @@ describe('Module "Support"', function () {
   });
 
   it('should add a client note', function (done) {
-    var opts = {
+    let opts = {
       userid: conf.demoClientId,
       notes: 'Planet Earth is blue and there\'s nothing I can do'
     };
@@ -84,10 +84,10 @@ describe('Module "Support"', function () {
   });
 
   describe('Ticket', function () {
-    var demoTicketId;
+    let demoTicketId;
 
     it('should open a ticket', function (done) {
-      var opts = {
+      let opts = {
         deptid: 1,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
@@ -109,7 +109,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           message: 'this is a ticket note',
           ticketid: demoTicketId
         };
@@ -126,7 +126,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           ticketid: demoTicketId,
           clientid: conf.demoClientId,
           message: 'this is a new reply'
@@ -144,7 +144,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           ticketid: demoTicketId
         };
 
@@ -164,7 +164,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           ticketid: demoTicketId,
           subject: 'this is an updated ticket'
         };
@@ -182,7 +182,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           deptid: 1,
           clientid: conf.demoClientId,
           subject: 'this is another subject',
@@ -196,7 +196,7 @@ describe('Module "Support"', function () {
           expect(details).to.have.a.property('tid');
           expect(details).to.have.a.property('c');
 
-          var opts = {
+          let opts = {
             ticketid: demoTicketId,
             mergeticketids: details.id,
             newsubject: 'this is a merged ticket'
@@ -216,7 +216,7 @@ describe('Module "Support"', function () {
       if (demoTicketId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           ticketid: demoTicketId
         };
 
@@ -230,10 +230,10 @@ describe('Module "Support"', function () {
   });
 
   describe('Ticket reply', function () {
-    var demoTicketId, demoReplyId;
+    let demoTicketId, demoReplyId;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         deptid: 1,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
@@ -246,7 +246,7 @@ describe('Module "Support"', function () {
         } else {
           demoTicketId = details.id;
 
-          var opts = {
+          let opts = {
             ticketid: demoTicketId,
             clientid: conf.demoClientId,
             message: 'this is a new reply'
@@ -256,7 +256,7 @@ describe('Module "Support"', function () {
             if (err) {
               throw err;
             } else {
-              var opts = {
+              let opts = {
                 ticketid: demoTicketId
               };
 
@@ -276,7 +276,7 @@ describe('Module "Support"', function () {
       });
 
       it('should update a ticket reply', function (done) {
-        var opts = {
+        let opts = {
           replyid: demoReplyId,
           //ticketid: demoTicketId,
           message: 'this is an updated reply'
@@ -290,7 +290,7 @@ describe('Module "Support"', function () {
       });
 
       it('should delete a ticket reply', function (done) {
-        var opts = {
+        let opts = {
           //ticketid: demoTicketId,
           replyid: demoReplyId
         };
@@ -305,10 +305,10 @@ describe('Module "Support"', function () {
   });
 
   describe('Ticket note', function () {
-    var demoTicketId, demoNoteId;
+    let demoTicketId, demoNoteId;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         deptid: 1,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
@@ -321,7 +321,7 @@ describe('Module "Support"', function () {
         } else {
           demoTicketId = details.id;
 
-          var opts = {
+          let opts = {
             message: 'this is a ticket note',
             ticketid: demoTicketId
           };
@@ -330,7 +330,7 @@ describe('Module "Support"', function () {
             if (err) {
               throw err;
             } else {
-              var opts = {
+              let opts = {
                 ticketid: demoTicketId
               };
 
@@ -351,7 +351,7 @@ describe('Module "Support"', function () {
     });
 
     it('should delete a ticket note', function (done) {
-      var opts = {
+      let opts = {
         noteid: demoNoteId
       };
 

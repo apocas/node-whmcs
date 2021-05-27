@@ -1,10 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Products"', function () {
 
   it('should create a new product', function (done) {
-    var opts = {
+    let opts = {
       name: 'Test product',
       gid: 1,
       type: 'hostingaccount',

@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Users"', function () {
@@ -11,7 +11,7 @@ describe('Module "Users"', function () {
   });
 
   it('should send an invite to manage a client', function (done) {
-    var opts = {
+    let opts = {
       client_id: conf.demoClientId,
       email: 'johndoefriend@john.doe',
       permissions: 'products,domains'
@@ -33,7 +33,7 @@ describe('Module "Users"', function () {
   });
 
   it('should get the permissions of an user, for a client', function (done) {
-    var opts = {
+    let opts = {
       user_id: conf.demoUserId,
       client_id: conf.demoClientId
     };
@@ -45,7 +45,7 @@ describe('Module "Users"', function () {
   });
 
   it('should get users according to search limit', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -59,7 +59,7 @@ describe('Module "Users"', function () {
   });
 
   it('should start the password reset process for an user, by user id', function (done) {
-    var opts = {
+    let opts = {
       id: conf.demoUserId
     };
     conf.whmcs.users.resetPassword(opts, function (err, details) {
@@ -70,7 +70,7 @@ describe('Module "Users"', function () {
   });
 
   it('should start the password reset process for an user, by email', function (done) {
-    var opts = {
+    let opts = {
       email: conf.demoUserDetails.email
     };
     conf.whmcs.users.resetPassword(opts, function (err, details) {
@@ -81,7 +81,7 @@ describe('Module "Users"', function () {
   });
 
   it('should update an user', function (done) {
-    var opts = {
+    let opts = {
       user_id: conf.demoUserId,
       lastname: 'updated lastname'
     };
@@ -94,7 +94,7 @@ describe('Module "Users"', function () {
 
   it('should update the permissions of an user, for a client', function (done) {
     //TODO
-    // var opts = {
+    // let opts = {
     //   user_id: xxx
     //   client_id: xxx
     //   permissions: 'domains,products'
@@ -108,7 +108,7 @@ describe('Module "Users"', function () {
   });
 
   it('should get an user by email', function (done) {
-    var opts = {
+    let opts = {
       search: 'johndoe@john.doe'
     }
     conf.whmcs.users.getUsers(opts, function (err, details) {

@@ -1,12 +1,12 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Project Management"', function () {
-  var demoProjectId, demoTaskId, demoTimerId;
+  let demoProjectId, demoTaskId, demoTimerId;
 
   before(function (done) {
-    var _this = this;
-    var opts = {
+    const _this = this;
+    let opts = {
       title: 'check if feature is enabled',
       adminid: 1
     };
@@ -22,7 +22,7 @@ describe('Module "Project Management"', function () {
   });
 
   it('should create a project', function (done) {
-    var opts = {
+    let opts = {
       title: 'untitled project',
       adminid: 1
     };
@@ -37,7 +37,7 @@ describe('Module "Project Management"', function () {
   });
 
   it('should get a project by id', function (done) {
-    var opts = {
+    let opts = {
       projectid: demoProjectId
     };
     conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -48,7 +48,7 @@ describe('Module "Project Management"', function () {
   });
 
   it('should get projects', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -61,7 +61,7 @@ describe('Module "Project Management"', function () {
   });
 
   it('should get projects by clientid', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1,
       userid: conf.demoClientId
@@ -75,14 +75,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should update a project', function (done) {
-    var opts = {
+    let opts = {
       projectid: demoProjectId,
       title: 'space oddity'
     };
     conf.whmcs.projectManagement.updateProject(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -95,14 +95,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should add a message to a project', function (done) {
-    var opts = {
+    let opts = {
       projectid: demoProjectId,
       message: 'can you hear me major tom?'
     };
     conf.whmcs.projectManagement.addProjectMessage(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -116,7 +116,7 @@ describe('Module "Project Management"', function () {
   });
 
   it('should add a task to a project', function (done) {
-    var opts = {
+    let opts = {
       projectid: demoProjectId,
       duedate: '1969-07-11',
       task: 'leave the capsule'
@@ -125,7 +125,7 @@ describe('Module "Project Management"', function () {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -140,14 +140,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should update a project task', function (done) {
-    var opts = {
+    let opts = {
       taskid: demoTaskId,
       task: 'step through the door'
     };
     conf.whmcs.projectManagement.updateProjectTask(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -161,14 +161,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should start a project task timer', function (done) {
-    var opts = {
+    let opts = {
       taskid: demoTaskId,
       projectid: demoProjectId
     };
     conf.whmcs.projectManagement.startTaskTimer(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -186,14 +186,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should end a project task timer', function (done) {
-    var opts = {
+    let opts = {
       timerid: demoTimerId,
       projectid: demoProjectId
     };
     conf.whmcs.projectManagement.endTaskTimer(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {
@@ -210,14 +210,14 @@ describe('Module "Project Management"', function () {
   });
 
   it('should delete a project task', function (done) {
-    var opts = {
+    let opts = {
       projectid: demoProjectId,
       taskid: demoTaskId
     };
     conf.whmcs.projectManagement.deleteProjectTask(opts, function (err, details) {
       expect(err).to.be.null;
 
-      var opts = {
+      let opts = {
         projectid: demoProjectId
       };
       conf.whmcs.projectManagement.getProject(opts, function (err, details) {

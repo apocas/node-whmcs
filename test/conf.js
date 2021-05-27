@@ -1,15 +1,15 @@
-var WHMCS = require('../whmcs');
+const WHMCS = require('../whmcs');
 
-var config = {
+let config = {
   apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
   apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
   serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
   userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs'
 };
 
-var whmcs = new WHMCS(config);
+const whmcs = new WHMCS(config);
 
-var userDetails = {
+let userDetails = {
   firstname: 'John',
   lastname: 'Doe',
   email: 'johndoe@john.doe',
@@ -22,7 +22,7 @@ var userDetails = {
   password2: '123qwe'
 };
 
-var contactDetails = {
+let contactDetails = {
   firstname: 'Ground',
   lastname: 'Control',
   email: 'groundcontrol@john.doe',
@@ -61,7 +61,7 @@ function initialize(done) {
 function rollback(done) {
   console.log('Removing the temporary data. Please wait...');
 
-  var opts = {
+  let opts = {
     clientid: module.exports.demoClientId,
     deleteusers: true,
     deletetransactions: true
@@ -101,12 +101,12 @@ function serialize(mixed_value) {
   // *     returns 1: 'a:3:{i:0;s:5:"Kevin";i:1;s:3:"van";i:2;s:9:"Zonneveld";}'
   // *     example 2: serialize({firstName: 'Kevin', midName: 'van', surName: 'Zonneveld'});
   // *     returns 2: 'a:3:{s:9:"firstName";s:5:"Kevin";s:7:"midName";s:3:"van";s:7:"surName";s:9:"Zonneveld";}'
-  var val, key, okey,
+  let val, key, okey,
     ktype = '',
     vals = '',
     count = 0,
     _utf8Size = function (str) {
-      var size = 0,
+      let size = 0,
         i = 0,
         l = str.length,
         code = '';
@@ -123,7 +123,7 @@ function serialize(mixed_value) {
       return size;
     },
     _getType = function (inp) {
-      var match, key, cons, types, type = typeof inp;
+      let match, key, cons, types, type = typeof inp;
 
       if (type === 'object' && !inp) {
         return 'null';
@@ -167,7 +167,7 @@ function serialize(mixed_value) {
       val = 'a';
       /*
         if (type === 'object') {
-          var objname = mixed_value.constructor.toString().match(/(\w+)\(\)/);
+          let objname = mixed_value.constructor.toString().match(/(\w+)\(\)/);
           if (objname == undefined) {
             return;
           }

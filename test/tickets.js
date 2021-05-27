@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Tickets"', function () {
@@ -51,10 +51,10 @@ describe('Module "Tickets"', function () {
   });
 
   describe('Ticket', function () {
-    var demoTicketId;
+    let demoTicketId;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         deptid: 1,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
@@ -72,7 +72,7 @@ describe('Module "Tickets"', function () {
     });
 
     it('should get tickets', function (done) {
-      var opts = {
+      let opts = {
         limitstart: 0,
         limitnum: 1
       };
@@ -85,7 +85,7 @@ describe('Module "Tickets"', function () {
     });
 
     it('should get ticket notes', function (done) {
-      var opts = {
+      let opts = {
         ticketid: demoTicketId
       };
 
@@ -99,7 +99,7 @@ describe('Module "Tickets"', function () {
     });
 
     it('should get a ticket by id', function (done) {
-      var opts = {
+      let opts = {
         ticketid: demoTicketId
       };
 
@@ -112,7 +112,7 @@ describe('Module "Tickets"', function () {
     });
 
     it('should get ticket attachment', function (done) {
-      var opts = {
+      let opts = {
         relatedid: demoTicketId,
         type: 'ticket',
         index: 0

@@ -1,11 +1,11 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf'),
   WHMCS = require('../whmcs'),
   Bluebird = require('bluebird');
 
 describe('Internal', function () {
   it('should call an action by name', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     }
@@ -17,7 +17,7 @@ describe('Internal', function () {
   });
 
   it('should handle native promises', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -34,7 +34,7 @@ describe('Internal', function () {
   });
 
   it('should handle custom promises library', function (done) {
-    var config = {
+    let config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -42,9 +42,9 @@ describe('Internal', function () {
       Promise: Bluebird,
     };
 
-    var whmcs = new WHMCS(config);
+    let whmcs = new WHMCS(config);
 
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -61,7 +61,7 @@ describe('Internal', function () {
   });
 
   it('should throw an error if Promise library is invalid', function () {
-    var config = {
+    let config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -69,7 +69,7 @@ describe('Internal', function () {
       Promise: {}
     };
 
-    var fn = function () {
+    let fn = function () {
       return new WHMCS(config);
     };
 
@@ -77,7 +77,7 @@ describe('Internal', function () {
   });
 
   it('should handle XML response', function (done) {
-    var config = {
+    let config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -85,9 +85,9 @@ describe('Internal', function () {
       responseType: 'xml'
     };
 
-    var whmcs = new WHMCS(config);
+    let whmcs = new WHMCS(config);
 
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -100,16 +100,16 @@ describe('Internal', function () {
   });
 
   it('should authenticate with username and password', function (done) {
-    var config = {
+    let config = {
       username: process.env.WHMCS_USER || 'username',
       password: process.env.WHMCS_PASSWORD || 'password',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
       userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs'
     };
 
-    var whmcs = new WHMCS(config);
+    let whmcs = new WHMCS(config);
 
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };

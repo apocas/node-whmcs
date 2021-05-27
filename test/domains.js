@@ -1,10 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 function isRegistrarError(msg) {
-  var errorMessages = ['Registrar Error Message', 'Registrar Function Not Supported', 'No response from API command'];
+  let errorMessages = ['Registrar Error Message', 'Registrar Function Not Supported', 'No response from API command'];
 
-  for (var i = 0; i < errorMessages.length; i++) {
+  for (let i = 0; i < errorMessages.length; i++) {
     if (msg.indexOf(errorMessages[i]) > -1) {
       return true;
     }
@@ -16,7 +16,7 @@ function isRegistrarError(msg) {
 describe('Module "Domains"', function () {
 
   it('should create or update tld', function (done) {
-    var opts = {
+    let opts = {
       extension: '.com'
     };
     conf.whmcs.domains.createOrUpdateTLD(opts, function (err, details) {
@@ -30,7 +30,7 @@ describe('Module "Domains"', function () {
   it('should get tld pricing', function (done) {
     this.timeout(30000);
 
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.domains.getTLDPricing(opts, function (err, details) {
@@ -42,7 +42,7 @@ describe('Module "Domains"', function () {
   });
 
   describe('Domain', function () {
-    var demoPaymentMethod, demoDomainId, demoOrderId;
+    let demoPaymentMethod, demoDomainId, demoOrderId;
 
     before(function (done) {
       this.timeout(30000);
@@ -54,7 +54,7 @@ describe('Module "Domains"', function () {
         } else {
           demoPaymentMethod = details.paymentmethods.paymentmethod[0].module;
 
-          var opts = {
+          let opts = {
             clientid: conf.demoClientId,
             paymentmethod: demoPaymentMethod,
             'domain[0]': 'domaintest.com',
@@ -70,7 +70,7 @@ describe('Module "Domains"', function () {
               demoOrderId = details.orderid;
             }
 
-            var opts = {
+            let opts = {
               domain: 'domaintest.com',
               limitstart: 0,
               limitnum: 1
@@ -91,7 +91,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should get locking status', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -104,7 +104,8 @@ describe('Module "Domains"', function () {
     });
 
     it('should get nameservers', function (done) {
-      var opts = {
+      this.timeout(60000);
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -121,7 +122,8 @@ describe('Module "Domains"', function () {
     });
 
     it('should get whois information', function (done) {
-      var opts = {
+      this.timeout(60000);
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -137,7 +139,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a register command to command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -153,7 +155,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a release command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -169,7 +171,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a renew command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -185,7 +187,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send an epp command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -201,7 +203,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the toggle ID protect command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -217,7 +219,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the domain transfer command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -233,7 +235,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the update lock command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -249,7 +251,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the save nameservers command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId,
         ns1: 'ns1.domaintest.com',
         ns2: 'ns2.domaintest.com'
@@ -267,7 +269,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the save whois command to registrar module', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -280,7 +282,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should retrieve whois information', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId
       };
 
@@ -297,7 +299,7 @@ describe('Module "Domains"', function () {
     });
 
     it('should update a domain', function (done) {
-      var opts = {
+      let opts = {
         domainid: demoDomainId,
         idprotection: false
       };

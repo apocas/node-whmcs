@@ -1,10 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "System"', function () {
 
   it('should add an ip to ban list', function (done) {
-    var opts = {
+    let opts = {
       ip: '1.2.3.4',
       reason: 'just because',
       days: 1
@@ -18,11 +18,11 @@ describe('Module "System"', function () {
   });
 
   describe('Password encryption', function () {
-    var demoPassword = 'n2w47bVW#QABW63vVw',
+    let demoPassword = 'n2w47bVW#QABW63vVw',
       encryptedPassword;
 
     it('should encrypt a password', function (done) {
-      var opts = {
+      let opts = {
         password2: demoPassword
       };
 
@@ -39,7 +39,7 @@ describe('Module "System"', function () {
       if (!encryptedPassword) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           password2: encryptedPassword
         };
 
@@ -54,7 +54,7 @@ describe('Module "System"', function () {
   });
 
   it('should get activity log', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -95,7 +95,7 @@ describe('Module "System"', function () {
   });
 
   it('should get configuration value', function (done) {
-    var opts = {
+    let opts = {
       setting: 'Language'
     };
     conf.whmcs.system.getConfigurationValue(opts, function (err, details) {
@@ -174,7 +174,7 @@ describe('Module "System"', function () {
   });
 
   it('should create a log activity', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId,
       description: 'log activity test'
     };
@@ -186,7 +186,7 @@ describe('Module "System"', function () {
   });
 
   it('should send an admin email notification', function (done) {
-    var opts = {
+    let opts = {
       customsubject: 'notification test',
       custommessage: 'this is a notification test'
     };
@@ -198,7 +198,7 @@ describe('Module "System"', function () {
   });
 
   it('should send a client email notification', function (done) {
-    var opts = {
+    let opts = {
       id: conf.demoClientId,
       customsubject: 'notification test',
       custommessage: 'this is a notification test',
@@ -212,7 +212,7 @@ describe('Module "System"', function () {
   });
 
   it('should set a configuration value', function (done) {
-    var opts = {
+    let opts = {
       setting: 'CompanyName',
       value: 'My company'
     };
@@ -228,7 +228,7 @@ describe('Module "System"', function () {
   });
 
   it('should trigger a custom notification event', function (done) {
-    var opts = {
+    let opts = {
       title: 'Notification test',
       message: 'this is a custom notification',
       notification_identifier: 'test'
@@ -241,7 +241,7 @@ describe('Module "System"', function () {
   });
 
   it('should update admin notes', function (done) {
-    var opts = {
+    let opts = {
       notes: 'This is a note'
     };
     conf.whmcs.system.updateAdminNotes(opts, function (err, details) {
@@ -252,10 +252,10 @@ describe('Module "System"', function () {
   });
 
   describe('Announcements', function () {
-    var demoAnnouncementId;
+    let demoAnnouncementId;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         date: '1969-07-11',
         title: 'There\'s something wrong',
         announcement: 'Your circuit\'s dead'
@@ -272,7 +272,7 @@ describe('Module "System"', function () {
     });
 
     it('should update an announcement', function (done) {
-      var opts = {
+      let opts = {
         announcementid: demoAnnouncementId,
         title: 'Can you hear me Major Tom?'
       };

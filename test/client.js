@@ -1,11 +1,11 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Client"', function () {
 
   it('should create a client, create a contact, close the client and then delete both of them', function (done) {
     this.timeout(30000);
-    var opts = {
+    let opts = {
       firstname: 'Major',
       lastname: 'Tom',
       email: 'majortom@john.doe',
@@ -22,9 +22,9 @@ describe('Module "Client"', function () {
       expect(details).to.have.a.property('result').to.equal('success');
       expect(details).to.have.a.property('owner_id');
       expect(details).to.have.a.property('clientid');
-      var clientId = details.clientid;
+      let clientId = details.clientid;
 
-      var opts = {
+      let opts = {
         clientid: clientId,
         firstname: 'Ground',
         lastname: 'Control',
@@ -40,23 +40,23 @@ describe('Module "Client"', function () {
         expect(err).to.be.null;
         expect(details).to.have.a.property('result').to.equal('success');
         expect(details).to.have.a.property('contactid');
-        var contactId = details.contactid;
+        let contactId = details.contactid;
 
-        var opts = {
+        let opts = {
           contactid: contactId
         }
         conf.whmcs.client.deleteContact(opts, function (err, details) {
           expect(err).to.be.null;
           expect(details).to.have.a.property('result').to.equal('success');
 
-          var opts = {
+          let opts = {
             clientid: clientId
           }
           conf.whmcs.client.closeClient(opts, function (err, details) {
             expect(err).to.be.null;
             expect(details).to.have.a.property('result').to.equal('success');
 
-            var opts = {
+            let opts = {
               clientid: clientId,
               deleteusers: true,
               deletetransactions: true
@@ -73,7 +73,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get cancellation requests', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -97,7 +97,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get the encrypted password, by user id', function (done) {
-    var opts = {
+    let opts = {
       userid: conf.demoClientId
     };
     conf.whmcs.client.getClientPassword(opts, function (err, details) {
@@ -109,7 +109,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get the encrypted password, by user email address', function (done) {
-    var opts = {
+    let opts = {
       email: conf.demoUserDetails.email
     };
     conf.whmcs.client.getClientPassword(opts, function (err, details) {
@@ -121,7 +121,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -136,7 +136,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients by email', function (done) {
-    var opts = {
+    let opts = {
       search: conf.demoUserDetails.email
     };
     conf.whmcs.client.getClients(opts, function (err, details) {
@@ -151,7 +151,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get client addons', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.client.getClientsAddons(opts, function (err, details) {
@@ -162,7 +162,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get client details by id', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.client.getClientsDetails(opts, function (err, details) {
@@ -174,7 +174,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get client details by email address', function (done) {
-    var opts = {
+    let opts = {
       email: conf.demoUserDetails.email
     };
     conf.whmcs.client.getClientsDetails(opts, function (err, details) {
@@ -186,7 +186,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients domains', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -201,7 +201,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get client domains by client id', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.client.getClientsDomains(opts, function (err, details) {
@@ -213,7 +213,7 @@ describe('Module "Client"', function () {
 
   it('should get clients products', function (done) {
     this.timeout(30000);
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -228,7 +228,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients products by client id', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.client.getClientsProducts(opts, function (err, details) {
@@ -239,7 +239,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients contacts', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
@@ -254,7 +254,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients contacts by client id', function (done) {
-    var opts = {
+    let opts = {
       userid: conf.demoClientId
     };
     conf.whmcs.client.getContacts(opts, function (err, details) {
@@ -268,7 +268,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients emails', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 25,
       clientid: conf.demoClientId
@@ -284,7 +284,7 @@ describe('Module "Client"', function () {
   });
 
   it('should update client by clientid', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId,
       lastname: 'updated1'
     };
@@ -292,7 +292,7 @@ describe('Module "Client"', function () {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
 
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId
       };
       conf.whmcs.client.getClientsDetails(opts, function (err, details) {
@@ -306,7 +306,7 @@ describe('Module "Client"', function () {
   });
 
   it('should update client by email', function (done) {
-    var opts = {
+    let opts = {
       clientemail: conf.demoUserDetails.email,
       lastname: 'updated2'
     };
@@ -314,7 +314,7 @@ describe('Module "Client"', function () {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
 
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId
       };
       conf.whmcs.client.getClientsDetails(opts, function (err, details) {
@@ -328,7 +328,7 @@ describe('Module "Client"', function () {
   });
 
   it('should update contact by contact id', function (done) {
-    var opts = {
+    let opts = {
       contactid: conf.demoContactId,
       lastname: 'newlastname'
     };
@@ -336,7 +336,7 @@ describe('Module "Client"', function () {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
 
-      var opts = {
+      let opts = {
         userid: conf.demoClientId,
         email: conf.demoContactDetails.email
       };

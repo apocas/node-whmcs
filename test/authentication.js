@@ -1,11 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
-const { domainToUnicode } = require('url');
 
 describe('Module "Authentication"', function () {
 
   it('should validate user login credential', function (done) {
-    var opts = {
+    let opts = {
       email: conf.demoUserDetails.email,
       password2: conf.demoUserDetails.password2
     };
@@ -18,7 +17,7 @@ describe('Module "Authentication"', function () {
 
   it('should create, update, get and delete an OAuth credential', function (done) {
     this.timeout(30000);
-    var opts = {
+    let opts = {
       email: conf.demoUserDetails.email,
       grantType: 'authorization_code',
       scope: 'clientarea:sso',
@@ -28,9 +27,9 @@ describe('Module "Authentication"', function () {
       expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
       expect(details).to.have.a.property('credentialId');
-      var credentialId = details.credentialId;
+      let credentialId = details.credentialId;
 
-      var opts = {
+      let opts = {
         credentialId: credentialId,
         scope: 'clientarea:billing_info'
       };
@@ -42,12 +41,12 @@ describe('Module "Authentication"', function () {
           expect(err).to.be.null;
           expect(details).to.have.a.property('result').to.equal('success');
           expect(details).to.have.a.property('clients').to.be.an('array');
-          var c = details.clients.map(function (client) {
+          let c = details.clients.map(function (client) {
             return client.credentialId;
           });
           expect(c).includes(credentialId);
 
-          var opts = {
+          let opts = {
             credentialId: credentialId
           };
           conf.whmcs.authentication.deleteOAuthCredential(opts, function (err, details) {
@@ -61,7 +60,7 @@ describe('Module "Authentication"', function () {
   });
 
   it('should create a SSO token', function (done) {
-    var opts = {
+    let opts = {
       client_id: conf.demoClientId
     };
     conf.whmcs.authentication.createSsoToken(opts, function (err, details) {

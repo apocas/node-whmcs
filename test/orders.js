@@ -1,10 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Orders"', function () {
 
   it('should get orders', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -29,10 +29,10 @@ describe('Module "Orders"', function () {
   });
 
   describe('Product', function () {
-    var demoPid;
+    let demoPid;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         name: 'Test product',
         gid: 1,
         type: 'hostingaccount'
@@ -50,7 +50,7 @@ describe('Module "Orders"', function () {
     });
 
     it('should get products', function (done) {
-      var opts = {
+      let opts = {
         pid: demoPid
       };
 
@@ -75,7 +75,7 @@ describe('Module "Orders"', function () {
   });
 
   describe('Order', function () {
-    var demoPaymentMethod, demoOrderId;
+    let demoPaymentMethod, demoOrderId;
 
     before(function (done) {
       conf.whmcs.system.getPaymentMethods(function (err, details) {
@@ -91,7 +91,7 @@ describe('Module "Orders"', function () {
     });
 
     it('should add an order', function (done) {
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId,
         paymentmethod: demoPaymentMethod,
         'domain[0]': 'domaintest.com',
@@ -111,7 +111,7 @@ describe('Module "Orders"', function () {
       if (!demoOrderId) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           orderid: demoOrderId
         };
         conf.whmcs.orders.fraudOrder(opts, function (err, details) {
@@ -126,7 +126,7 @@ describe('Module "Orders"', function () {
       if (!demoOrderId) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           orderid: demoOrderId
         };
         conf.whmcs.orders.orderFraudCheck(opts, function (err, details) {
@@ -145,7 +145,7 @@ describe('Module "Orders"', function () {
       if (!demoOrderId) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           orderid: demoOrderId
         };
         conf.whmcs.orders.pendingOrder(opts, function (err, details) {
@@ -160,7 +160,7 @@ describe('Module "Orders"', function () {
       if (!demoOrderId) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           orderid: demoOrderId
         };
         conf.whmcs.orders.cancelOrder(opts, function (err, details) {
@@ -173,7 +173,7 @@ describe('Module "Orders"', function () {
 
     describe('Order accept', function () {
       before(function (done) {
-        var opts = {
+        let opts = {
           clientid: conf.demoClientId,
           paymentmethod: demoPaymentMethod,
           'domain[0]': 'domaintest.com',
@@ -196,7 +196,7 @@ describe('Module "Orders"', function () {
         if (!demoOrderId) {
           this.skip();
         } else {
-          var opts = {
+          let opts = {
             orderid: demoOrderId
           };
           conf.whmcs.orders.acceptOrder(opts, function (err, details) {
@@ -212,7 +212,7 @@ describe('Module "Orders"', function () {
       if (!demoOrderId) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           orderid: demoOrderId
         };
         conf.whmcs.orders.deleteOrder(opts, function (err, details) {

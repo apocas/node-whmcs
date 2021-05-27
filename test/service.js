@@ -1,4 +1,4 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 function isModuleNotAssignedError(msg) {
@@ -6,12 +6,12 @@ function isModuleNotAssignedError(msg) {
 }
 
 describe('Module "Service"', function () {
-  var demoPid, demoPaymentMethod, demoOrderId, demoServiceId;
+  let demoPid, demoPaymentMethod, demoOrderId, demoServiceId;
 
   before(function (done) {
     this.timeout(30000);
 
-    var opts = {
+    let opts = {
       name: 'Test product',
       gid: 1,
       type: 'hostingaccount',
@@ -33,7 +33,7 @@ describe('Module "Service"', function () {
           } else {
             demoPaymentMethod = details.paymentmethods.paymentmethod[0].module;
 
-            var opts = {
+            let opts = {
               clientid: conf.demoClientId,
               paymentmethod: demoPaymentMethod,
               'pid[0]': demoPid,
@@ -50,7 +50,7 @@ describe('Module "Service"', function () {
                 demoOrderId = details.orderid;
               }
 
-              var opts = {
+              let opts = {
                 domain: 'hostingtest.com',
                 limitstart: 0,
                 limitnum: 1
@@ -75,7 +75,7 @@ describe('Module "Service"', function () {
   });
 
   it('should update a client service', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId,
       notes: 'this service was updated'
     };
@@ -87,7 +87,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run the module create', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId
     };
     conf.whmcs.service.moduleCreate(opts, function (err, details) {
@@ -102,7 +102,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run the change package action', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId
     };
     conf.whmcs.service.moduleChangePackage(opts, function (err, details) {
@@ -117,7 +117,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run the change pw action', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId
     };
     conf.whmcs.service.moduleChangePw(opts, function (err, details) {
@@ -132,7 +132,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run a custom module action', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId,
       func_name: 'test'
     };
@@ -148,7 +148,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run the module suspend action', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId
     };
     conf.whmcs.service.moduleSuspend(opts, function (err, details) {
@@ -163,7 +163,7 @@ describe('Module "Service"', function () {
   });
 
   it('should run the module unsuspend action', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId
     };
     conf.whmcs.service.moduleUnsuspend(opts, function (err, details) {
@@ -178,7 +178,7 @@ describe('Module "Service"', function () {
   });
 
   it('should update or calculate an upgrade on a product', function (done) {
-    var opts = {
+    let opts = {
       serviceid: demoServiceId,
       type: 'product',
       calconly: true,

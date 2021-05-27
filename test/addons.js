@@ -1,10 +1,10 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Addons"', function () {
 
   it('should update client addon', function (done) {
-    var opts = {
+    let opts = {
       id: 1
     };
     conf.whmcs.addons.updateClientAddon(opts, function (err, details) {

@@ -1,13 +1,13 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf');
 
 describe('Module "Billing"', function () {
 
   describe('Quote', function () {
-    var demoQuoteId;
+    let demoQuoteId;
 
     it('should get quotes', function (done) {
-      var opts = {
+      let opts = {
         limitstart: 0,
         limitnum: 1
       };
@@ -22,14 +22,14 @@ describe('Module "Billing"', function () {
     });
 
     it('should create a quote', function (done) {
-      var opts = {
+      let opts = {
         subject: 'test quote',
         stage: 'Draft',
         validuntil: '01-01-2099',
         userid: conf.demoClientId
       };
 
-      var items = {
+      let items = {
         'lineitems[0]': {
           desc: 'quote description',
           qty: 1,
@@ -53,7 +53,7 @@ describe('Module "Billing"', function () {
       if (demoQuoteId == undefined) {
         this.skip();
       }
-      var opts = {
+      let opts = {
         quoteid: demoQuoteId
       };
 
@@ -70,7 +70,7 @@ describe('Module "Billing"', function () {
       if (demoQuoteId == undefined) {
         this.skip();
       }
-      var opts = {
+      let opts = {
         quoteid: demoQuoteId,
         subject: 'this is an updated quote'
       };
@@ -87,7 +87,7 @@ describe('Module "Billing"', function () {
       if (demoQuoteId == undefined) {
         this.skip();
       }
-      var opts = {
+      let opts = {
         quoteid: demoQuoteId,
       };
 
@@ -103,7 +103,7 @@ describe('Module "Billing"', function () {
       if (demoQuoteId == undefined) {
         this.skip();
       }
-      var opts = {
+      let opts = {
         quoteid: demoQuoteId,
       };
 
@@ -118,7 +118,7 @@ describe('Module "Billing"', function () {
       if (demoQuoteId == undefined) {
         this.skip();
       }
-      var opts = {
+      let opts = {
         quoteid: demoQuoteId,
       };
 
@@ -131,7 +131,7 @@ describe('Module "Billing"', function () {
   });
 
   it('should add a billable item', function (done) {
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId,
       description: 'this is a billable item',
       amount: '10.00'
@@ -147,7 +147,7 @@ describe('Module "Billing"', function () {
 
   it('should create an invoice', function (done) {
     this.timeout(30000);
-    var opts = {
+    let opts = {
       userid: conf.demoClientId,
       itemdescription0: 'this is a test invoice',
       itemamount0: 1,
@@ -163,7 +163,7 @@ describe('Module "Billing"', function () {
   });
 
   it('should get invoices', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -178,10 +178,10 @@ describe('Module "Billing"', function () {
   });
 
   describe('Invoice', function () {
-    var demoInvoiceId;
+    let demoInvoiceId;
 
     before(function (done) {
-      var opts = {
+      let opts = {
         userid: conf.demoClientId,
         itemdescription0: 'this is a test invoice',
         itemamount0: 1,
@@ -201,7 +201,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should update an invoice', function (done) {
-      var opts = {
+      let opts = {
         invoiceid: demoInvoiceId,
         'itemdescription[0]': 'this is an updated invoice',
         'itemamount[0]': 1,
@@ -217,7 +217,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should get an invoice', function (done) {
-      var opts = {
+      let opts = {
         invoiceid: demoInvoiceId
       };
 
@@ -231,7 +231,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should add a payment to an invoice', function (done) {
-      var opts = {
+      let opts = {
         invoiceid: demoInvoiceId,
         transid: 1234,
         amount: 0.01,
@@ -246,7 +246,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should apply credit to an invoice', function (done) {
-      var opts = {
+      let opts = {
         invoiceid: demoInvoiceId,
         amount: 0.01,
         noemail: true
@@ -265,7 +265,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should capture payment on an unpaid invoice', function (done) {
-      var opts = {
+      let opts = {
         invoiceid: demoInvoiceId
       };
 
@@ -282,10 +282,10 @@ describe('Module "Billing"', function () {
   });
 
   describe('Pay Method', function () {
-    var demoPaymentMethodId;
+    let demoPaymentMethodId;
 
     it('should add a pay method to given client', function (done) {
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId,
         type: 'BankAccount',
         bank_code: '123456789',
@@ -306,7 +306,7 @@ describe('Module "Billing"', function () {
       if (demoPaymentMethodId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           clientid: conf.demoClientId,
           paymethodid: demoPaymentMethodId
         };
@@ -324,7 +324,7 @@ describe('Module "Billing"', function () {
       if (demoPaymentMethodId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           clientid: conf.demoClientId,
           paymethodid: demoPaymentMethodId
         };
@@ -342,7 +342,7 @@ describe('Module "Billing"', function () {
       if (demoPaymentMethodId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           clientid: conf.demoClientId,
           paymethodid: demoPaymentMethodId
         };
@@ -359,7 +359,7 @@ describe('Module "Billing"', function () {
 
   it('should generate invoices that are due to be generated', function (done) {
     this.timeout(30000);
-    var opts = {
+    let opts = {
       clientid: conf.demoClientId
     };
     conf.whmcs.billing.genInvoices(opts, function (err, details) {
@@ -372,7 +372,7 @@ describe('Module "Billing"', function () {
 
   describe('Credit', function () {
     it('should add credit', function (done) {
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId,
         description: 'this is a credit test',
         amount: 1
@@ -387,7 +387,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should get credits', function (done) {
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId
       };
 
@@ -402,7 +402,7 @@ describe('Module "Billing"', function () {
   });
 
   describe('Transaction', function () {
-    var demoPaymentMethod, demoTransactionId;
+    let demoPaymentMethod, demoTransactionId;
 
     before(function (done) {
       conf.whmcs.system.getPaymentMethods(function (err, details) {
@@ -418,7 +418,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should add transaction', function (done) {
-      var opts = {
+      let opts = {
         paymentmethod: demoPaymentMethod,
         userid: conf.demoClientId
       };
@@ -431,7 +431,7 @@ describe('Module "Billing"', function () {
     });
 
     it('should get transactions', function (done) {
-      var opts = {
+      let opts = {
         clientid: conf.demoClientId
       };
 
@@ -449,7 +449,7 @@ describe('Module "Billing"', function () {
       if (demoTransactionId == undefined) {
         this.skip();
       } else {
-        var opts = {
+        let opts = {
           transactionid: demoTransactionId
         };
 
