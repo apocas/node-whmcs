@@ -1,54 +1,20 @@
-var assert = require('assert'),
-  expect = require('chai').expect,
-  client = require('./spec_helper').client;
+const expect = require('chai').expect,
+  conf = require('./conf');
 
+describe('Module "Products"', function () {
 
-describe('products', function() {
+  it('should create a new product', function (done) {
+    let opts = {
+      name: 'Test product',
+      gid: 1,
+      type: 'hostingaccount',
 
-  it('should get product', function(done) {
-    this.timeout(15000);
-
-    client.products.getProduct(1, function(err, customer) {
-      expect(err).to.be.null;
-
-      done();
-    });
-  });
-
-  it('should get products', function(done) {
-    this.timeout(15000);
-
-    client.products.getProducts(1, function(err, customer) {
-      expect(err).to.be.null;
-
-      done();
-    });
-  });
-
-  it('should upgrade products', function(done) {
-    this.timeout(15000);
-    var opts = {
-      clientid : '1',
-      serviceid : '1',
-      type : 'product',
-      newproductid : null,
-      newproductbillingcycle : 'monthly',
-      paymentmethod : 'moneris'
     };
-
-    client.products.getProduct(1, function(err, customer) {
+    conf.whmcs.products.addProduct(opts, function (err, details) {
       expect(err).to.be.null;
-      
-      opts.newproductid = customer.products.product[0].pid;
-      
-      client.products.upgradeProduct(opts, function(err, product_info) {
-        expect(product_info.result).to.equal('success');
-          
-        expect(err).to.be.null;
-    
-        done();
-      });
+      expect(details).to.have.a.property('result').to.equal('success');
+      expect(details).to.have.a.property('pid');
+      done();
     });
   });
-
 });

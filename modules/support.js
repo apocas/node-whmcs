@@ -1,171 +1,161 @@
-var utils = require('../lib/utils');
-var extend = utils.extend;
-
-var Support = function(config) {
-  this.config = config;
-};
-
-//http://docs.whmcs.com/API:Open_Ticket
-Support.prototype.openTicket = function (clientid, department, subject, message, opts, callback) {
-  var options = {
-    action: 'openticket',
-    clientid: clientid,
-    deptid: department,
-    subject: subject,
-    message: message
-  };
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options,opts);
+class Support {
+  /**
+   * Creates a new Support object
+   * @param {WhmcsHttpClient} whmcsHttpClient 
+   */
+  constructor(whmcsHttpClient) {
+    this.whmcsHttpClient = whmcsHttpClient;
   }
 
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Adds an announcement.
+   * https://developers.whmcs.com/api-reference/addannouncement/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  addAnnouncement(parameters, callback) {
+    return this.whmcsHttpClient.callApi('AddAnnouncement', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//http://docs.whmcs.com/API:Delete_Ticket
-Support.prototype.deleteTicket = function (ticketid, callback) {
-  var options = {
-    action: 'deleteticket',
-    ticketid: ticketid
+  /**
+   * Adds a Cancellation Request.
+   * https://developers.whmcs.com/api-reference/addcancelrequest/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  addCancelRequest(parameters, callback) {
+    return this.whmcsHttpClient.callApi('AddCancelRequest', parameters, callback);
   };
 
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Adds a Client Note.
+   * https://developers.whmcs.com/api-reference/addclientnote/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  addClientNote(parameters, callback) {
+    return this.whmcsHttpClient.callApi('AddClientNote', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//http://docs.whmcs.com/API:Get_Ticket
-Support.prototype.getTicket = function (ticketid, callback) {
-  var options = {
-    action: 'getticket',
-    ticketid: ticketid
+  /**
+   * Add a note to a ticket by Ticket ID or Ticket Number.
+   * https://developers.whmcs.com/api-reference/addticketnote/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  addTicketNote(parameters, callback) {
+    return this.whmcsHttpClient.callApi('AddTicketNote', parameters, callback);
   };
 
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Add a reply to a ticket by Ticket ID.
+   * https://developers.whmcs.com/api-reference/addticketreply/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  addTicketReply(parameters, callback) {
+    return this.whmcsHttpClient.callApi('AddTicketReply', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//http://docs.whmcs.com/API:Reply_Ticket
-Support.prototype.replyTicket = function (ticketid, message, opts, callback) {
-  var options = {
-    action: 'addticketreply',
-    ticketid: ticketid,
-    message: message
+  /**
+   * Blocks a ticket sender.
+   * https://developers.whmcs.com/api-reference/blockticketsender/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  blockTicketSender(parameters, callback) {
+    return this.whmcsHttpClient.callApi('BlockTicketSender', parameters, callback);
   };
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  if(typeof options.adminusername === 'undefined' && typeof options.clientid === 'undefined'){
-    options.adminusername = 'Auto-response';
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Delete an announcement.
+   * https://developers.whmcs.com/api-reference/deleteannouncement/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  deleteAnnouncement(parameters, callback) {
+    return this.whmcsHttpClient.callApi('DeleteAnnouncement', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//http://docs.whmcs.com/API:Get_Tickets
-Support.prototype.getTickets = function (opts, callback) {
-  var options = {
-    action: 'gettickets'
+  /**
+   * Deletes a ticket.
+   * https://developers.whmcs.com/api-reference/deleteticket/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  deleteTicket(parameters, callback) {
+    return this.whmcsHttpClient.callApi('DeleteTicket', parameters, callback);
   };
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Deletes a ticket note.
+   * https://developers.whmcs.com/api-reference/deleteticketnote/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  deleteTicketNote(parameters, callback) {
+    return this.whmcsHttpClient.callApi('DeleteTicketNote', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//http://docs.whmcs.com/API:Update_Ticket
-Support.prototype.updateTicket = function (opts, callback) {
-  var options = {
-    action: 'updateticket'
+  /**
+   * Deletes a ticket reply.
+   * https://developers.whmcs.com/api-reference/deleteticketreply/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  deleteTicketReply(parameters, callback) {
+    return this.whmcsHttpClient.callApi('DeleteTicketReply', parameters, callback);
   };
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Obtain an array of announcements.
+   * https://developers.whmcs.com/api-reference/getannouncements/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  getAnnouncements(parameters, callback) {
+    return this.whmcsHttpClient.callApi('GetAnnouncements', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-};
-
-//https://developers.whmcs.com/api-reference/getticketattachment/
-Support.prototype.getTicketAttachment = function (relatedId, type, index, opts, callback) {
-  var options = {
-    action: 'getticketattachment',
-    relatedid: relatedId,
-    type: type,
-    index: index
-  }
-
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Merge tickets.
+   * https://developers.whmcs.com/api-reference/mergeticket/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  mergeTicket(parameters, callback) {
+    return this.whmcsHttpClient.callApi('MergeTicket', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
-}
-
-//https://developers.whmcs.com/api-reference/getsupportdepartments/
-Support.prototype.getSupportDepartments = function(opts, callback) {
-  var options = {
-    action: 'getsupportdepartments'
+  /**
+   * Open a new ticket.
+   * https://developers.whmcs.com/api-reference/openticket/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  openTicket(parameters, callback) {
+    return this.whmcsHttpClient.callApi('OpenTicket', parameters, callback);
   };
 
-  if(typeof opts === 'function'){
-    callback = opts;
-  } else {
-    options = extend(options, opts);
-  }
-
-  var createOptions = {
-    client: this,
-    body: options
+  /**
+   * Updates an existing ticket.
+   * https://developers.whmcs.com/api-reference/updateticket/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  updateTicket(parameters, callback) {
+    return this.whmcsHttpClient.callApi('UpdateTicket', parameters, callback);
   };
 
-  utils.modem(createOptions, callback);
+  /**
+   * Updates a ticket reply message.
+   * https://developers.whmcs.com/api-reference/updateticketreply/
+   * @param {Object} parameters Request parameters
+   * @param {Function} callback Optional callback. If not set the method returns a Promise
+   */
+  updateTicketReply(parameters, callback) {
+    return this.whmcsHttpClient.callApi('UpdateTicketReply', parameters, callback);
+  };
 }
 
 module.exports = Support;
