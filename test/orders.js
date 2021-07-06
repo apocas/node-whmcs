@@ -66,10 +66,11 @@ describe('Module "Orders"', function () {
 
   it('should get promotions', function (done) {
     conf.whmcs.orders.getPromotions(function (err, details) {
-      expect(err).to.be.null;
       expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('promotions').to.be.an('object');
-      expect(details.promotions).to.have.a.property('promotion').to.be.an('array');
+      if(details.totalResults > 0) {
+        expect(details).to.have.a.property('promotions').to.be.an('object');
+        expect(details.promotions).to.have.a.property('promotion').to.be.an('array');
+      }
       done();
     });
   });
