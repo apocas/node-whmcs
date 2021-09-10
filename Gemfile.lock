@@ -1,0 +1,56 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (6.1.4.1)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
+    concurrent-ruby (1.1.9)
+    dotenv (2.7.6)
+    i18n (1.8.10)
+      concurrent-ruby (~> 1.0)
+    minitest (5.14.4)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    nio4r (2.5.8)
+    oj (3.11.3)
+    puma (5.4.0)
+      nio4r (~> 2.0)
+    rack (2.2.3)
+    rack-protection (2.1.0)
+      rack
+    rake (12.3.3)
+    ruby2_keywords (0.0.5)
+    sinatra (2.1.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.1.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.1.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.1.0)
+      sinatra (= 2.1.0)
+      tilt (~> 2.0)
+    tilt (2.0.10)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    zeitwerk (2.4.2)
+
+PLATFORMS
+  x86_64-darwin-20
+
+DEPENDENCIES
+  activesupport
+  dotenv
+  oj (~> 3.11.3)
+  puma
+  rake (~> 12.0)
+  sinatra
+  sinatra-contrib
+
+BUNDLED WITH
+   2.2.27
