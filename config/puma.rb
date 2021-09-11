@@ -1,5 +1,5 @@
 workers Integer(ENV["WEB_CONCURRENCY"] || 2)
-threads_count = Integer(ENV["THREAD_COUNT"] || 5)
+threads_count = Integer(ENV["THREAD_COUNT"] || 10)
 threads threads_count, threads_count
 
 rackup DefaultRackup

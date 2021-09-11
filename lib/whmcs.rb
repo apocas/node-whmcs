@@ -1,14 +1,16 @@
 require "active_support"
 require "active_support/core_ext/object/blank"
 require "net/http"
-# require "faraday"
 
-require_relative "./whmcs/base"
-require_relative "./whmcs/hooks"
-require_relative "./whmcs/service"
-require_relative "./whmcs/usage"
-require_relative "./whmcs/user"
-require_relative "./whmcs/version"
+# require_relative "./whmcs/base"
+# require_relative "./whmcs/hooks"
+# require_relative "./whmcs/system"
+# require_relative "./whmcs/permissions"
+# require_relative "./whmcs/service"
+# require_relative "./whmcs/usage"
+# require_relative "./whmcs/user"
+# require_relative "./whmcs/version"
+Dir[File.join(__dir__, 'whmcs', '*.rb')].each { |file| require file }
 
 if RUBY_ENGINE == "ruby" and not ENV["DISABLE_OJ"]
   require "oj"
@@ -117,9 +119,12 @@ module Whmcs
       Gem::Version.new "0.0"
     end
 
-    def api(api, params)
-      response = Whmcs::Base.new.remote(api, params)
+    def call(api, *params)
+      response = Whmcs::Base.new.remote(api, *params)
+
       if response.kind_of? Net::HTTPSuccess
+        Oj.load(response.body, { symbol_keys: true, mode: :object })
+      elsif response.kind_of? Net::HTTPForbidden
         Oj.load(response.body, { symbol_keys: true, mode: :object })
       else
         nil

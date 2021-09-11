@@ -1,5 +1,6 @@
 module Whmcs
   class System < Base
+
     class << self
       ##
       # GetAdminUsers: String
@@ -21,6 +22,7 @@ module Whmcs
           break if result[:count].zero?
         end
       end
+    end
 
     private
 
@@ -28,5 +30,6 @@ module Whmcs
       self.errors << "Missing service id" if self.id.blank?
       errors.empty?
     end
+
   end
 end
