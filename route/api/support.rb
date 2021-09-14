@@ -16,13 +16,28 @@ namespace "/api/v1/support" do
     # read request body
     payload = JSON.parse(request.body.read.to_s)
 
-    logger.info "Pending add #{payload}"
+    logger.info "Adding announcement #{payload}"
     response = Whmcs.call("AddAnnouncement", { :date => payload[:date],
                                                :title => payload[:title],
                                                :announcement => payload[:announcement],
                                                :published => payload[:published] })
     session[:announcement] = response[:announcement]
-    logger.info "Login #{response}"
+    logger.info "Announcement added: #{response}"
+    return json(response)
+  end
+
+  # UpdateAnnouncement
+  post "/announcement/update" do
+    payload = JSON.parse(request.body.read.to_s)
+
+    response = Whmcs.call("UpdateAnnouncement", { :announcementid => payload[:announcementid],
+                                                 :date => payload[:date],
+                                                 :title => payload[:title],
+                                                 :announcement => payload[:announcement],
+                                                 :published => payload[:published] # 1 || 0
+ })
+    session[:announcement] = response[:announcement]
+    logger.info "Announcement updated: #{response}"
     return json(response)
   end
 
@@ -34,7 +49,7 @@ namespace "/api/v1/support" do
     logger.info "Pending remove #{payload}"
     response = Whmcs.call("AddAnnouncement", { :announcementid => payload[:announcementid] })
     session[:announcement] = response[:announcement]
-    logger.info "Accnouncement #{response} removed"
+    logger.info "Accnouncement removed: #{response}"
     return json(response)
   end
 
