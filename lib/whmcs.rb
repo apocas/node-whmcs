@@ -2,15 +2,8 @@ require "active_support"
 require "active_support/core_ext/object/blank"
 require "net/http"
 
-# require_relative "./whmcs/base"
-# require_relative "./whmcs/hooks"
-# require_relative "./whmcs/system"
-# require_relative "./whmcs/permissions"
-# require_relative "./whmcs/service"
-# require_relative "./whmcs/usage"
-# require_relative "./whmcs/user"
-# require_relative "./whmcs/version"
-Dir[File.join(__dir__, 'whmcs', '*.rb')].each { |file| require file }
+# Dir[File.join(__dir__, 'whmcs', '*.rb')].each { |file| require file }
+Dir[File.join(File.dirname(__FILE__), "whmcs", "*.rb")].each { |file| require file }
 
 if RUBY_ENGINE == "ruby" and not ENV["DISABLE_OJ"]
   require "oj"
@@ -121,6 +114,9 @@ module Whmcs
 
     def call(api, *params)
       response = Whmcs::Base.new.remote(api, *params)
+      # return utf-8 encoded string
+      # puts "#{response.each_header { |h| p "#{h} => #{response[h]}" }}"
+      # puts response.body.encode(Encoding::ISO_8859_1).encode(Encoding::UTF_8)
 
       if response.kind_of? Net::HTTPSuccess
         Oj.load(response.body, { symbol_keys: true, mode: :object })
@@ -145,12 +141,12 @@ module Whmcs
     #     "twoFactorEnabled": "false"
     # }
     def login(email, password)
-        response = Whmcs::Base.new.remote("ValidateLogin", {email: email, password2: password})
-        if response.kind_of? Net::HTTPSuccess
-          Oj.load(response.body, { symbol_keys: true, mode: :object })
-        else
-          nil
-        end
+      response = Whmcs::Base.new.remote("ValidateLogin", { email: email, password2: password })
+      if response.kind_of? Net::HTTPSuccess
+        Oj.load(response.body, { symbol_keys: true, mode: :object })
+      else
+        nil
+      end
     end
   end
 end

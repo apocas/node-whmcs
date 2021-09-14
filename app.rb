@@ -2,154 +2,93 @@ require "sinatra"
 # require 'sinatra/contrib/all'
 require "sinatra/reloader" if development?
 require "dotenv/load"
-
-# require 'json'
 require "sinatra/json"
 require "sinatra/namespace"
+
+# require "openssl"
+require "jwt"
+
 # require 'mongoid'
-
-require_relative "./lib/whmcs"
-require "./helper"
-
-require "bcrypt"
-
-require "./lib/color"
-
 # DB Setup
 # Mongoid.load! 'mongoid.config'
-
 configure :production, :development do
+  enable :logging
+  enable :reloader
+
   set :server, :puma
   set :show_exceptions, false
   # set :json_content_type, :json
-  enable :sessions
-  enable :logging
-  enable :reloader
+  set :default_content_type, "application/json"
+
+  # Session Middleware
+  # set :sessions, :expire_after => 60 * 60 * 1 # 1 hour in seconds
+  # set :session_store, Rack::Session::Pool, :key => "session_id",
+  #                                          :expire_after => 60 * 60 * 1, # 1 hour in seconds
+  #                                          :cookie_only => false,
+  #                                          :defer => true
+  # set :session_secret, ENV["SESSION_SECRET"]
+  #
+  # use Rack::Session::Cookie middleware instead of defualt 'enable :sessions' if you need to set additional parameters [pool] => save to memory, lost data after restart [cookie] => With Cookie instead you will have restart-persistent sessions at the price of marshaling.
+  #
+  # use Rack::Session::Pool, :expire_after => 60 * 60 * 1 # 1 hour in seconds
+  use Rack::Session::Cookie, :path => "/",
+                             :httponly => true,
+                             :expire_after => 60 * 60 * 24 * 5, # 5 days in seconds
+                             :secret => ENV["SESSION_SECRET"]
+
+  # eable protection
+  use Rack::Protection, :except => :path_traversal
 end
 
-# Provides a way to handle multiple HTTP verbs with a single block
+before do
+  # Switch to parameter based session management if the client is an ios device
+  if env["HTTP_USER_AGENT"] =~ /iOS/
+    session.options[:cookie_only] = false
+    session.options[:defer] = true
+  end
+end
+
+# Load All Files
+# path_to_requies = [
+#   "route", "lib",
+# ]
+# path_to_requies.each { |path| Dir[File.join(File.dirname(__FILE__), path, "*.rb")].each { |file| require file } }
+
+# Load all lib file
+Dir[File.join(File.dirname(__FILE__), "lib", "*.rb")].each { |file| require file }
+# Load all routes
+Dir[File.join(File.dirname(__FILE__), "route", "*.rb")].each { |file| require file }
+# Load Helpers
+# require "./helper"
+
+# require "./jwt"
+# JWT settings
 #
-# @example
-#   route :get, :post, '/something' do
-#       # Handle your route here
-#   end
-# def self.route(*methods, path, &block)
-#     allowed_methods = [:get, :post, :delete, :patch, :put, :head, :options]
-#     methods.each do |method|
-#         method.to_sym
-#         self.send(method, path, &block) if allowed_methods.include? method
-#     end
+# REMOVE rsa encryption
+# signing_key_path = File.expand_path("../app.rsa", __FILE__)
+# verify_key_path = File.expand_path("../app.rsa.pub", __FILE__)
+
+# signing_key = ""
+# verify_key = ""
+
+# File.open(signing_key_path) do |file|
+#   signing_key = OpenSSL::PKey.read(file)
 # end
 
-#  Endpoints
-get "/" do
-  return "hello world"
+# File.open(verify_key_path) do |file|
+#   verify_key = OpenSSL::PKey.read(file)
+# end
+
+# set :signing_key, ENV["JWT_KEY"]
+# set :verify_key, ENV["JWT_SECRET"]
+
+# require "./helper"
+# require "./jwtAuth"
+# use JwtAuth
+
+error 404 do
+  halt(404, { code: 404, error: "[client] Not found" }.to_json)
 end
-
-# namespace
-# https://x-team.com/blog/how-to-create-a-ruby-api-with-sinatra/
-namespace "/api/v1" do
-  before do
-    content_type "application/json"
-    expires 500, :public, :must_revalidate
-
-    # remove global @payload
-    # @payload = JSON.parse(request.body.read.to_s)
-    config = {
-      'endpoint': ENV["ENDPOINT"],
-      'identifier': ENV["IDENTIFIER"],
-      'secret': ENV["SECRET"],
-    }
-
-    Whmcs.configure(config)
-  end
-
-  # routes
-  get "/users" do
-    logger.info "loading users data"
-
-    users = Whmcs.call("GetUsers", {}).body
-
-    return users
-  end
-
-  get "/permissions" do
-    response = Whmcs.call("GetPermissions")
-    logger.info '[#{response[:result].upcase.bg_red}] - #{response[:message]}.'
-    return json(response)
-  end
-
-  get "/system" do
-    logger.info "loading system data"
-    response = Whmcs::System.find_all_by_role_id({ 'roleid': params["roleid"].to_i, 'email': params["email"], 'include_disabled': params["include_disabled"] })
-    return json(response)
-  end
-
-  get "/clients" do
-    logger.info "loading clients data"
-    # set default parmas
-    limitstart = parmas[:limitstart] || 0
-    limitnum = params[:limitnum] || 25
-    sorting = params[:sorting] || "ASC"
-    status = params[:status] || "Active" # ‘Active’, ‘Inactive’, or ‘Closed’.
-    search = params[:search] || ""  # email, firstname, lastname, fullname or companyname
-    orderby = params[:orderby] || "id"  # id, firstname, lastname, companyname, email, groupid, datecreated, status
-
-    response = Whmcs.call("GetClients", parmas)
-    return json(response)
-  end
-
-  # curl -i -X POST -H 'Content-Type: application/json' -d'{'email':'51753160@qq.com', 'password':'76dAJ8uuZ9On'}' http://localhost:4567/api/v1/login
-  post "/login" do
-    payload = JSON.parse(request.body.read.to_s)
-
-    logger.info 'Login #{payload}'
-    response = Whmcs.login(payload["email"], payload["password"])
-    return json(response)
-  end
-
-  get "/service/:id" do |id|
-    res = Whmcs::Service.find(id)
-    puts res
-    return res
-  end
-
-  get "/books" do
-    books = Books.all
-
-    [:title, :isbn, :author].each do |filter|
-      books = books.send(filter, params[filter]) if params[filter]
-    end
-
-    books.map { |book| BookSerializer.new(book) }.to_json
-  end
-  get "/books/:id" do |id|
-    halt_if_not_found!
-    serialize(book)
-  end
-
-  post "/books" do
-    book = Book.new(json_params)
-    halt 422, serialize(book) unless book.save
-    response.headers["Location"] = '#{base_url}/api/v1/books/#{book.id}'
-    status 201
-  end
-
-  patch "/books/:id" do |id|
-    halt_if_not_found!
-    halt 422, serialize(book) unless book.update_attributes(json_params)
-    serialize(book)
-  end
-
-  delete "/books/:id" do |id|
-    book.destroy if book
-    status 204
-  end
-
-  error 404 do
-    halt(404, { code: 404, error: "not found" }.to_json)
-  end
-  error 500 do
-    halt(500, { code: 500, error: "server not found" }.to_json)
-  end
+error 500 do
+  halt(500, { code: 500, error: "[Server] Not found" }.to_json)
 end
