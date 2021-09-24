@@ -1,6 +1,26 @@
 #  Endpoints
 get "/" do
+  return test("params")
+end
+
+get "/debug" do
   return session.inspect
+end
+
+get "/test/:key" do
+  result = REDIS.get(params[:key])
+
+  return json({ "username": result })
+end
+
+get "/logout" do
+  session["access_token"] = nil
+  session.clear
+
+  redirect to("/")
+end
+
+get "/register" do
 end
 
 namespace "/api/v1" do

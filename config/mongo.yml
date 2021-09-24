@@ -1,0 +1,18 @@
+development:
+    clients:
+        default:
+            database: <%= ENV['MONGO_DB'] %>
+            hosts:
+                - <%= ENV['MONGO_URL'] %>
+            user: <%= ENV['MONGO_USER'] %>
+            password: <%= ENV['MONGO_PASS'] %>
+            # options:
+            # skip_version_check: true
+            # safe: true
+production:
+    clients:
+        default:
+            uri: <%= ENV['MONGO_URI'] %>
+            options:
+                skip_version_check: true
+                safe: true

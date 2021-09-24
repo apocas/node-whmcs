@@ -1,6 +1,6 @@
-namespace "/api/v1/affiliate" do
+namespace "/api/v1" do
   # GetAffiliates
-  get "/" do
+  get "/affiliate" do
     logger.info "Get affiliate"
 
     response = Whmcs.call("GetAffiliates", { :limitstart => params[:limitstart].to_i,
@@ -17,7 +17,7 @@ namespace "/api/v1/affiliate" do
     return json(response)
   end
   # AffiliateActivate
-  get "/activate" do
+  get "/affiliate/activate" do
     logger.info "Activate affiliate"
 
     response = Whmcs.call("AffiliateActivate", { :userid => params[:limitstart] })

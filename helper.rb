@@ -1,4 +1,49 @@
 helpers do
+  def hash_password(password)
+    BCrypt::Password.create(password).to_s
+  end
+
+  def test_password(password, hash)
+    BCrypt::Password.new(hash) == password
+  end
+
+  def register(usersname, email, password)
+    password_salt = BCrypt::Engine.generate_salt
+    password_hash = BCrypt::Engine.hash_secret(password, password_salt)
+
+    @user = User.new(:username => username.downcase,
+                     :email => email.downcase,
+                     :password_hash => password_hash,
+                     :password_salt => password_salt)
+    @user.save
+    if @user.save!
+      return { "result": "success", "message": "User registered successfuly" }
+    else
+      return { "result": "error", "message": "Error, please try again." }
+    end
+  end
+
+  # def self.authenticate(username, password)
+  #   user = User.username(username).first
+  #   if user && user.passwordhash == Digest::SHA1.hexdigest(password)
+  #     return user
+  #   else
+  #     return nil
+  #   end
+  # end
+
+  # def login(email, password)
+  #   @user = User.find_by({ :username => username })
+  #   # method alias: == vs is_passowrd?
+  #   if BCrypt::Password.new(@user.password_hash).is_password?(password)
+  #     session[:id] = @user.id
+  #     session[:username] = @user.username
+  #     return redirect "/", flash[:notice] = "Successfully login..."
+  #   else
+  #     return redirect back, flash[:error] = "Error, please try again."
+  #   end
+  # end
+
   ## Jwt
   #
   # protected just does a redirect if we don't have a valid token
