@@ -1,73 +1,76 @@
 const expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Module"', function () {
 
-  it('should get the module queue', function (done) {
-    conf.whmcs.module.getModuleQueue(function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('queue').to.be.an('array');
-      done();
-    });
+  it('should get the module queue', async function () {
+    let res = await conf.whmcs.module.getModuleQueue();
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('queue').to.be.an('array');
   });
 
-  it('should get the module configuration parameters', function (done) {
+  it('should get the module configuration parameters', async function () {
     let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
 
-    conf.whmcs.module.getModuleConfigurationParameters(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('parameters').to.be.an('array');
-      done();
-    });
+    let res = await conf.whmcs.module.getModuleConfigurationParameters(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('parameters').to.be.an('array');
   });
 
-  it('should activate a module', function (done) {
+  it('should activate a module', async function () {
     let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
 
-    conf.whmcs.module.activateModule(opts, function (err, details) {
-      if (err && err.message.indexOf('Failed to activate: Module already active') > -1) {
-        done();
+    let res;
+
+    try {
+      res = await conf.whmcs.module.activateModule(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    } catch (e) {
+      if (e instanceof WhmcsError) {
+        let possibleErr = ['Failed to activate:', 'An unexpected error occurred:', 'Module activation not supported by module type.', 'Invalid module name provided.', 'Invalid module type provided. Supported module types include:'];
+        expect(possibleErr.some(err => {
+          return e.message.indexOf(err) > -1;
+        })).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should update module configuration parameters', function (done) {
+  it('should update module configuration parameters', async function () {
     let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal'
     };
 
-    conf.whmcs.module.updateModuleConfiguration(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.module.updateModuleConfiguration(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
-  it('should deactivate a module', function (done) {
+  it('should deactivate a module', async function () {
     let opts = {
       moduleType: 'gateway',
       moduleName: 'paypal',
       newGateway: 'paypal'
     };
 
-    conf.whmcs.module.deactivateModule(opts, function (err, details) {
-      expect(err).to.have.a.property('message');
-      expect(err.message).to.have.string('Module deactivation not supported by module type');
-      done();
-    });
+    try {
+      let res = await conf.whmcs.module.deactivateModule(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    } catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(e.message).to.have.string('Module deactivation not supported by module type');
+      } else {
+        throw e;
+      }
+    }
   });
 
 });

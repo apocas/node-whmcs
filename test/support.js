@@ -1,364 +1,274 @@
 const expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Support"', function () {
+
+  it('should add an announcement', async function () {
+    let opts = {
+      date: '1969-07-11',
+      title: 'There\'s something wrong',
+      announcement: 'Your circuit\'s dead'
+    };
+
+    let res = await conf.whmcs.support.addAnnouncement(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('announcementid').to.not.be.null;
+  });
+
+  it('should add a cancel request', async function () {
+    let opts = {
+      serviceid: conf.demoServiceId
+    };
+    let res = await conf.whmcs.support.addCancelRequest(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+  });
+
+  it('should add a client note', async function () {
+    let opts = {
+      userid: conf.demoClientId,
+      notes: 'Planet Earth is blue and there\'s nothing I can do'
+    };
+
+    let res = await conf.whmcs.support.addClientNote(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+  });
+
+  it('should open a ticket', async function () {
+    let opts = {
+      deptid: conf.demoDeptId,
+      clientid: conf.demoClientId,
+      subject: 'this is a subject',
+      message: 'this is a message'
+    };
+
+    let res = await conf.whmcs.support.openTicket(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('id').to.not.be.null;
+    expect(res).to.have.a.property('tid').to.not.be.null;
+    expect(res).to.have.a.property('c').to.not.be.null;
+  });
+
   describe('Announcement', function () {
     let demoAnnouncementId;
 
-    it('should add an announcement', function (done) {
+    before(async function () {
       let opts = {
         date: '1969-07-11',
         title: 'There\'s something wrong',
         announcement: 'Your circuit\'s dead'
       };
 
-      conf.whmcs.support.addAnnouncement(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('announcementid');
-        demoAnnouncementId = details.announcementid;
-        done();
-      });
+      let res = await conf.whmcs.support.addAnnouncement(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('announcementid').to.not.be.null;
+      demoAnnouncementId = res.announcementid;
     });
 
-    it('should get announcements', function (done) {
+    it('should get announcements', async function () {
       let opts = {
         limitstart: 0,
         limitnum: 1
       };
 
-      conf.whmcs.support.getAnnouncements(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('announcements').to.be.an.an('object');
-        expect(details.announcements).to.have.a.property('announcement').to.be.an('array').to.have.length.above(0);
-        done();
-      });
+      let res = await conf.whmcs.support.getAnnouncements(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('announcements').to.be.an.an('object');
+      expect(res.announcements).to.have.a.property('announcement').to.be.an('array').to.have.length.above(0);
     });
 
-    it('should delete an announcement', function (done) {
-      if (demoAnnouncementId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
-          announcementid: demoAnnouncementId
-        };
-
-        conf.whmcs.support.deleteAnnouncement(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
+    it('should delete an announcement', async function () {
+      let deleteOpts = {
+        announcementid: demoAnnouncementId
+      };
+      let deleteRes = await conf.whmcs.support.deleteAnnouncement(deleteOpts);
+      expect(deleteRes).to.have.a.property('result').to.equal('success');
     });
 
-  });
-
-  it('should add a cancel request', function (done) {
-    let opts = {
-      serviceid: 1
-    };
-
-    conf.whmcs.support.addCancelRequest(opts, function (err, details) {
-      if (err && err.message.indexOf('Existing Cancellation Request Exists') > -1) {
-        done();
-      } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
-      }
-    });
-  });
-
-  it('should add a client note', function (done) {
-    let opts = {
-      userid: conf.demoClientId,
-      notes: 'Planet Earth is blue and there\'s nothing I can do'
-    };
-
-    conf.whmcs.support.addClientNote(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
   });
 
   describe('Ticket', function () {
     let demoTicketId;
 
-    it('should open a ticket', function (done) {
+    before(async function () {
       let opts = {
-        deptid: 1,
+        deptid: conf.demoDeptId,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
         message: 'this is a message'
       };
 
-      conf.whmcs.support.openTicket(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('id');
-        expect(details).to.have.a.property('tid');
-        expect(details).to.have.a.property('c');
-        demoTicketId = details.id;
-        done();
-      });
+      let res = await conf.whmcs.support.openTicket(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('id').to.not.be.null;
+      expect(res).to.have.a.property('tid').to.not.be.null;
+      expect(res).to.have.a.property('c').to.not.be.null;
+      demoTicketId = res.id;
     });
 
-    it('should add a note to the ticket', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
-          message: 'this is a ticket note',
-          ticketid: demoTicketId
-        };
+    it('should add a note to the ticket', async function () {
+      let addOpts = {
+        message: 'this is a ticket note',
+        ticketid: demoTicketId
+      };
 
-        conf.whmcs.support.addTicketNote(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
+      let addRes = await conf.whmcs.support.addTicketNote(addOpts);
+      expect(addRes).to.have.a.property('result').to.equal('success');
+    });
+
+    it('should add a reply to the ticket', async function () {
+      let opts = {
+        ticketid: demoTicketId,
+        clientid: conf.demoClientId,
+        message: 'this is a new reply'
+      };
+
+      let res = await conf.whmcs.support.addTicketReply(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    });
+
+    it('should update a ticket', async function () {
+      let opts = {
+        ticketid: demoTicketId,
+        subject: 'this is an updated ticket'
+      };
+
+      let res = await conf.whmcs.support.updateTicket(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('ticketid').to.equal(demoTicketId);
+    });
+
+    it('should create another ticket and merge it', async function () {
+      let openOpts = {
+        deptid: 1,
+        clientid: conf.demoClientId,
+        subject: 'this is another subject',
+        message: 'this is another message'
+      };
+
+      let openRes = await conf.whmcs.support.openTicket(openOpts);
+      expect(openRes).to.have.a.property('result').to.equal('success');
+      expect(openRes).to.have.a.property('id').to.not.be.null;
+      expect(openRes).to.have.a.property('tid').to.not.be.null;
+      expect(openRes).to.have.a.property('c').to.not.be.null;
+
+      let mergeOpts = {
+        ticketid: demoTicketId,
+        mergeticketids: openRes.id,
+        newsubject: 'this is a merged ticket'
+      };
+
+      let mergeRes = await conf.whmcs.support.mergeTicket(mergeOpts);
+      expect(mergeRes).to.have.a.property('result').to.equal('success');
+      expect(mergeRes).to.have.a.property('ticketid').to.equal(demoTicketId);
+    });
+
+    it('should block a ticket sender', async function () {
+      let opts = {
+        ticketid: demoTicketId
+      };
+
+      try {
+        let res = await conf.whmcs.support.blockTicketSender(opts);
+        expect(res).to.have.a.property('result').to.equal('success');
+      } catch (e) {
+        if (e instanceof WhmcsError) {
+          let possibleErr = ['A Client Cannot Be Blocked'];
+          expect(possibleErr.some(err => {
+            return e.message.indexOf(err) > -1;
+          })).to.be.true;
+        } else {
+          throw e;
+        }
       }
     });
 
-    it('should add a reply to the ticket', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
+    describe('Ticket reply', function () {
+      let demoReplyId;
+
+      before(async function () {
+        let replyOpts = {
           ticketid: demoTicketId,
           clientid: conf.demoClientId,
           message: 'this is a new reply'
         };
 
-        conf.whmcs.support.addTicketReply(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
-    });
+        let replyRes = await conf.whmcs.support.addTicketReply(replyOpts);
+        expect(replyRes).to.have.a.property('result').to.equal('success');
 
-    it('should block a ticket sender', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
+        let getOpts = {
           ticketid: demoTicketId
         };
 
-        conf.whmcs.support.blockTicketSender(opts, function (err, details) {
-          if (err && err.message.indexOf('A Client Cannot Be Blocked') > -1) {
-            done();
-          } else {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
-            done();
-          }
-        });
-      }
-    });
-
-    it('should update a ticket', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
-          ticketid: demoTicketId,
-          subject: 'this is an updated ticket'
-        };
-
-        conf.whmcs.support.updateTicket(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          expect(details).to.have.a.property('ticketid').to.equal(demoTicketId);
-          done();
-        });
-      }
-    });
-
-    it('should create another ticket and merge it', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
-          deptid: 1,
-          clientid: conf.demoClientId,
-          subject: 'this is another subject',
-          message: 'this is another message'
-        };
-
-        conf.whmcs.support.openTicket(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          expect(details).to.have.a.property('id');
-          expect(details).to.have.a.property('tid');
-          expect(details).to.have.a.property('c');
-
-          let opts = {
-            ticketid: demoTicketId,
-            mergeticketids: details.id,
-            newsubject: 'this is a merged ticket'
-          };
-
-          conf.whmcs.support.mergeTicket(opts, function (err, details) {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
-            expect(details).to.have.a.property('ticketid').to.equal(demoTicketId);
-            done();
-          });
-        });
-      }
-    });
-
-    it('should delete a ticket', function (done) {
-      if (demoTicketId == undefined) {
-        this.skip();
-      } else {
-        let opts = {
-          ticketid: demoTicketId
-        };
-
-        conf.whmcs.support.deleteTicket(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
-    });
-  });
-
-  describe('Ticket reply', function () {
-    let demoTicketId, demoReplyId;
-
-    before(function (done) {
-      let opts = {
-        deptid: 1,
-        clientid: conf.demoClientId,
-        subject: 'this is a subject',
-        message: 'this is a message'
-      };
-
-      conf.whmcs.support.openTicket(opts, function (err, details) {
-        if (err) {
-          throw (err);
-        } else {
-          demoTicketId = details.id;
-
-          let opts = {
-            ticketid: demoTicketId,
-            clientid: conf.demoClientId,
-            message: 'this is a new reply'
-          };
-
-          conf.whmcs.support.addTicketReply(opts, function (err, details) {
-            if (err) {
-              throw err;
-            } else {
-              let opts = {
-                ticketid: demoTicketId
-              };
-
-              conf.whmcs.tickets.getTicket(opts, function (err, details) {
-                if (err) {
-                  throw err;
-                } else if (!details || !details.replies || !details.replies.reply || !details.replies.reply[0]) {
-                  throw new Error('Ticket must have a reply. Cannot proceed.');
-                } else {
-                  demoReplyId = details.replies.reply[0].replyid;
-                  done();
-                }
-              });
-            }
-          });
-        }
+        let getRes = await conf.whmcs.tickets.getTicket(getOpts);
+        expect(getRes).to.have.a.property('result').to.equal('success');
+        expect(getRes).to.have.a.property('replies').to.be.an('object').to.have.a.property('reply').to.be.an('array').to.have.length.greaterThan(1);
+        let lastReply = getRes.replies.reply[getRes.replies.reply.length - 1];
+        expect(lastReply).to.have.a.property('replyid').to.not.be.null;
+        demoReplyId = getRes.replies.reply[1].replyid;
       });
 
-      it('should update a ticket reply', function (done) {
+      it('should update a ticket reply', async function () {
         let opts = {
           replyid: demoReplyId,
-          //ticketid: demoTicketId,
           message: 'this is an updated reply'
         };
-
-        conf.whmcs.support.updateTicketReply(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
+        let res = await conf.whmcs.support.updateTicketReply(opts);
+        expect(res).to.have.a.property('result').to.equal('success');
       });
 
-      it('should delete a ticket reply', function (done) {
+      it('should delete a ticket reply', async function () {
         let opts = {
-          //ticketid: demoTicketId,
+          ticketid: demoTicketId,
           replyid: demoReplyId
         };
-
-        conf.whmcs.support.deleteTicketReply(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      });
-    });
-  });
-
-  describe('Ticket note', function () {
-    let demoTicketId, demoNoteId;
-
-    before(function (done) {
-      let opts = {
-        deptid: 1,
-        clientid: conf.demoClientId,
-        subject: 'this is a subject',
-        message: 'this is a message'
-      };
-
-      conf.whmcs.support.openTicket(opts, function (err, details) {
-        if (err) {
-          throw (err);
-        } else {
-          demoTicketId = details.id;
-
-          let opts = {
-            message: 'this is a ticket note',
-            ticketid: demoTicketId
-          };
-
-          conf.whmcs.support.addTicketNote(opts, function (err, details) {
-            if (err) {
-              throw err;
-            } else {
-              let opts = {
-                ticketid: demoTicketId
-              };
-
-              conf.whmcs.tickets.getTicket(opts, function (err, details) {
-                if (err) {
-                  throw err;
-                } else if (!details || !details.notes || !details.notes.note || !details.notes.note[0]) {
-                  throw new Error('Ticket must have a note. Cannot proceed.');
-                } else {
-                  demoNoteId = details.notes.note[0].noteid;
-                  done();
-                }
-              });
-            }
-          });
-        }
+        let res = await conf.whmcs.support.deleteTicketReply(opts);
+        expect(res).to.have.a.property('result').to.equal('success');
       });
     });
 
-    it('should delete a ticket note', function (done) {
-      let opts = {
-        noteid: demoNoteId
-      };
+    describe('Ticket Note', function () {
+      let demoTicketNoteId;
 
-      conf.whmcs.support.deleteTicketNote(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+      before(async function () {
+        let addOpts = {
+          message: 'this is a ticket note',
+          ticketid: demoTicketId
+        };
+
+        let addRes = await conf.whmcs.support.addTicketNote(addOpts);
+        expect(addRes).to.have.a.property('result').to.equal('success');
+
+        let ticketOpts = {
+          ticketid: demoTicketId
+        };
+
+        let ticketRes = await conf.whmcs.tickets.getTicket(ticketOpts);
+        expect(ticketRes).to.have.a.property('result').to.equal('success');
+        expect(ticketRes).to.have.a.property('notes').to.be.an('object').to.have.a.property('note').to.be.an('array').to.have.length.greaterThan(0);
+        expect(ticketRes.notes.note[0]).to.have.a.property('noteid');
+
+        demoTicketNoteId = ticketRes.notes.note[0].noteid;
+      });
+
+      it('should delete a ticket note', async function () {
+        let deleteOpts = {
+          noteid: demoTicketNoteId
+        };
+
+        let deleteRes = await conf.whmcs.support.deleteTicketNote(deleteOpts);
+        expect(deleteRes).to.have.a.property('result').to.equal('success');
+      });
+
+    });
+
+    describe('Ticket removal', function () {
+      it('should delete a ticket', async function () {
+        let opts = {
+          ticketid: demoTicketId
+        };
+        let res = await conf.whmcs.support.deleteTicket(opts);
+        expect(res).to.have.a.property('result').to.equal('success');
       });
     });
   });

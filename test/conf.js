@@ -1,10 +1,13 @@
-const WHMCS = require('../whmcs');
+const WHMCS = require('../whmcs'),
+  expect = require('chai').expect,
+  WhmcsError = require('../lib/whmcserror');
 
 let config = {
   apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
   apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
   serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
-  userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs'
+  userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+  accessKey: process.env.WHMCS_AK
 };
 
 const whmcs = new WHMCS(config);
@@ -34,51 +37,150 @@ let contactDetails = {
   phonenumber: '911911911'
 }
 
-function initialize(done) {
-  console.log('Preparing the test environment. Please wait...');
+async function addClient () {
+  let clientRes = await whmcs.client.addClient(userDetails);
+  expect(clientRes).to.have.a.property('result').to.equal('success');
+  expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
+  expect(clientRes).to.have.a.property('clientid').to.not.be.null;
 
-  whmcs.client.addClient(userDetails, function (err, res) {
-    if (err) {
-      done(err);
-    } else {
-      module.exports.demoUserId = res.owner_id;
-      module.exports.demoClientId = res.clientid;
+  module.exports.demoUserId = clientRes.owner_id;
+  module.exports.demoClientId = clientRes.clientid;
 
-      contactDetails.clientid = res.clientid;
-      whmcs.client.addContact(contactDetails, function (err, details) {
-        if (err) {
-          done(err);
-        } else {
-          module.exports.demoContactId = details.contactid;
-          console.log('Test environment initialization complete.');
-          done();
-        }
-      });
-    }
-  });
+  contactDetails.clientid = clientRes.clientid;
+  return clientRes;
 }
 
-function rollback(done) {
-  console.log('Removing the temporary data. Please wait...');
+async function addContact() {
+  let contactRes;
+  
+  contactRes = await whmcs.client.addContact(contactDetails);
+  expect(contactRes).to.have.a.property('result').to.equal('success');
+  expect(contactRes).to.have.a.property('contactid').to.not.be.null;
 
+  module.exports.demoContactId = contactRes.contactid;
+  return contactRes;
+}
+
+async function addProduct() {
+  let productOpts = {
+    name: 'Test product',
+    gid: process.env.WHMCS_TEST_GID || '1',
+    type: 'hostingaccount'
+  };
+
+  let productRes;
+
+  try {
+    productRes = await whmcs.products.addProduct(productOpts);
+    expect(productRes).to.have.a.property('result').to.equal('success');
+    expect(productRes).to.have.a.property('pid').to.not.be.null;
+  } catch (e) {
+    if (e.message.indexOf('You must supply a valid Product Group ID') > -1) {
+      throw new Error('There is no Product Group #' + productOpts.gid + '. You must create a Product Group in WHMCS and set the environment variable "WHMCS_TEST_GID" in order to proceed with the tests.');
+    } else {
+      throw e;
+    }
+  }
+
+  module.exports.demoProductId = productRes.pid;
+  return productRes;
+}
+
+async function getPaymentMethod() {
+  let methodsRes;
+  
+  methodsRes = await whmcs.system.getPaymentMethods();
+  expect(methodsRes).to.have.a.property('result').to.equal('success');
+  expect(methodsRes).to.have.a.property('totalresults').to.not.be.null;
+  if (methodsRes.totalresults == 0) {
+    throw new Error('Payment methods not found. You must create a new payment method first in order to proceed with the tests.');
+  }
+  expect(methodsRes).to.have.a.property('paymentmethods').to.be.an('object').to.have.a.property('paymentmethod').to.be.an('array').to.have.length.greaterThan(0);
+  expect(methodsRes.paymentmethods.paymentmethod[0]).to.have.a.property('module').to.be.a('string');
+  module.exports.demoPaymentMethod = methodsRes.paymentmethods.paymentmethod[0].module;
+  return methodsRes;
+}
+
+async function createOrder() {
+  let orderOpts = {
+    clientid: module.exports.demoClientId,
+    paymentmethod: module.exports.demoPaymentMethod,
+    'pid[0]': module.exports.demoProductId,
+    'domain[0]': 'hostingtest.com',
+    'billingcycle[0]': 'monthly',
+    'priceoverride[0]': 1
+  };
+  let orderRes = await whmcs.orders.addOrder(orderOpts);
+  expect(orderRes).to.have.a.property('result').to.equal('success');
+  expect(orderRes).to.have.a.property('orderid').to.not.be.null;
+  module.exports.demoOrderId = orderRes.orderid;
+  return orderRes;
+}
+
+async function getService() {
+  let productsOpts = {
+    domain: 'hostingtest.com',
+    clientid: module.exports.demoClientId,
+    limitstart: 0,
+    limitnum: 1
+  };
+  let productsRes = await whmcs.client.getClientsProducts(productsOpts);
+  expect(productsRes).to.have.a.property('result').to.equal('success');
+  expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
+  expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
+  module.exports.demoServiceId = productsRes.products.product[0].id;
+  return productsRes;
+}
+
+async function getSupportDepartment() {
+  let deptRes = await whmcs.tickets.getSupportDepartments();
+  expect(deptRes).to.have.a.property('result').to.equal('success');
+  expect(deptRes).to.have.a.property('totalresults').to.not.be.null;
+  if (deptRes.totalresults == 0) {
+    throw new Error('Support departments not found. You must create a support department in order to proceed with the tests.');
+  }
+  expect(deptRes).to.have.a.property('departments').to.be.an('object');
+  expect(deptRes.departments).to.have.a.property('department').to.be.an('array');
+  expect(deptRes.departments.department[0]).to.have.a.property('id').to.be.a('string')
+  module.exports.demoDeptId = deptRes.departments.department[0].id;
+  return deptRes;
+}
+
+async function initialize() {
+  console.log('Preparing the test environment. Please wait...');
+  await addClient();
+  await addContact();
+  await addProduct();
+  await getPaymentMethod();
+  await createOrder();
+  await getService();
+  await getSupportDepartment();
+  console.log('Test environment initialization complete.');
+}
+
+async function removeClient() {
   let opts = {
     clientid: module.exports.demoClientId,
     deleteusers: true,
     deletetransactions: true
   };
-  whmcs.client.deleteClient(opts, function (err, res) {
-    done(err);
-  });
+  return await whmcs.client.deleteClient(opts);
+}
+async function rollback() {
+  console.log('Removing the temporary data. Please wait...');
+  await removeClient();
+  console.log('Temporary data removed.');
 }
 
-before(function (done) {
+before(async function () {
+  const _this = this;
   this.timeout(60000);
-  initialize(done);
+  await initialize();
 });
 
-after(function (done) {
+after(async function () {
   this.timeout(60000);
-  rollback(done);
+  await rollback();
 });
 
 function serialize(mixed_value) {
