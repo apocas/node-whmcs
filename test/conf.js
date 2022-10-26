@@ -137,7 +137,7 @@ async function getSupportDepartment() {
   expect(deptRes).to.have.a.property('result').to.equal('success');
   expect(deptRes).to.have.a.property('totalresults').to.not.be.null;
   if (deptRes.totalresults == 0) {
-    throw new Error('Support departments not found. You must create a support department in order to proceed with the tests.');
+    throw new Error('Support departments not found. You must create a support department and set the environment variable "WHMCS_TEST_DEPTID" in order to proceed with the tests.');
   }
   expect(deptRes).to.have.a.property('departments').to.be.an('object');
   expect(deptRes.departments).to.have.a.property('department').to.be.an('array');

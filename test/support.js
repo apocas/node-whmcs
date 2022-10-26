@@ -140,7 +140,7 @@ describe('Module "Support"', function () {
 
     it('should create another ticket and merge it', async function () {
       let openOpts = {
-        deptid: 1,
+        deptid: process.env.WHMCS_TEST_DEPTID || 1,
         clientid: conf.demoClientId,
         subject: 'this is another subject',
         message: 'this is another message'
