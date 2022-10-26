@@ -106,22 +106,7 @@ describe('Module "Client"', function () {
     let res = await conf.whmcs.client.getClientPassword(opts);
     expect(res).to.have.a.property('result').to.equal('success');
   });
-
-  it('should get clients', async function () {
-    let opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    let res = await conf.whmcs.client.getClients(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.not.be.null;
-    if (parseInt(res.numreturned) > 0) {
-      expect(res).to.have.a.property('clients').to.be.an.an('object');
-      expect(res.clients).to.have.a.property('client');
-      expect(res.clients.client).to.be.an('array').to.have.length.above(0);
-    }
-  });
-
+  
   it('should get clients by email', async function () {
     let opts = {
       search: conf.demoUserDetails.email
@@ -167,22 +152,6 @@ describe('Module "Client"', function () {
       expect(res).to.have.a.property('domains').to.be.an.an('object');
       expect(res.domains).to.have.a.property('domain');
       expect(res.domains.domain).to.be.an('array').to.have.length.greaterThan(0);
-    }
-  });
-
-  it('should get clients products', async function () {
-    this.timeout(30000);
-    let opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    let res = await conf.whmcs.client.getClientsProducts(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('products').to.be.an.an('object');
-      expect(res.products).to.have.a.property('product');
-      expect(res.products.product).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -236,16 +205,6 @@ describe('Module "Client"', function () {
     let updateRes = await conf.whmcs.client.updateClient(updateOpts);
     expect(updateRes).to.have.a.property('result').to.equal('success');
     expect(updateRes).to.have.a.property('clientid').to.equal(conf.demoClientId.toString());
-  });
-
-  it('should update client by email', async function () {
-    let updateOpts = {
-      clientemail: conf.demoUserDetails.email,
-      lastname: 'updated2'
-    };
-    let updateRes = await conf.whmcs.client.updateClient(updateOpts);
-    expect(updateRes).to.have.a.property('result').to.equal('success');
-    expect(updateRes).to.have.a.property('clientid').to.equal(conf.demoClientId);
   });
 
   it('should update contact by contact id', async function () {
