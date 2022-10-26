@@ -17,8 +17,11 @@ describe('Module "Tickets"', function () {
   it('should get support statuses', async function () {
     let res = await conf.whmcs.tickets.getSupportStatuses();
     expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('statuses').to.be.an('object');
-    expect(res.statuses).to.have.a.property('status').to.be.an('array');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('statuses').to.be.an('object')
+        .to.have.a.property('status').to.be.an('array');
+    }
   });
 
   it('should get support statuses', async function () {
@@ -31,12 +34,20 @@ describe('Module "Tickets"', function () {
     let res = await conf.whmcs.tickets.getTicketPredefinedCats();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('categories').to.be.an('object')
+        .to.have.a.property('category').to.be.an('array');
+    }
   });
 
   it('should get predefined replies', async function () {
-    let res = await conf.whmcs.tickets.getTicketPredefinedCats();
+    let res = await conf.whmcs.tickets.getTicketPredefinedReplies();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('predefinedreplies').to.be.an('object')
+        .to.have.a.property('predefinedreply').to.be.an('array');
+    }
   });
 
   describe('Ticket', function () {
@@ -58,12 +69,13 @@ describe('Module "Tickets"', function () {
 
     it('should get tickets', async function () {
       let opts = {
-        limitstart: 0,
-        limitnum: 1
+        clientid: conf.demoClientId
       };
 
       let res = await conf.whmcs.tickets.getTickets(opts);
       expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('tickets').to.be.an('object')
+        .to.have.a.property('ticket').to.be.an('array').to.have.lengthOf(1);
     });
 
     it('should get ticket notes', async function () {
@@ -77,7 +89,7 @@ describe('Module "Tickets"', function () {
       expect(res.notes).to.have.a.property('note').to.be.an('array');
     });
 
-    it('should get a ticket by id', async function () {
+    it('should get ticket details by ticket id', async function () {
       let opts = {
         ticketid: demoTicketId
       };
