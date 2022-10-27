@@ -1,14 +1,14 @@
 {
   "name": "whmcs",
   "description": "WHMCS API client.",
-  "version": "1.2.2",
-  "author": "Pedro Dias <petermdias@gmail.com>",
+  "version": "1.0.0",
+  "author": "Joao Graca",
   "maintainers": [
-    "apocas <petermdias@gmail.com>"
+    "Joao Graca"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/apocas/node-whmcs.git"
+    "url": "http://github.com/joaograca/node-whmcs.git"
   },
   "keywords": [
     "whmcs",
