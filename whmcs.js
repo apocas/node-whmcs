@@ -7,11 +7,6 @@ class WHMCS {
    * @param {Object} options Configuration parameters (key-value pairs)
    */
   constructor(options) {
-    ['username', 'serverUrl'].forEach(function (required) {
-      if (!options || !options[required]) {
-        throw new Error('options.' + required + ' is a required argument.');
-      }
-    });
     this.whmcsHttpClient = new WhmcsHttpClient(options);
 
     this.orders = new modules.Orders(this.whmcsHttpClient);

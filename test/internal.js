@@ -1,27 +1,25 @@
-var expect = require('chai').expect,
+const expect = require('chai').expect,
   conf = require('./conf'),
   WHMCS = require('../whmcs'),
-  Bluebird = require('bluebird');
+  Bluebird = require('bluebird'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Internal', function () {
-  it('should call an action by name', function (done) {
-    var opts = {
+  it('should call an action by name', async function () {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     }
-    conf.whmcs.callApi('GetActivityLog', opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.callApi('GetActivityLog', opts);
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
   it('should handle native promises', function (done) {
-    var opts = {
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
-    
+
     conf.whmcs.system.getActivityLog(opts)
       .then(function (details) {
         expect(details).to.have.a.property('result').to.equal('success');
@@ -34,18 +32,18 @@ describe('Internal', function () {
   });
 
   it('should handle custom promises library', function (done) {
-    var config = {
-      username: process.env.WHMCS_USER || 'username',
-      password: process.env.WHMCS_KEY || 'password',
-      apiKey: process.env.WHMCS_AK || 'accessKey',
+    let config = {
+      apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
+      apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
       userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      accessKey: process.env.WHMCS_AK,
       Promise: Bluebird,
     };
-    
-    var whmcs = new WHMCS(config);
-    
-    var opts = {
+
+    let whmcs = new WHMCS(config);
+
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
@@ -62,43 +60,61 @@ describe('Internal', function () {
   });
 
   it('should throw an error if Promise library is invalid', function () {
-    var config = {
-      username: process.env.WHMCS_USER || 'username',
-      password: process.env.WHMCS_KEY || 'password',
-      apiKey: process.env.WHMCS_AK || 'accessKey',
+    let config = {
+      apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
+      apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
       userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      accessKey: process.env.WHMCS_AK,
       Promise: {}
     };
 
-    var fn = function () {
+    let fn = function () {
       return new WHMCS(config);
     };
 
     expect(fn).to.throw(Error, 'Invalid promise library.');
   });
 
-  it('should handle XML response', function (done) {
-    var config = {
-      username: process.env.WHMCS_USER || 'username',
-      password: process.env.WHMCS_KEY || 'password',
-      apiKey: process.env.WHMCS_AK || 'accessKey',
+  it('should handle XML response', async function () {
+    let config = {
+      apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
+      apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
       userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      accessKey: process.env.WHMCS_AK,
       responseType: 'xml'
     };
-    
-    var whmcs = new WHMCS(config);
 
-    var opts = {
+    let whmcs = new WHMCS(config);
+
+    let opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    whmcs.system.getActivityLog(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await whmcs.system.getActivityLog(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('action').to.equal('getactivitylog');
+  });
+
+  it('should authenticate with username and password', async function () {
+    let config = {
+      username: process.env.WHMCS_USER || 'username',
+      password: process.env.WHMCS_PASSWORD || 'password',
+      serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
+      userAgent: process.env.WHMCS_USERAGENT || 'node-whmcs',
+      accessKey: process.env.WHMCS_AK,
+    };
+
+    let whmcs = new WHMCS(config);
+
+    let opts = {
+      limitstart: 0,
+      limitnum: 1
+    };
+
+    let res = await whmcs.system.getActivityLog(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 });

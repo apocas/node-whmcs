@@ -1,195 +1,192 @@
-var expect = require('chai').expect,
-  conf = require('./conf');
+const expect = require('chai').expect,
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 function isModuleNotAssignedError(msg) {
-  return msg.indexOf('Service not assigned to a module') > -1;
+  let possibleErr = ['Service not assigned to a module', 'Server response message'];
+  return possibleErr.some(err => { return msg.indexOf(err) > -1 });
 }
 
 describe('Module "Service"', function () {
-  var demoPid, demoPaymentMethod, demoOrderId, demoServiceId;
+  let demoPid, demoOrderId, demoServiceId;
 
-  before(function (done) {
+  before(async function () {
+    const _this = this;
     this.timeout(30000);
 
-    var opts = {
+    let productOpts = {
       name: 'Test product',
-      gid: 1,
+      gid: process.env.WHMCS_TEST_GID || '1',
       type: 'hostingaccount',
-
     };
-    conf.whmcs.products.addProduct(opts, function (err, details) {
-      if (err) {
-        throw err;
-      } else if (details.pid == undefined) {
-        throw new Error('Cannot get the pid. Cannot proceed.');
-      } else {
-        demoPid = details.pid;
 
-        conf.whmcs.system.getPaymentMethods(function (err, details) {
-          if (err) {
-            throw err;
-          } else if (!details.paymentmethods || !details.paymentmethods.paymentmethod || !details.paymentmethods.paymentmethod[0]) {
-            throw new Error('Payment methods do not exist. You must create a new payment method first.');
-          } else {
-            demoPaymentMethod = details.paymentmethods.paymentmethod[0].module;
+    let productRes = await conf.whmcs.products.addProduct(productOpts);
+    expect(productRes).to.have.a.property('result').to.equal('success');
+    expect(productRes).to.have.a.property('pid').to.not.be.null;
+    demoPid = productRes.pid;
 
-            var opts = {
-              clientid: conf.demoClientId,
-              paymentmethod: demoPaymentMethod,
-              'pid[0]': demoPid,
-              'domain[0]': 'hostingtest.com',
-              'billingcycle[0]': 'monthly',
-              'priceoverride[0]': 1
-            };
-            conf.whmcs.orders.addOrder(opts, function (err, details) {
-              if (err) {
-                throw err;
-              } else if (!details.orderid) {
-                throw new Error('Cannot get the order id. Cannot proceed.');
-              } else {
-                demoOrderId = details.orderid;
-              }
+    let orderOpts = {
+      clientid: conf.demoClientId,
+      paymentmethod: conf.demoPaymentMethod,
+      'pid[0]': demoPid,
+      'domain[0]': 'hostingtest.com',
+      'billingcycle[0]': 'monthly',
+      'priceoverride[0]': 1
+    };
+    let orderRes = await conf.whmcs.orders.addOrder(orderOpts);
+    expect(orderRes).to.have.a.property('result').to.equal('success');
+    expect(orderRes).to.have.a.property('orderid').to.not.be.null;
+    demoOrderId = orderRes.orderid;
 
-              var opts = {
-                domain: 'hostingtest.com',
-                limitstart: 0,
-                limitnum: 1
-              };
-              conf.whmcs.client.getClientsProducts(opts, function (err, details) {
-                if (err) {
-                  throw err;
-                } else if (!details.products || !details.products.product || details.products.product.length === 0) {
-                  throw new Error('Cannot get the product. Cannot proceed.');
-                } else {
-                  demoServiceId = details.products.product[0].id;
-                  done();
-                }
-              });
-            });
-          }
-        });
-      }
-    });
-
-
+    let productsOpts = {
+      domain: 'hostingtest.com',
+      limitstart: 0,
+      limitnum: 1
+    };
+    let productsRes = await conf.whmcs.client.getClientsProducts(productsOpts);
+    expect(productsRes).to.have.a.property('result').to.equal('success');
+    expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
+    expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
+    demoServiceId = productsRes.products.product[0].id;
   });
 
-  it('should update a client service', function (done) {
-    var opts = {
+  it('should update a client service', async function () {
+    let opts = {
       serviceid: demoServiceId,
       notes: 'this service was updated'
     };
-    conf.whmcs.service.updateClientProduct(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.service.updateClientProduct(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
-  it('should run the module create', function (done) {
-    var opts = {
+  it('should run the module create', async function () {
+    let opts = {
       serviceid: demoServiceId
     };
-    conf.whmcs.service.moduleCreate(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleCreate(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should run the change package action', function (done) {
-    var opts = {
+  it('should run the change package action', async function () {
+    let opts = {
       serviceid: demoServiceId
     };
-    conf.whmcs.service.moduleChangePackage(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleChangePackage(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should run the change pw action', function (done) {
-    var opts = {
+  it('should run the change pw action', async function () {
+    let opts = {
       serviceid: demoServiceId
     };
-    conf.whmcs.service.moduleChangePw(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleChangePw(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should run a custom module action', function (done) {
-    var opts = {
+  it('should run a custom module action', async function () {
+    let opts = {
       serviceid: demoServiceId,
       func_name: 'test'
     };
-    conf.whmcs.service.moduleCustom(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleCustom(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should run the module suspend action', function (done) {
-    var opts = {
+  it('should run the module suspend action', async function () {
+    let opts = {
       serviceid: demoServiceId
     };
-    conf.whmcs.service.moduleSuspend(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleSuspend(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should run the module unsuspend action', function (done) {
-    var opts = {
+  it('should run the module unsuspend action', async function () {
+    let opts = {
       serviceid: demoServiceId
     };
-    conf.whmcs.service.moduleUnsuspend(opts, function (err, details) {
-      if (err && isModuleNotAssignedError(err.message)) {
-        done();
+
+    try {
+      let res = await conf.whmcs.service.moduleUnsuspend(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    }
+    catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(isModuleNotAssignedError(e.message)).to.be.true;
       } else {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
+        throw e;
       }
-    });
+    }
   });
 
-  it('should update or calculate an upgrade on a product', function (done) {
-    var opts = {
+  it('should update or calculate an upgrade on a product', async function () {
+    let opts = {
       serviceid: demoServiceId,
       type: 'product',
       calconly: true,
       newproductid: demoPid,
       newproductbillingcycle: 'monthly'
     };
-    conf.whmcs.service.upgradeProduct(opts, function (err, details) {
-      expect(err).to.have.a.property('message');
-      expect(err.message).to.have.string('Invalid Billing Cycle Requested');
-      done();
-    });
+
+    try {
+      let res = await conf.whmcs.service.upgradeProduct(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    } catch (e) {
+      if (e instanceof WhmcsError) {
+        expect(e.message).to.have.string('Invalid Billing Cycle Requested');
+      } else {
+        throw e;
+      }
+    }
   });
 
 });

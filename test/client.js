@@ -1,11 +1,12 @@
-var expect = require('chai').expect,
-  conf = require('./conf');
+const expect = require('chai').expect,
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Client"', function () {
 
-  it('should create a client, create a contact, close the client and then delete both of them', function (done) {
+  it('should create a client, create a contact, close the client and then delete both of them', async function () {
     this.timeout(30000);
-    var opts = {
+    let clientOpts = {
       firstname: 'Major',
       lastname: 'Tom',
       email: 'majortom@john.doe',
@@ -17,339 +18,203 @@ describe('Module "Client"', function () {
       phonenumber: '10987654321',
       password2: 'liftoff'
     };
-    conf.whmcs.client.addClient(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('owner_id');
-      expect(details).to.have.a.property('clientid');
-      var clientId = details.clientid;
 
-      var opts = {
-        clientid: clientId,
-        firstname: 'Ground',
-        lastname: 'Control',
-        email: 'groundcontrol@john.doe',
-        address1: 'Earth',
-        city: 'Phobos',
-        state: 'Crater',
-        postcode: '9999-999',
-        country: 'US',
-        phonenumber: '911911911'
-      }
-      conf.whmcs.client.addContact(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('contactid');
-        var contactId = details.contactid;
+    let clientRes = await conf.whmcs.client.addClient(clientOpts);
+    expect(clientRes).to.have.a.property('result').to.equal('success');
+    expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
+    expect(clientRes).to.have.a.property('clientid').to.not.be.null;
 
-        var opts = {
-          contactid: contactId
-        }
-        conf.whmcs.client.deleteContact(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
+    let clientId = clientRes.clientid;
 
-          var opts = {
-            clientid: clientId
-          }
-          conf.whmcs.client.closeClient(opts, function (err, details) {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
+    let contactOpts = {
+      clientid: clientId,
+      firstname: 'Ground',
+      lastname: 'Control',
+      email: 'groundcontrol@john.doe',
+      address1: 'Earth',
+      city: 'Phobos',
+      state: 'Crater',
+      postcode: '9999-999',
+      country: 'US',
+      phonenumber: '911911911'
+    }
+    let contactRes = await conf.whmcs.client.addContact(contactOpts);
+    expect(contactRes).to.have.a.property('result').to.equal('success');
+    expect(contactRes).to.have.a.property('contactid').to.not.be.null;
 
-            var opts = {
-              clientid: clientId,
-              deleteusers: true,
-              deletetransactions: true
-            }
-            conf.whmcs.client.deleteClient(opts, function (err, details) {
-              expect(err).to.be.null;
-              expect(details).to.have.a.property('result').to.equal('success');
-              done();
-            });
-          });
-        });
-      });
-    });
+    let contactId = contactRes.contactid;
+
+    let delContactOpts = {
+      contactid: contactId
+    }
+    let delContactRes = await conf.whmcs.client.deleteContact(delContactOpts);
+    expect(delContactRes).to.have.a.property('result').to.equal('success');
+
+    let closeOpts = {
+      clientid: clientId
+    }
+    let closeRes = await conf.whmcs.client.closeClient(closeOpts);
+    expect(closeRes).to.have.a.property('result').to.equal('success');
+
+    let delClientOpts = {
+      clientid: clientId,
+      deleteusers: true,
+      deletetransactions: true
+    }
+    let delClientRes = await conf.whmcs.client.deleteClient(delClientOpts);
+    expect(delClientRes).to.have.a.property('result').to.equal('success');
   });
 
-  it('should get cancellation requests', function (done) {
-    var opts = {
+  it('should get cancellation requests', async function () {
+    let opts = {
       limitstart: 0,
       limitnum: 25
     };
-    conf.whmcs.client.getCancelledPackages(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('packages');
-      done();
-    });
+    let res = await conf.whmcs.client.getCancelledPackages(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.numreturned) > 0) {
+      expect(res).to.have.a.property('packages').to.be.an('object');
+      expect(res.packages).to.have.a.property('package').to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get client groups', function (done) {
-    conf.whmcs.client.getClientGroups(function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('groups').to.be.an.an('object');
-      expect(details.groups).to.have.a.property('group');
-      expect(details.groups.group).to.be.an('array');
-      done();
-    });
+  it('should get client groups', async function () {
+    let res = await conf.whmcs.client.getClientGroups();
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('groups').to.be.an.an('object');
+      expect(res.groups).to.have.a.property('group');
+      expect(res.groups.group).to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get the encrypted password, by user id', function (done) {
-    var opts = {
+  it('should get the encrypted password, by user id', async function () {
+    let opts = {
       userid: conf.demoClientId
     };
-    conf.whmcs.client.getClientPassword(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('password').to.be.a('string');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientPassword(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('password').to.be.a('string');
   });
 
-  it('should get the encrypted password, by user email address', function (done) {
-    var opts = {
+  it('should get the encrypted password, by user email address', async function () {
+    let opts = {
       email: conf.demoUserDetails.email
     };
-    conf.whmcs.client.getClientPassword(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('password').to.be.a('string');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientPassword(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
   });
-
-  it('should get clients', function (done) {
-    var opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    conf.whmcs.client.getClients(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('clients').to.be.an.an('object');
-      expect(details.clients).to.have.a.property('client');
-      expect(details.clients.client).to.be.an('array').to.have.length.above(0);
-      done();
-    });
-  });
-
-  it('should get clients by email', function (done) {
-    var opts = {
+  
+  it('should get clients by email', async function () {
+    let opts = {
       search: conf.demoUserDetails.email
     };
-    conf.whmcs.client.getClients(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('numreturned').to.equal(1);
-      expect(details).to.have.a.property('clients').to.be.an.an('object');
-      expect(details.clients).to.have.a.property('client');
-      expect(details.clients.client).to.be.an('array').to.have.lengthOf(1);
-      done();
-    });
+    let res = await conf.whmcs.client.getClients(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('numreturned').to.equal(1);
+    expect(res).to.have.a.property('clients').to.be.an.an('object');
+    expect(res.clients).to.have.a.property('client');
+    expect(res.clients.client).to.be.an('array').to.have.lengthOf(1);
   });
 
-  it('should get client addons', function (done) {
-    var opts = {
+  it('should get client addons', async function () {
+    let opts = {
       clientid: conf.demoClientId
     };
-    conf.whmcs.client.getClientsAddons(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientsAddons(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('addons').to.be.an('object');
+      expect(res.addons).to.have.a.property('addon').to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get client details by id', function (done) {
-    var opts = {
+  it('should get client details by id', async function () {
+    let opts = {
       clientid: conf.demoClientId
     };
-    conf.whmcs.client.getClientsDetails(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('client').to.be.an.an('object');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientsDetails(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('client').to.be.an.an('object');
   });
 
-  it('should get client details by email address', function (done) {
-    var opts = {
-      email: conf.demoUserDetails.email
-    };
-    conf.whmcs.client.getClientsDetails(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('client').to.be.an.an('object');
-      done();
-    });
-  });
-
-  it('should get clients domains', function (done) {
-    var opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    conf.whmcs.client.getClientsDomains(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('domains').to.be.an.an('object');
-      expect(details.domains).to.have.a.property('domain');
-      expect(details.domains.domain).to.be.an('array');
-      done();
-    });
-  });
-
-  it('should get client domains by client id', function (done) {
-    var opts = {
+  it('should get client domains by client id', async function () {
+    let opts = {
       clientid: conf.demoClientId
     };
-    conf.whmcs.client.getClientsDomains(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientsDomains(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('domains').to.be.an.an('object');
+      expect(res.domains).to.have.a.property('domain');
+      expect(res.domains.domain).to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get clients products', function (done) {
-    this.timeout(30000);
-    var opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    conf.whmcs.client.getClientsProducts(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('products').to.be.an.an('object');
-      expect(details.products).to.have.a.property('product');
-      expect(details.products.product).to.be.an('array');
-      done();
-    });
-  });
-
-  it('should get clients products by client id', function (done) {
-    var opts = {
+  it('should get clients products by client id', async function () {
+    let opts = {
       clientid: conf.demoClientId
     };
-    conf.whmcs.client.getClientsProducts(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    let res = await conf.whmcs.client.getClientsProducts(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults) > 0) {
+      expect(res).to.have.a.property('products').to.be.an.an('object');
+      expect(res.products).to.have.a.property('product');
+      expect(res.products.product).to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get clients contacts', function (done) {
-    var opts = {
-      limitstart: 0,
-      limitnum: 25
-    };
-    conf.whmcs.client.getContacts(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('contacts').to.be.an.an('object');
-      expect(details.contacts).to.have.a.property('contact');
-      expect(details.contacts.contact).to.be.an('array');
-      done();
-    });
-  });
-
-  it('should get clients contacts by client id', function (done) {
-    var opts = {
+  it('should get clients contacts by client id', async function () {
+    let opts = {
       userid: conf.demoClientId
     };
-    conf.whmcs.client.getContacts(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('contacts').to.be.an.an('object');
-      expect(details.contacts).to.have.a.property('contact');
-      expect(details.contacts.contact).to.be.an('array');
-      done();
-    });
+    let res = await conf.whmcs.client.getContacts(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.numreturned) > 0) {
+      expect(res).to.have.a.property('contacts').to.be.an.an('object');
+      expect(res.contacts).to.have.a.property('contact');
+      expect(res.contacts.contact).to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should get clients emails', function (done) {
-    var opts = {
-      limitstart: 0,
-      limitnum: 25,
+  it('should get clients emails', async function () {
+    let opts = {
       clientid: conf.demoClientId
     };
-    conf.whmcs.client.getEmails(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('emails').to.be.an.an('object');
-      expect(details.emails).to.have.a.property('email');
-      expect(details.emails.email).to.be.an('array');
-      done();
-    });
+    let res = await conf.whmcs.client.getEmails(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.numreturned) > 0) {
+      expect(res).to.have.a.property('emails').to.be.an.an('object');
+      expect(res.emails).to.have.a.property('email');
+      expect(res.emails.email).to.be.an('array').to.have.length.greaterThan(0);
+    }
   });
 
-  it('should update client by clientid', function (done) {
-    var opts = {
+  it('should update client by clientid', async function () {
+    let updateOpts = {
       clientid: conf.demoClientId,
       lastname: 'updated1'
     };
-    conf.whmcs.client.updateClient(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-
-      var opts = {
-        clientid: conf.demoClientId
-      };
-      conf.whmcs.client.getClientsDetails(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('client').to.be.an.an('object');
-        expect(details.client).to.have.a.property('lastname').to.equal('updated1');
-        done();
-      });
-    });
+    let updateRes = await conf.whmcs.client.updateClient(updateOpts);
+    expect(updateRes).to.have.a.property('result').to.equal('success');
+    expect(updateRes).to.have.a.property('clientid').to.equal(conf.demoClientId.toString());
   });
 
-  it('should update client by email', function (done) {
-    var opts = {
-      clientemail: conf.demoUserDetails.email,
-      lastname: 'updated2'
-    };
-    conf.whmcs.client.updateClient(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-
-      var opts = {
-        clientid: conf.demoClientId
-      };
-      conf.whmcs.client.getClientsDetails(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('client').to.be.an.an('object');
-        expect(details.client).to.have.a.property('lastname').to.equal('updated2');
-        done();
-      });
-    });
-  });
-
-  it('should update contact by contact id', function (done) {
-    var opts = {
+  it('should update contact by contact id', async function () {
+    let updateOpts = {
       contactid: conf.demoContactId,
       lastname: 'newlastname'
     };
-    conf.whmcs.client.updateContact(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-
-      var opts = {
-        userid: conf.demoClientId,
-        email: conf.demoContactDetails.email
-      };
-      conf.whmcs.client.getContacts(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('contacts').to.be.an.an('object');
-        expect(details.contacts).to.have.a.property('contact');
-        expect(details.contacts.contact).to.be.an('array').to.have.lengthOf(1);
-        expect(details.contacts.contact[0]).to.have.a.property('lastname').to.equal('newlastname');
-        done();
-      });
-    });
+    let updateRes = await conf.whmcs.client.updateContact(updateOpts);
+    expect(updateRes).to.have.a.property('result').to.equal('success');
+    expect(updateRes).to.have.a.property('contactid').to.equal(conf.demoContactId.toString());
   });
 
 });
