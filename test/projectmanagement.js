@@ -6,25 +6,12 @@ describe('Module "Project Management"', function () {
   let demoProjectId;
 
   before(async function () {
-    const _this = this;
     let opts = {
       title: 'demo project',
       adminid: 1
     };
 
-    let res
-
-    try {
-      res = await conf.whmcs.projectManagement.createProject(opts);
-
-    } catch (e) {
-      if (e.message == 'Project Management is not active.') {
-        console.log('Project Management is not active. It must be activated in order to proceed with the tests.');
-        _this.skip();
-      } else {
-        throw e;
-      }
-    }
+    let res = await conf.whmcs.projectManagement.createProject(opts);
     demoProjectId = res.projectid;
   });
 
@@ -37,7 +24,17 @@ describe('Module "Project Management"', function () {
     expect(res).to.have.a.property('projectid').to.not.be.null;
   });
 
-  it('should get a project by id', async function () {
+  it('should get projects', async function () {
+    let opts = {
+      limitstart: 0,
+      limitnum: 1
+    };
+    let res = await conf.whmcs.projectManagement.getProjects(opts);
+    expect(res).to.have.a.property('numreturned').to.not.be.null;
+    expect(res).to.have.a.property('projects').to.be.an.an('array').to.have.length.greaterThan(0);
+  });
+
+  it('should get project details by project id', async function () {
     let opts = {
       projectid: demoProjectId
     };

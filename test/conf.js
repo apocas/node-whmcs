@@ -146,6 +146,26 @@ async function getSupportDepartment() {
   return deptRes;
 }
 
+async function checkProjectManagementIsActive() {
+  let opts = {
+    title: 'test project',
+    adminid: 1
+  };
+
+  let res;
+  try {
+    res = await whmcs.projectManagement.createProject(opts);
+  } catch (e) {
+    if (e instanceof WhmcsError && e.message == 'Project Management is not active.') {
+      throw new Error('Project Management is not active. You must activate the Project Management Addon in order to proceed with the tests.');
+    } else {
+      throw e;
+    }
+  }
+ 
+  expect(res).to.have.a.property('result').to.equal('success');
+}
+
 async function initialize() {
   console.log('Preparing the test environment. Please wait...');
   await addClient();
@@ -155,6 +175,7 @@ async function initialize() {
   await createOrder();
   await getService();
   await getSupportDepartment();
+  await checkProjectManagementIsActive();
   console.log('Test environment initialization complete.');
 }
 
