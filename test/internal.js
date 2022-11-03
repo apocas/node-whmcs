@@ -14,24 +14,21 @@ describe('Internal', function () {
     expect(res).to.have.a.property('result').to.equal('success');
   });
 
-  it('should handle native promises', function (done) {
+  it('should handle native promises', function () {
     let opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    conf.whmcs.system.getActivityLog(opts)
-      .then(function (details) {
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
-      })
-      .catch(function (err) {
-        expect(err).to.be.null;
-        done();
-      });
+    let promise = conf.whmcs.system.getActivityLog(opts);
+    expect(promise).to.be.instanceOf(Promise);
+
+    return promise.then(function (details) {
+      expect(details).to.have.a.property('result').to.equal('success');
+    });
   });
 
-  it('should handle custom promises library', function (done) {
+  it('should handle custom promises library', function () {
     let config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
@@ -48,15 +45,12 @@ describe('Internal', function () {
       limitnum: 1
     };
 
-    whmcs.system.getActivityLog(opts)
-      .then(function (details) {
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
-      })
-      .catch(function (err) {
-        expect(err).to.be.null;
-        done();
-      });
+    let promise = whmcs.system.getActivityLog(opts);
+    expect(promise).to.be.instanceOf(Bluebird);
+
+    return promise.then(function (details) {
+      expect(details).to.have.a.property('result').to.equal('success');
+    });
   });
 
   it('should throw an error if Promise library is invalid', function () {
