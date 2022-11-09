@@ -10,13 +10,15 @@ describe('Module "Users"', function () {
       permissions: 'products,domains'
     }
     let res = await conf.whmcs.users.createClientInvite(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should get a list of permissions that can be used when creating a user', async function () {
     let res = await conf.whmcs.users.getPermissionsList();
-    expect(res).to.have.a.property('permissions').to.be.an('object');
-    expect(res.permissions).to.have.a.property('permission').to.be.an('array').to.have.length.above(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('permissions').to.be.an('object');
+    expect(res.data.permissions).to.have.a.property('permission').to.be.an('array').to.have.length.above(0);
   });
 
   it('should get the permissions of an user, for a client', async function () {
@@ -25,7 +27,8 @@ describe('Module "Users"', function () {
       client_id: conf.demoClientId
     };
     let res = await conf.whmcs.users.getUserPermissions(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should get users according to search limit', async function () {
@@ -34,10 +37,11 @@ describe('Module "Users"', function () {
       limitnum: 25
     };
     let res = await conf.whmcs.users.getUsers(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('users').to.be.an('array')
-    expect(res.users).to.have.length.above(0);
-    expect(res.users).to.have.length.below(26);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('users').to.be.an('array')
+    expect(res.data.users).to.have.length.above(0);
+    expect(res.data.users).to.have.length.below(26);
   });
 
   it('should start the password reset process for an user, by user id', async function () {
@@ -45,7 +49,8 @@ describe('Module "Users"', function () {
       id: conf.demoUserId
     };
     let res = await conf.whmcs.users.resetPassword(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should update an user', async function () {
@@ -54,7 +59,8 @@ describe('Module "Users"', function () {
       lastname: 'updated lastname'
     };
     let res = await conf.whmcs.users.updateUser(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should get an user by email', async function () {
@@ -62,10 +68,11 @@ describe('Module "Users"', function () {
       search: 'johndoe@john.doe'
     }
     let res = await conf.whmcs.users.getUsers(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.equal(1);
-    expect(res).to.have.a.property('users');
-    expect(res.users).to.be.an('array');
-    expect(res.users).to.have.lengthOf(1);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('numreturned').to.equal(1);
+    expect(res.data).to.have.a.property('users');
+    expect(res.data.users).to.be.an('array');
+    expect(res.data.users).to.have.lengthOf(1);
   });
 });

@@ -20,11 +20,12 @@ describe('Module "Client"', function () {
     };
 
     let clientRes = await conf.whmcs.client.addClient(clientOpts);
-    expect(clientRes).to.have.a.property('result').to.equal('success');
-    expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
-    expect(clientRes).to.have.a.property('clientid').to.not.be.null;
+    expect(clientRes).to.have.a.property('data');
+    expect(clientRes.data).to.have.a.property('result').to.equal('success');
+    expect(clientRes.data).to.have.a.property('owner_id').to.not.be.null;
+    expect(clientRes.data).to.have.a.property('clientid').to.not.be.null;
 
-    let clientId = clientRes.clientid;
+    let clientId = clientRes.data.clientid;
 
     let contactOpts = {
       clientid: clientId,
@@ -39,22 +40,25 @@ describe('Module "Client"', function () {
       phonenumber: '911911911'
     }
     let contactRes = await conf.whmcs.client.addContact(contactOpts);
-    expect(contactRes).to.have.a.property('result').to.equal('success');
-    expect(contactRes).to.have.a.property('contactid').to.not.be.null;
+    expect(contactRes).to.have.a.property('data');
+    expect(contactRes.data).to.have.a.property('result').to.equal('success');
+    expect(contactRes.data).to.have.a.property('contactid').to.not.be.null;
 
-    let contactId = contactRes.contactid;
+    let contactId = contactRes.data.contactid;
 
     let delContactOpts = {
       contactid: contactId
     }
     let delContactRes = await conf.whmcs.client.deleteContact(delContactOpts);
-    expect(delContactRes).to.have.a.property('result').to.equal('success');
+    expect(delContactRes).to.have.a.property('data');
+    expect(delContactRes.data).to.have.a.property('result').to.equal('success');
 
     let closeOpts = {
       clientid: clientId
     }
     let closeRes = await conf.whmcs.client.closeClient(closeOpts);
-    expect(closeRes).to.have.a.property('result').to.equal('success');
+    expect(closeRes).to.have.a.property('data');
+    expect(closeRes.data).to.have.a.property('result').to.equal('success');
 
     let delClientOpts = {
       clientid: clientId,
@@ -62,7 +66,8 @@ describe('Module "Client"', function () {
       deletetransactions: true
     }
     let delClientRes = await conf.whmcs.client.deleteClient(delClientOpts);
-    expect(delClientRes).to.have.a.property('result').to.equal('success');
+    expect(delClientRes).to.have.a.property('data');
+    expect(delClientRes.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should get cancellation requests', async function () {
@@ -71,22 +76,24 @@ describe('Module "Client"', function () {
       limitnum: 25
     };
     let res = await conf.whmcs.client.getCancelledPackages(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.not.be.null;
-    if (parseInt(res.numreturned) > 0) {
-      expect(res).to.have.a.property('packages').to.be.an('object');
-      expect(res.packages).to.have.a.property('package').to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.data.numreturned) > 0) {
+      expect(res.data).to.have.a.property('packages').to.be.an('object');
+      expect(res.data.packages).to.have.a.property('package').to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
   it('should get client groups', async function () {
     let res = await conf.whmcs.client.getClientGroups();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('groups').to.be.an.an('object');
-      expect(res.groups).to.have.a.property('group');
-      expect(res.groups.group).to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('groups').to.be.an.an('object');
+      expect(res.data.groups).to.have.a.property('group');
+      expect(res.data.groups.group).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -95,8 +102,9 @@ describe('Module "Client"', function () {
       userid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getClientPassword(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('password').to.be.a('string');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('password').to.be.a('string');
   });
 
   it('should get the encrypted password, by user email address', async function () {
@@ -104,19 +112,21 @@ describe('Module "Client"', function () {
       email: conf.demoUserDetails.email
     };
     let res = await conf.whmcs.client.getClientPassword(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
-  
+
   it('should get clients by email', async function () {
     let opts = {
       search: conf.demoUserDetails.email
     };
     let res = await conf.whmcs.client.getClients(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.equal(1);
-    expect(res).to.have.a.property('clients').to.be.an.an('object');
-    expect(res.clients).to.have.a.property('client');
-    expect(res.clients.client).to.be.an('array').to.have.lengthOf(1);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('numreturned').to.equal(1);
+    expect(res.data).to.have.a.property('clients').to.be.an.an('object');
+    expect(res.data.clients).to.have.a.property('client');
+    expect(res.data.clients.client).to.be.an('array').to.have.lengthOf(1);
   });
 
   it('should get client addons', async function () {
@@ -124,11 +134,12 @@ describe('Module "Client"', function () {
       clientid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getClientsAddons(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('addons').to.be.an('object');
-      expect(res.addons).to.have.a.property('addon').to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('addons').to.be.an('object');
+      expect(res.data.addons).to.have.a.property('addon').to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -137,8 +148,9 @@ describe('Module "Client"', function () {
       clientid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getClientsDetails(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('client').to.be.an.an('object');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('client').to.be.an.an('object');
   });
 
   it('should get client domains by client id', async function () {
@@ -146,12 +158,13 @@ describe('Module "Client"', function () {
       clientid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getClientsDomains(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('domains').to.be.an.an('object');
-      expect(res.domains).to.have.a.property('domain');
-      expect(res.domains.domain).to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('domains').to.be.an.an('object');
+      expect(res.data.domains).to.have.a.property('domain');
+      expect(res.data.domains.domain).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -160,12 +173,13 @@ describe('Module "Client"', function () {
       clientid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getClientsProducts(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('products').to.be.an.an('object');
-      expect(res.products).to.have.a.property('product');
-      expect(res.products.product).to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('products').to.be.an.an('object');
+      expect(res.data.products).to.have.a.property('product');
+      expect(res.data.products.product).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -174,12 +188,13 @@ describe('Module "Client"', function () {
       userid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getContacts(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.not.be.null;
-    if (parseInt(res.numreturned) > 0) {
-      expect(res).to.have.a.property('contacts').to.be.an.an('object');
-      expect(res.contacts).to.have.a.property('contact');
-      expect(res.contacts.contact).to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.data.numreturned) > 0) {
+      expect(res.data).to.have.a.property('contacts').to.be.an.an('object');
+      expect(res.data.contacts).to.have.a.property('contact');
+      expect(res.data.contacts.contact).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -188,12 +203,13 @@ describe('Module "Client"', function () {
       clientid: conf.demoClientId
     };
     let res = await conf.whmcs.client.getEmails(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('numreturned').to.not.be.null;
-    if (parseInt(res.numreturned) > 0) {
-      expect(res).to.have.a.property('emails').to.be.an.an('object');
-      expect(res.emails).to.have.a.property('email');
-      expect(res.emails.email).to.be.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('numreturned').to.not.be.null;
+    if (parseInt(res.data.numreturned) > 0) {
+      expect(res.data).to.have.a.property('emails').to.be.an.an('object');
+      expect(res.data.emails).to.have.a.property('email');
+      expect(res.data.emails.email).to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
@@ -203,8 +219,9 @@ describe('Module "Client"', function () {
       lastname: 'updated1'
     };
     let updateRes = await conf.whmcs.client.updateClient(updateOpts);
-    expect(updateRes).to.have.a.property('result').to.equal('success');
-    expect(updateRes).to.have.a.property('clientid').to.equal(conf.demoClientId.toString());
+    expect(updateRes).to.have.a.property('data');
+    expect(updateRes.data).to.have.a.property('result').to.equal('success');
+    expect(updateRes.data).to.have.a.property('clientid').to.equal(conf.demoClientId.toString());
   });
 
   it('should update contact by contact id', async function () {
@@ -213,8 +230,9 @@ describe('Module "Client"', function () {
       lastname: 'newlastname'
     };
     let updateRes = await conf.whmcs.client.updateContact(updateOpts);
-    expect(updateRes).to.have.a.property('result').to.equal('success');
-    expect(updateRes).to.have.a.property('contactid').to.equal(conf.demoContactId.toString());
+    expect(updateRes).to.have.a.property('data');
+    expect(updateRes.data).to.have.a.property('result').to.equal('success');
+    expect(updateRes.data).to.have.a.property('contactid').to.equal(conf.demoContactId.toString());
   });
 
 });

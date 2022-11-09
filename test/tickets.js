@@ -6,46 +6,51 @@ describe('Module "Tickets"', function () {
 
   it('should get support departments', async function () {
     let res = await conf.whmcs.tickets.getSupportDepartments();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('departments').to.be.an('object');
-      expect(res.departments).to.have.a.property('department').to.be.an('array');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('departments').to.be.an('object');
+      expect(res.data.departments).to.have.a.property('department').to.be.an('array');
     }
   });
 
   it('should get support statuses', async function () {
     let res = await conf.whmcs.tickets.getSupportStatuses();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('statuses').to.be.an('object')
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('statuses').to.be.an('object')
         .to.have.a.property('status').to.be.an('array');
     }
   });
 
   it('should get support statuses', async function () {
     let res = await conf.whmcs.tickets.getTicketCounts();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('allActive').to.not.be.null;
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('allActive').to.not.be.null;
   });
 
   it('should get predefined cats', async function () {
     let res = await conf.whmcs.tickets.getTicketPredefinedCats();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('categories').to.be.an('object')
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('categories').to.be.an('object')
         .to.have.a.property('category').to.be.an('array');
     }
   });
 
   it('should get predefined replies', async function () {
     let res = await conf.whmcs.tickets.getTicketPredefinedReplies();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('totalresults').to.not.be.null;
-    if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('predefinedreplies').to.be.an('object')
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.data.totalresults) > 0) {
+      expect(res.data).to.have.a.property('predefinedreplies').to.be.an('object')
         .to.have.a.property('predefinedreply').to.be.an('array');
     }
   });
@@ -62,20 +67,23 @@ describe('Module "Tickets"', function () {
       };
 
       let res = await conf.whmcs.support.openTicket(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
-      expect(res).to.have.a.property('id').to.not.be.null;
-      demoTicketId = res.id;
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
+      expect(res.data).to.have.a.property('id').to.not.be.null;
+      demoTicketId = res.data.id;
     });
 
     it('should get tickets', async function () {
       let opts = {
-        clientid: conf.demoClientId
+        clientid: conf.demoClientId,
+        ignore_dept_assignments: true
       };
 
       let res = await conf.whmcs.tickets.getTickets(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
-      expect(res).to.have.a.property('tickets').to.be.an('object')
-        .to.have.a.property('ticket').to.be.an('array').to.have.lengthOf(1);
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
+      expect(res.data).to.have.a.property('tickets').to.be.an('object')
+        .to.have.a.property('ticket').to.be.an('array');
     });
 
     it('should get ticket notes', async function () {
@@ -84,9 +92,10 @@ describe('Module "Tickets"', function () {
       };
 
       let res = await conf.whmcs.tickets.getTicketNotes(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
-      expect(res).to.have.a.property('notes').to.be.an('object');
-      expect(res.notes).to.have.a.property('note').to.be.an('array');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
+      expect(res.data).to.have.a.property('notes').to.be.an('object');
+      expect(res.data.notes).to.have.a.property('note').to.be.an('array');
     });
 
     it('should get ticket details by ticket id', async function () {
@@ -95,8 +104,9 @@ describe('Module "Tickets"', function () {
       };
 
       let res = await conf.whmcs.tickets.getTicket(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
-      expect(res).to.have.a.property('id').to.equal(demoTicketId);
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
+      expect(res.data).to.have.a.property('id').to.equal(demoTicketId);
     });
 
     it('should get ticket attachment', async function () {
@@ -108,7 +118,8 @@ describe('Module "Tickets"', function () {
 
       try {
         let res = await conf.whmcs.tickets.getTicketAttachment(opts);
-        expect(res).to.have.a.property('result').to.equal('success');
+        expect(res).to.have.a.property('data');
+        expect(res.data).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(e.message).to.have.string('No Attachments Found');

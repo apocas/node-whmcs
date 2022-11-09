@@ -6,8 +6,9 @@ describe('Module "Module"', function () {
 
   it('should get the module queue', async function () {
     let res = await conf.whmcs.module.getModuleQueue();
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('queue').to.be.an('array');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('queue').to.be.an('array');
   });
 
   it('should get the module configuration parameters', async function () {
@@ -17,8 +18,9 @@ describe('Module "Module"', function () {
     };
 
     let res = await conf.whmcs.module.getModuleConfigurationParameters(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('parameters').to.be.an('array');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('parameters').to.be.an('array');
   });
 
   it('should activate a module', async function () {
@@ -31,7 +33,8 @@ describe('Module "Module"', function () {
 
     try {
       res = await conf.whmcs.module.activateModule(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     } catch (e) {
       if (e instanceof WhmcsError) {
         let possibleErr = ['Failed to activate:', 'An unexpected error occurred:', 'Module activation not supported by module type.', 'Invalid module name provided.', 'Invalid module type provided. Supported module types include:'];
@@ -51,7 +54,8 @@ describe('Module "Module"', function () {
     };
 
     let res = await conf.whmcs.module.updateModuleConfiguration(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should deactivate a module', async function () {
@@ -63,7 +67,8 @@ describe('Module "Module"', function () {
 
     try {
       let res = await conf.whmcs.module.deactivateModule(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     } catch (e) {
       if (e instanceof WhmcsError) {
         expect(e.message).to.have.string('Module deactivation not supported by module type');

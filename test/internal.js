@@ -11,7 +11,21 @@ describe('Internal', function () {
       limitnum: 1
     }
     let res = await conf.whmcs.callApi('GetActivityLog', opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+  });
+
+  it('should handle callbacks', function (done) {
+    let opts = {
+      limitstart: 0,
+      limitnum: 1
+    }
+    conf.whmcs.callApi('GetActivityLog', opts, function (err, res) {
+      expect(err).to.be.null;
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
+      done();
+    });
   });
 
   it('should handle native promises', function (done) {
@@ -20,15 +34,13 @@ describe('Internal', function () {
       limitnum: 1
     };
 
-    conf.whmcs.system.getActivityLog(opts)
-      .then(function (details) {
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
-      })
-      .catch(function (err) {
-        expect(err).to.be.null;
-        done();
-      });
+    let promise = conf.whmcs.system.getActivityLog(opts);
+    expect(promise).to.be.instanceOf(Promise);
+
+    return promise.then(function (details) {
+      expect(details).to.have.a.property('data');
+      expect(details.data).to.have.a.property('result').to.equal('success');
+    });
   });
 
   it('should handle custom promises library', function (done) {
@@ -48,15 +60,13 @@ describe('Internal', function () {
       limitnum: 1
     };
 
-    whmcs.system.getActivityLog(opts)
-      .then(function (details) {
-        expect(details).to.have.a.property('result').to.equal('success');
-        done();
-      })
-      .catch(function (err) {
-        expect(err).to.be.null;
-        done();
-      });
+    let promise = whmcs.system.getActivityLog(opts);
+    expect(promise).to.be.instanceOf(Bluebird);
+
+    return promise.then(function (details) {
+      expect(details).to.have.a.property('data');
+      expect(details.data).to.have.a.property('result').to.equal('success');
+    });
   });
 
   it('should throw an error if Promise library is invalid', function () {
@@ -94,8 +104,9 @@ describe('Internal', function () {
     };
 
     let res = await whmcs.system.getActivityLog(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('action').to.equal('getactivitylog');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('action').to.equal('getactivitylog');
   });
 
   it('should authenticate with username and password', async function () {
@@ -115,6 +126,7 @@ describe('Internal', function () {
     };
 
     let res = await whmcs.system.getActivityLog(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 });

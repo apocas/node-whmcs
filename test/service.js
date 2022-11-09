@@ -21,9 +21,10 @@ describe('Module "Service"', function () {
     };
 
     let productRes = await conf.whmcs.products.addProduct(productOpts);
-    expect(productRes).to.have.a.property('result').to.equal('success');
-    expect(productRes).to.have.a.property('pid').to.not.be.null;
-    demoPid = productRes.pid;
+    expect(productRes).to.have.a.property('data');
+    expect(productRes.data).to.have.a.property('result').to.equal('success');
+    expect(productRes.data).to.have.a.property('pid').to.not.be.null;
+    demoPid = productRes.data.pid;
 
     let orderOpts = {
       clientid: conf.demoClientId,
@@ -34,9 +35,10 @@ describe('Module "Service"', function () {
       'priceoverride[0]': 1
     };
     let orderRes = await conf.whmcs.orders.addOrder(orderOpts);
-    expect(orderRes).to.have.a.property('result').to.equal('success');
-    expect(orderRes).to.have.a.property('orderid').to.not.be.null;
-    demoOrderId = orderRes.orderid;
+    expect(orderRes).to.have.a.property('data');
+    expect(orderRes.data).to.have.a.property('result').to.equal('success');
+    expect(orderRes.data).to.have.a.property('orderid').to.not.be.null;
+    demoOrderId = orderRes.data.orderid;
 
     let productsOpts = {
       domain: 'hostingtest.com',
@@ -44,10 +46,11 @@ describe('Module "Service"', function () {
       limitnum: 1
     };
     let productsRes = await conf.whmcs.client.getClientsProducts(productsOpts);
-    expect(productsRes).to.have.a.property('result').to.equal('success');
-    expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
-    expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
-    demoServiceId = productsRes.products.product[0].id;
+    expect(productRes).to.have.a.property('data');
+    expect(productsRes.data).to.have.a.property('result').to.equal('success');
+    expect(productsRes.data).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
+    expect(productsRes.data.products.product[0]).to.have.a.property('id').to.be.a('string');
+    demoServiceId = productsRes.data.products.product[0].id;
   });
 
   it('should update a client service', async function () {
@@ -56,7 +59,8 @@ describe('Module "Service"', function () {
       notes: 'this service was updated'
     };
     let res = await conf.whmcs.service.updateClientProduct(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
   });
 
   it('should run the module create', async function () {
@@ -66,7 +70,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleCreate(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -84,7 +89,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleChangePackage(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -102,7 +108,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleChangePw(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -121,7 +128,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleCustom(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -139,7 +147,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleSuspend(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -157,7 +166,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.moduleUnsuspend(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -179,7 +189,8 @@ describe('Module "Service"', function () {
 
     try {
       let res = await conf.whmcs.service.upgradeProduct(opts);
-      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('data');
+      expect(res.data).to.have.a.property('result').to.equal('success');
     } catch (e) {
       if (e instanceof WhmcsError) {
         expect(e.message).to.have.string('Invalid Billing Cycle Requested');

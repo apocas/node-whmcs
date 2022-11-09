@@ -12,7 +12,7 @@ describe('Module "Project Management"', function () {
     };
 
     let res = await conf.whmcs.projectManagement.createProject(opts);
-    demoProjectId = res.projectid;
+    demoProjectId = res.data.projectid;
   });
 
   it('should create a project', async function () {
@@ -21,7 +21,8 @@ describe('Module "Project Management"', function () {
       adminid: 1
     };
     let res = await conf.whmcs.projectManagement.createProject(opts);
-    expect(res).to.have.a.property('projectid').to.not.be.null;
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('projectid').to.not.be.null;
   });
 
   it('should get projects', async function () {
@@ -30,8 +31,9 @@ describe('Module "Project Management"', function () {
       limitnum: 1
     };
     let res = await conf.whmcs.projectManagement.getProjects(opts);
-    expect(res).to.have.a.property('numreturned').to.not.be.null;
-    expect(res).to.have.a.property('projects').to.be.an.an('array').to.have.length.greaterThan(0);
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('numreturned').to.not.be.null;
+    expect(res.data).to.have.a.property('projects').to.be.an.an('array').to.have.length.greaterThan(0);
   });
 
   it('should get project details by project id', async function () {
@@ -39,7 +41,8 @@ describe('Module "Project Management"', function () {
       projectid: demoProjectId
     };
     let res = await conf.whmcs.projectManagement.getProject(opts);
-    expect(res).to.have.a.property('projectinfo').to.be.an.an('object');
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('projectinfo').to.be.an.an('object');
   });
 
   it('should update a project', async function () {
@@ -48,14 +51,16 @@ describe('Module "Project Management"', function () {
       title: 'space oddity'
     };
     let updateRes = await conf.whmcs.projectManagement.updateProject(updateOpts);
-    expect(updateRes).to.have.a.property('message').to.equal('Project Has Been Updated');
+    expect(updateRes).to.have.a.property('data');
+    expect(updateRes.data).to.have.a.property('message').to.equal('Project Has Been Updated');
 
     let getOpts = {
       projectid: demoProjectId
     };
     let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('projectinfo').to.be.an.an('object');
-    expect(getRes.projectinfo).to.have.a.property('title').to.equal('space oddity');
+    expect(getRes).to.have.a.property('data');
+    expect(getRes.data).to.have.a.property('projectinfo').to.be.an.an('object');
+    expect(getRes.data.projectinfo).to.have.a.property('title').to.equal('space oddity');
   });
 
   it('should add a message to a project', async function () {
@@ -65,15 +70,17 @@ describe('Module "Project Management"', function () {
     };
 
     let addRes = await conf.whmcs.projectManagement.addProjectMessage(addOpts);
-    expect(addRes).to.have.a.property('message').to.equal('Message has been added');
+    expect(addRes).to.have.a.property('data');
+    expect(addRes.data).to.have.a.property('message').to.equal('Message has been added');
 
     let getOpts = {
       projectid: demoProjectId
     };
     let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('messages').to.be.an.an('object');
-    expect(getRes.messages).to.have.a.property('message').to.be.an('array').to.have.lengthOf(1);
-    expect(getRes.messages.message[0]).to.have.a.property('message').to.equal('can you hear me major tom?');
+    expect(getRes).to.have.a.property('data');
+    expect(getRes.data).to.have.a.property('messages').to.be.an.an('object');
+    expect(getRes.data.messages).to.have.a.property('message').to.be.an('array').to.have.lengthOf(1);
+    expect(getRes.data.messages.message[0]).to.have.a.property('message').to.equal('can you hear me major tom?');
   });
 
   it('should add a task to a project', async function () {
@@ -84,17 +91,19 @@ describe('Module "Project Management"', function () {
     };
 
     let addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
-    expect(addRes).to.have.a.property('message').to.equal('Task has been added');
+    expect(addRes).to.have.a.property('data');
+    expect(addRes.data).to.have.a.property('message').to.equal('Task has been added');
 
 
     let getOpts = {
       projectid: demoProjectId
     };
     let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('tasks').to.be.an.an('object');
-    expect(getRes.tasks).to.have.a.property('task').to.be.an('array').to.have.lengthOf(1);
-    expect(getRes.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
-    demoTaskId = getRes.tasks.task[0].id;
+    expect(getRes).to.have.a.property('data');
+    expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
+    expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.lengthOf(1);
+    expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
+    demoTaskId = getRes.data.tasks.task[0].id;
   });
 
   describe('Project task', function () {
@@ -109,17 +118,19 @@ describe('Module "Project Management"', function () {
 
       let addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
 
-      expect(addRes).to.have.a.property('message').to.equal('Task has been added');
+      expect(addRes).to.have.a.property('data');
+      expect(addRes.data).to.have.a.property('message').to.equal('Task has been added');
 
       let getOpts = {
         projectid: demoProjectId
       };
       let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
 
-      expect(getRes).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
-      demoTaskId = getRes.tasks.task[0].id;
+      expect(getRes).to.have.a.property('data');
+      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
+      demoTaskId = getRes.data.tasks.task[0].id;
     });
 
     it('should update a project task', async function () {
@@ -129,16 +140,18 @@ describe('Module "Project Management"', function () {
       };
       let updateRes = await conf.whmcs.projectManagement.updateProjectTask(updateOpts);
 
-      expect(updateRes).to.have.a.property('message').to.equal('Task has been updated');
+      expect(updateRes).to.have.a.property('data');
+      expect(updateRes.data).to.have.a.property('message').to.equal('Task has been updated');
 
       let getOpts = {
         projectid: demoProjectId
       };
       let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
 
-      expect(getRes).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.tasks.task[0]).to.have.a.property('task').to.equal('step through the door');
+      expect(getRes).to.have.a.property('data');
+      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('step through the door');
     });
 
     it('should start and then end a project task timer', async function () {
@@ -148,19 +161,21 @@ describe('Module "Project Management"', function () {
       };
       let timerRes = await conf.whmcs.projectManagement.startTaskTimer(timerOpts);
 
-      expect(timerRes).to.have.a.property('message').to.equal('Start Timer Has Been Set');
+      expect(timerRes).to.have.a.property('data');
+      expect(timerRes.data).to.have.a.property('message').to.equal('Start Timer Has Been Set');
 
       let getOpts = {
         projectid: demoProjectId
       };
       let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
 
-      expect(getRes).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.tasks.task[0]).to.have.a.property('timelogs').to.be.an.an('object');
-      expect(getRes.tasks.task[0].timelogs).to.have.a.property('timelog').to.be.an.an('array').to.have.length.greaterThan(0);
-      expect(getRes.tasks.task[0].timelogs.timelog[0]).to.have.a.property('id').to.not.be.null;
-      demoTimerId = getRes.tasks.task[0].timelogs.timelog[0].id;
+      expect(getRes).to.have.a.property('data');
+      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.data.tasks.task[0]).to.have.a.property('timelogs').to.be.an.an('object');
+      expect(getRes.data.tasks.task[0].timelogs).to.have.a.property('timelog').to.be.an.an('array').to.have.length.greaterThan(0);
+      expect(getRes.data.tasks.task[0].timelogs.timelog[0]).to.have.a.property('id').to.not.be.null;
+      demoTimerId = getRes.data.tasks.task[0].timelogs.timelog[0].id;
 
       let endOpts = {
         timerid: demoTimerId,
@@ -168,7 +183,8 @@ describe('Module "Project Management"', function () {
       };
       let endRes = await conf.whmcs.projectManagement.endTaskTimer(endOpts);
 
-      expect(endRes).to.have.a.property('message').to.equal('Timer Has Ended');
+      expect(endRes).to.have.a.property('data');
+      expect(endRes.data).to.have.a.property('message').to.equal('Timer Has Ended');
     });
 
     it('should delete a project task', async function () {
@@ -178,7 +194,8 @@ describe('Module "Project Management"', function () {
       };
       let deleteRes = await conf.whmcs.projectManagement.deleteProjectTask(deleteOpts);
 
-      expect(deleteRes).to.have.a.property('message').to.equal('Task has been deleted');
+      expect(deleteRes).to.have.a.property('data');
+      expect(deleteRes.data).to.have.a.property('message').to.equal('Task has been deleted');
     });
   });
 });

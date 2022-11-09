@@ -14,7 +14,8 @@ describe('Module "Products"', function () {
     };
 
     let res = await conf.whmcs.products.addProduct(opts);
-    expect(res).to.have.a.property('result').to.equal('success');
-    expect(res).to.have.a.property('pid').to.not.be.null;
+    expect(res).to.have.a.property('data');
+    expect(res.data).to.have.a.property('result').to.equal('success');
+    expect(res.data).to.have.a.property('pid').to.not.be.null;
   });
 });
