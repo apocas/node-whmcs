@@ -1,9 +1,10 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror');
+  WhmcsError = require('../lib/whmcserror'),
+  WhmcsResponse = require('../lib/whmcsresponse');
 
 function isRegistrarError(msg) {
-  let errorMessages = ['Registrar Error Message', 'Registrar Function Not Supported', 'No response from API command'];
+  const errorMessages = ['Registrar Error Message', 'Registrar Function Not Supported', 'No response from API command'];
 
   for (let i = 0; i < errorMessages.length; i++) {
     if (msg.indexOf(errorMessages[i]) > -1) {
@@ -17,43 +18,43 @@ function isRegistrarError(msg) {
 describe('Module "Domains"', function () {
 
   before(async function () {
-    let opts = {
+    const opts = {
       extension: '.com',
       'register[1]': 10,
       'transfer[1]': 10,
       'renew[1]': 10,
       'currency_code': process.env.WHMCS_TEST_CURRENCY || 'USD'
     };
-    let res = await conf.whmcs.domains.createOrUpdateTLD(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('result').to.equal('success');
-    expect(res.data).to.have.a.property('extension').to.be.equal(opts.extension);
+    const res = await conf.whmcs.domains.createOrUpdateTLD(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res.getBody()).to.have.a.property('extension').to.be.equal(opts.extension);
   });
 
   it('should create or update tld', async function () {
-    let opts = {
+    const opts = {
       extension: '.com',
       'register[1]': 15,
       'transfer[1]': 15,
       'renew[1]': 15,
       'currency_code': process.env.WHMCS_TEST_CURRENCY || 'USD'
     };
-    let res = await conf.whmcs.domains.createOrUpdateTLD(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('result').to.equal('success');
-    expect(res.data).to.have.a.property('extension').to.be.equal(opts.extension);
+    const res = await conf.whmcs.domains.createOrUpdateTLD(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res.getBody()).to.have.a.property('extension').to.be.equal(opts.extension);
   });
 
   it('should get tld pricing', async function () {
     this.timeout(30000);
 
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.domains.getTLDPricing(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('result').to.equal('success');
-    expect(res.data).to.have.a.property('pricing').to.be.an('object');
+    const res = await conf.whmcs.domains.getTLDPricing(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res.getBody()).to.have.a.property('pricing').to.be.an('object');
   });
 
   describe('Domain', function () {
@@ -62,55 +63,55 @@ describe('Module "Domains"', function () {
     before(async function () {
       this.timeout(30000);
 
-      let orderOpts = {
+      const orderOpts = {
         clientid: conf.demoClientId,
         paymentmethod: conf.demoPaymentMethod,
         'domain[0]': 'domaintest.com',
         'domaintype[0]': 'register',
         'regperiod[0]': 1
       };
-      let orderRes = await conf.whmcs.orders.addOrder(orderOpts);
-      expect(orderRes).to.have.a.property('data');
-      expect(orderRes.data).to.have.a.property('result').to.equal('success');
-      expect(orderRes.data).to.have.a.property('orderid').to.not.be.null;
+      const orderRes = await conf.whmcs.orders.addOrder(orderOpts);
+      expect(orderRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(orderRes.getBody()).to.have.a.property('result').to.equal('success');
+      expect(orderRes.getBody()).to.have.a.property('orderid').to.not.be.null;
 
-      demoOrderId = orderRes.data.orderid;
+      demoOrderId = orderRes.orderid;
 
-      let domainOpts = {
+      const domainOpts = {
         domain: 'domaintest.com',
         limitstart: 0,
         limitnum: 1
       };
-      let domainRes = await conf.whmcs.client.getClientsDomains(domainOpts);
-      expect(domainRes).to.have.a.property('data');
-      expect(domainRes.data).to.have.a.property('result').to.equal('success');
-      expect(domainRes.data).to.have.a.property('domains').to.be.an('object').to.have.a.property('domain').to.be.an('array').to.have.length.greaterThan(0);
-      expect(domainRes.data.domains.domain[0]).to.have.a.property('id').to.not.be.null;
-      demoDomainId = domainRes.data.domains.domain[0].id;
+      const domainRes = await conf.whmcs.client.getClientsDomains(domainOpts);
+      expect(domainRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(domainRes.getBody()).to.have.a.property('result').to.equal('success');
+      expect(domainRes.getBody()).to.have.a.property('domains').to.be.an('object').to.have.a.property('domain').to.be.an('array').to.have.length.greaterThan(0);
+      expect(domainRes.get('domains').domain[0]).to.have.a.property('id').to.not.be.null;
+      demoDomainId = domainRes.get('domains').domain[0].id;
     });
 
     it('should get locking status', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
-      let res = await conf.whmcs.domains.domainGetLockingStatus(opts);
-      expect(res).to.have.a.property('data');
-      expect(res.data).to.have.a.property('result').to.equal('success');
-      expect(res.data).to.have.a.property('lockstatus').to.be.a('string');
+      const res = await conf.whmcs.domains.domainGetLockingStatus(opts);
+      expect(res).to.be.an.instanceOf(WhmcsResponse);
+      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res.getBody()).to.have.a.property('lockstatus').to.be.a('string');
     });
 
     it('should get nameservers', async function () {
       this.timeout(60000);
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainGetNameservers(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
-        expect(res.data).to.have.a.property('ns1').to.not.be.null;
+        const res = await conf.whmcs.domains.domainGetNameservers(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res.getBody()).to.have.a.property('ns1').to.not.be.null;
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -122,14 +123,14 @@ describe('Module "Domains"', function () {
 
     it('should get whois information', async function () {
       this.timeout(60000);
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainGetWhoisInfo(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainGetWhoisInfo(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -140,14 +141,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a register command to command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainRegister(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainRegister(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -158,14 +159,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a release command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainRelease(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainRelease(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -176,14 +177,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send a renew command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainRenew(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainRenew(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -194,14 +195,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send an epp command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainRequestEPP(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainRequestEPP(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -212,14 +213,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the toggle ID protect command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainToggleIdProtect(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainToggleIdProtect(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -230,14 +231,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the domain transfer command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainTransfer(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainTransfer(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -248,14 +249,14 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the update lock command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainUpdateLockingStatus(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainUpdateLockingStatus(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -266,16 +267,16 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the save nameservers command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId,
         ns1: 'ns1.domaintest.com',
         ns2: 'ns2.domaintest.com'
       };
 
       try {
-        let res = await conf.whmcs.domains.domainUpdateNameservers(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainUpdateNameservers(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -286,17 +287,17 @@ describe('Module "Domains"', function () {
     });
 
     it('should send the save whois command to registrar module', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainUpdateWhoisInfo(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
+        const res = await conf.whmcs.domains.domainUpdateWhoisInfo(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
-          let possibleErr = ['Domain ID Not Found', 'XML Required', 'Registrar Error Message'];
+          const possibleErr = ['Domain ID Not Found', 'XML Required', 'Registrar Error Message'];
           expect(possibleErr.indexOf(e.message) > -1).to.be.true;
         } else {
           throw e;
@@ -305,15 +306,15 @@ describe('Module "Domains"', function () {
     });
 
     it('should retrieve whois information', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId
       };
 
       try {
-        let res = await conf.whmcs.domains.domainWhois(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
-        expect(res.data).to.have.a.property('status').to.not.be.null;
+        const res = await conf.whmcs.domains.domainWhois(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res.getBody()).to.have.a.property('status').to.not.be.null;
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;
@@ -324,16 +325,16 @@ describe('Module "Domains"', function () {
     });
 
     it('should update a domain', async function () {
-      let opts = {
+      const opts = {
         domainid: demoDomainId,
         idprotection: false
       };
 
       try {
-        let res = await conf.whmcs.domains.updateClientDomain(opts);
-        expect(res).to.have.a.property('data');
-        expect(res.data).to.have.a.property('result').to.equal('success');
-        expect(res.data).to.have.a.property('domainid').to.equal(parseInt(demoDomainId));
+        const res = await conf.whmcs.domains.updateClientDomain(opts);
+        expect(res).to.be.an.instanceOf(WhmcsResponse);
+        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res.getBody()).to.have.a.property('domainid').to.equal(parseInt(demoDomainId));
       } catch (e) {
         if (e instanceof WhmcsError) {
           expect(isRegistrarError(e.message)).to.be.true;

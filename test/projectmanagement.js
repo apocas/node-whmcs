@@ -1,201 +1,195 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror');
+  WhmcsError = require('../lib/whmcserror'),
+  WhmcsResponse = require('../lib/whmcsresponse');
 
 describe('Module "Project Management"', function () {
   let demoProjectId;
 
   before(async function () {
-    let opts = {
+    const opts = {
       title: 'demo project',
       adminid: 1
     };
 
-    let res = await conf.whmcs.projectManagement.createProject(opts);
-    demoProjectId = res.data.projectid;
+    const res = await conf.whmcs.projectManagement.createProject(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    demoProjectId = res.get('projectid');
   });
 
   it('should create a project', async function () {
-    let opts = {
+    const opts = {
       title: 'untitled project',
       adminid: 1
     };
-    let res = await conf.whmcs.projectManagement.createProject(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('projectid').to.not.be.null;
+    const res = await conf.whmcs.projectManagement.createProject(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('projectid').to.not.be.null;
   });
 
   it('should get projects', async function () {
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     };
-    let res = await conf.whmcs.projectManagement.getProjects(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('numreturned').to.not.be.null;
-    expect(res.data).to.have.a.property('projects').to.be.an.an('array').to.have.length.greaterThan(0);
+    const res = await conf.whmcs.projectManagement.getProjects(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('numreturned').to.not.be.null;
+    expect(res.getBody()).to.have.a.property('projects').to.be.an.an('array').to.have.length.greaterThan(0);
   });
 
   it('should get project details by project id', async function () {
-    let opts = {
+    const opts = {
       projectid: demoProjectId
     };
-    let res = await conf.whmcs.projectManagement.getProject(opts);
-    expect(res).to.have.a.property('data');
-    expect(res.data).to.have.a.property('projectinfo').to.be.an.an('object');
+    const res = await conf.whmcs.projectManagement.getProject(opts);
+    expect(res).to.be.an.instanceOf(WhmcsResponse);
+    expect(res.getBody()).to.have.a.property('projectinfo').to.be.an.an('object');
   });
 
   it('should update a project', async function () {
-    let updateOpts = {
+    const updateOpts = {
       projectid: demoProjectId,
       title: 'space oddity'
     };
-    let updateRes = await conf.whmcs.projectManagement.updateProject(updateOpts);
-    expect(updateRes).to.have.a.property('data');
-    expect(updateRes.data).to.have.a.property('message').to.equal('Project Has Been Updated');
+    const updateRes = await conf.whmcs.projectManagement.updateProject(updateOpts);
+    expect(updateRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(updateRes.getBody()).to.have.a.property('message').to.equal('Project Has Been Updated');
 
-    let getOpts = {
+    const getOpts = {
       projectid: demoProjectId
     };
-    let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('data');
-    expect(getRes.data).to.have.a.property('projectinfo').to.be.an.an('object');
-    expect(getRes.data.projectinfo).to.have.a.property('title').to.equal('space oddity');
+    const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+    expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(getRes.getBody()).to.have.a.property('projectinfo').to.be.an.an('object');
+    expect(getRes.get('projectinfo')).to.have.a.property('title').to.equal('space oddity');
   });
 
   it('should add a message to a project', async function () {
-    let addOpts = {
+    const addOpts = {
       projectid: demoProjectId,
       message: 'can you hear me major tom?'
     };
 
-    let addRes = await conf.whmcs.projectManagement.addProjectMessage(addOpts);
-    expect(addRes).to.have.a.property('data');
-    expect(addRes.data).to.have.a.property('message').to.equal('Message has been added');
+    const addRes = await conf.whmcs.projectManagement.addProjectMessage(addOpts);
+    expect(addRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(addRes.getBody()).to.have.a.property('message').to.equal('Message has been added');
 
-    let getOpts = {
+    const getOpts = {
       projectid: demoProjectId
     };
-    let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('data');
-    expect(getRes.data).to.have.a.property('messages').to.be.an.an('object');
-    expect(getRes.data.messages).to.have.a.property('message').to.be.an('array').to.have.lengthOf(1);
-    expect(getRes.data.messages.message[0]).to.have.a.property('message').to.equal('can you hear me major tom?');
+    const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+    expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(getRes.getBody()).to.have.a.property('messages').to.be.an.an('object');
+    expect(getRes.get('messages')).to.have.a.property('message').to.be.an('array').to.have.lengthOf(1);
+    expect(getRes.get('messages').message[0]).to.have.a.property('message').to.equal('can you hear me major tom?');
   });
 
   it('should add a task to a project', async function () {
-    let addOpts = {
+    const addOpts = {
       projectid: demoProjectId,
       duedate: '1969-07-11',
       task: 'leave the capsule'
     };
 
-    let addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
-    expect(addRes).to.have.a.property('data');
-    expect(addRes.data).to.have.a.property('message').to.equal('Task has been added');
+    const addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
+    expect(addRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(addRes.getBody()).to.have.a.property('message').to.equal('Task has been added');
 
 
-    let getOpts = {
+    const getOpts = {
       projectid: demoProjectId
     };
-    let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-    expect(getRes).to.have.a.property('data');
-    expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
-    expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.lengthOf(1);
-    expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
-    demoTaskId = getRes.data.tasks.task[0].id;
+    const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+    expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+    expect(getRes.getBody()).to.have.a.property('tasks').to.be.an.an('object');
+    expect(getRes.get('tasks')).to.have.a.property('task').to.be.an('array').to.have.lengthOf(1);
+    expect(getRes.get('tasks').task[0]).to.have.a.property('task').to.equal('leave the capsule');
+    demoTaskId = getRes.get('tasks').task[0].id;
   });
 
   describe('Project task', function () {
     let demoTaskId;
 
     before(async function () {
-      let addOpts = {
+      const addOpts = {
         projectid: demoProjectId,
         duedate: '1969-07-11',
         task: 'leave the capsule'
       };
 
-      let addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
+      const addRes = await conf.whmcs.projectManagement.addProjectTask(addOpts);
+      expect(addRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(addRes.getBody()).to.have.a.property('message').to.equal('Task has been added');
 
-      expect(addRes).to.have.a.property('data');
-      expect(addRes.data).to.have.a.property('message').to.equal('Task has been added');
-
-      let getOpts = {
+      const getOpts = {
         projectid: demoProjectId
       };
-      let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-
-      expect(getRes).to.have.a.property('data');
-      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('leave the capsule');
-      demoTaskId = getRes.data.tasks.task[0].id;
+      const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+      expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(getRes.getBody()).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.get('tasks')).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.get('tasks').task[0]).to.have.a.property('task').to.equal('leave the capsule');
+      demoTaskId = getRes.get('tasks').task[0].id;
     });
 
     it('should update a project task', async function () {
-      let updateOpts = {
+      const updateOpts = {
         taskid: demoTaskId,
         task: 'step through the door'
       };
-      let updateRes = await conf.whmcs.projectManagement.updateProjectTask(updateOpts);
+      const updateRes = await conf.whmcs.projectManagement.updateProjectTask(updateOpts);
+      expect(updateRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(updateRes.getBody()).to.have.a.property('message').to.equal('Task has been updated');
 
-      expect(updateRes).to.have.a.property('data');
-      expect(updateRes.data).to.have.a.property('message').to.equal('Task has been updated');
-
-      let getOpts = {
+      const getOpts = {
         projectid: demoProjectId
       };
-      let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
-
-      expect(getRes).to.have.a.property('data');
-      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.data.tasks.task[0]).to.have.a.property('task').to.equal('step through the door');
+      const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+      expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(getRes.getBody()).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.get('tasks')).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.get('tasks').task[0]).to.have.a.property('task').to.equal('step through the door');
     });
 
     it('should start and then end a project task timer', async function () {
-      let timerOpts = {
+      const timerOpts = {
         taskid: demoTaskId,
         projectid: demoProjectId
       };
-      let timerRes = await conf.whmcs.projectManagement.startTaskTimer(timerOpts);
+      const timerRes = await conf.whmcs.projectManagement.startTaskTimer(timerOpts);
+      expect(timerRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(timerRes.getBody()).to.have.a.property('message').to.equal('Start Timer Has Been Set');
 
-      expect(timerRes).to.have.a.property('data');
-      expect(timerRes.data).to.have.a.property('message').to.equal('Start Timer Has Been Set');
-
-      let getOpts = {
+      const getOpts = {
         projectid: demoProjectId
       };
-      let getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+      const getRes = await conf.whmcs.projectManagement.getProject(getOpts);
+      expect(getRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(getRes.getBody()).to.have.a.property('tasks').to.be.an.an('object');
+      expect(getRes.get('tasks')).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
+      expect(getRes.get('tasks').task[0]).to.have.a.property('timelogs').to.be.an.an('object');
+      expect(getRes.get('tasks').task[0].timelogs).to.have.a.property('timelog').to.be.an.an('array').to.have.length.greaterThan(0);
+      expect(getRes.get('tasks').task[0].timelogs.timelog[0]).to.have.a.property('id').to.not.be.null;
+      demoTimerId = getRes.get('tasks').task[0].timelogs.timelog[0].id;
 
-      expect(getRes).to.have.a.property('data');
-      expect(getRes.data).to.have.a.property('tasks').to.be.an.an('object');
-      expect(getRes.data.tasks).to.have.a.property('task').to.be.an('array').to.have.length.greaterThan(0);
-      expect(getRes.data.tasks.task[0]).to.have.a.property('timelogs').to.be.an.an('object');
-      expect(getRes.data.tasks.task[0].timelogs).to.have.a.property('timelog').to.be.an.an('array').to.have.length.greaterThan(0);
-      expect(getRes.data.tasks.task[0].timelogs.timelog[0]).to.have.a.property('id').to.not.be.null;
-      demoTimerId = getRes.data.tasks.task[0].timelogs.timelog[0].id;
-
-      let endOpts = {
+      const endOpts = {
         timerid: demoTimerId,
         projectid: demoProjectId
       };
-      let endRes = await conf.whmcs.projectManagement.endTaskTimer(endOpts);
-
-      expect(endRes).to.have.a.property('data');
-      expect(endRes.data).to.have.a.property('message').to.equal('Timer Has Ended');
+      const endRes = await conf.whmcs.projectManagement.endTaskTimer(endOpts);
+      expect(endRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(endRes.getBody()).to.have.a.property('message').to.equal('Timer Has Ended');
     });
 
     it('should delete a project task', async function () {
-      let deleteOpts = {
+      const deleteOpts = {
         projectid: demoProjectId,
         taskid: demoTaskId
       };
-      let deleteRes = await conf.whmcs.projectManagement.deleteProjectTask(deleteOpts);
-
-      expect(deleteRes).to.have.a.property('data');
-      expect(deleteRes.data).to.have.a.property('message').to.equal('Task has been deleted');
+      const deleteRes = await conf.whmcs.projectManagement.deleteProjectTask(deleteOpts);
+      expect(deleteRes).to.be.an.instanceOf(WhmcsResponse);
+      expect(deleteRes.getBody()).to.have.a.property('message').to.equal('Task has been deleted');
     });
   });
 });
