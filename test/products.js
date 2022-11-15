@@ -1,7 +1,6 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Products"', function () {
 
@@ -15,8 +14,7 @@ describe('Module "Products"', function () {
     };
 
     const res = await conf.whmcs.products.addProduct(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
-    expect(res.getBody()).to.have.a.property('pid').to.not.be.null;
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('pid').to.not.be.null;
   });
 });

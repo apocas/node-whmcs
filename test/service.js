@@ -1,7 +1,6 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 function isModuleNotAssignedError(msg) {
   const possibleErr = ['Service not assigned to a module', 'Server response message'];
@@ -22,10 +21,9 @@ describe('Module "Service"', function () {
     };
 
     const productRes = await conf.whmcs.products.addProduct(productOpts);
-    expect(productRes).to.be.an.instanceOf(WhmcsResponse);
-    expect(productRes.getBody()).to.have.a.property('result').to.equal('success');
-    expect(productRes.getBody()).to.have.a.property('pid').to.not.be.null;
-    demoPid = productRes.get('pid');
+    expect(productRes).to.have.a.property('result').to.equal('success');
+    expect(productRes).to.have.a.property('pid').to.not.be.null;
+    demoPid = productRes.pid;
 
     const orderOpts = {
       clientid: conf.demoClientId,
@@ -36,10 +34,9 @@ describe('Module "Service"', function () {
       'priceoverride[0]': 1
     };
     const orderRes = await conf.whmcs.orders.addOrder(orderOpts);
-    expect(orderRes).to.be.an.instanceOf(WhmcsResponse);
-    expect(orderRes.getBody()).to.have.a.property('result').to.equal('success');
-    expect(orderRes.getBody()).to.have.a.property('orderid').to.not.be.null;
-    demoOrderId = orderRes.get('orderid');
+    expect(orderRes).to.have.a.property('result').to.equal('success');
+    expect(orderRes).to.have.a.property('orderid').to.not.be.null;
+    demoOrderId = orderRes.orderid;
 
     const productsOpts = {
       domain: 'hostingtest.com',
@@ -47,11 +44,10 @@ describe('Module "Service"', function () {
       limitnum: 1
     };
     const productsRes = await conf.whmcs.client.getClientsProducts(productsOpts);
-    expect(productsRes).to.be.an.instanceOf(WhmcsResponse);
-    expect(productsRes.getBody()).to.have.a.property('result').to.equal('success');
-    expect(productsRes.getBody()).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
-    expect(productsRes.get('products').product[0]).to.have.a.property('id').to.be.a('string');
-    demoServiceId = productsRes.get('products').product[0].id;
+    expect(productsRes).to.have.a.property('result').to.equal('success');
+    expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
+    expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
+    demoServiceId = productsRes.products.product[0].id;
   });
 
   it('should update a client service', async function () {
@@ -60,8 +56,7 @@ describe('Module "Service"', function () {
       notes: 'this service was updated'
     };
     const res = await conf.whmcs.service.updateClientProduct(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
   it('should run the module create', async function () {
@@ -71,8 +66,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleCreate(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -90,8 +84,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleChangePackage(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -109,8 +102,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleChangePw(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -129,8 +121,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleCustom(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -148,8 +139,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleSuspend(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -167,8 +157,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.moduleUnsuspend(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     }
     catch (e) {
       if (e instanceof WhmcsError) {
@@ -190,8 +179,7 @@ describe('Module "Service"', function () {
 
     try {
       const res = await conf.whmcs.service.upgradeProduct(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     } catch (e) {
       if (e instanceof WhmcsError) {
         expect(e.message).to.have.string('Invalid Billing Cycle Requested');

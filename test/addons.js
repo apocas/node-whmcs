@@ -1,7 +1,6 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Addons"', function () {
 
@@ -12,8 +11,7 @@ describe('Module "Addons"', function () {
 
     try {
       let res = await conf.whmcs.addons.updateClientAddon(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     } catch (e) {
       if (e instanceof WhmcsError) {
         const possibleErr = ['Addon ID Not Found', 'Nothing to Update'];

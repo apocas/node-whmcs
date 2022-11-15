@@ -1,7 +1,6 @@
 const expect = require('chai').expect,
   conf = require('./conf'),
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Support"', function () {
 
@@ -13,9 +12,8 @@ describe('Module "Support"', function () {
     };
 
     const res = await conf.whmcs.support.addAnnouncement(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
-    expect(res.getBody()).to.have.a.property('announcementid').to.not.be.null;
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('announcementid').to.not.be.null;
   });
 
   it('should add a cancel request', async function () {
@@ -23,8 +21,7 @@ describe('Module "Support"', function () {
       serviceid: conf.demoServiceId
     };
     const res = await conf.whmcs.support.addCancelRequest(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
   it('should add a client note', async function () {
@@ -34,8 +31,7 @@ describe('Module "Support"', function () {
     };
 
     const res = await conf.whmcs.support.addClientNote(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
   it('should open a ticket', async function () {
@@ -47,11 +43,10 @@ describe('Module "Support"', function () {
     };
 
     const res = await conf.whmcs.support.openTicket(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
-    expect(res.getBody()).to.have.a.property('id').to.not.be.null;
-    expect(res.getBody()).to.have.a.property('tid').to.not.be.null;
-    expect(res.getBody()).to.have.a.property('c').to.not.be.null;
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('id').to.not.be.null;
+    expect(res).to.have.a.property('tid').to.not.be.null;
+    expect(res).to.have.a.property('c').to.not.be.null;
   });
 
   describe('Announcement', function () {
@@ -65,10 +60,9 @@ describe('Module "Support"', function () {
       };
 
       const res = await conf.whmcs.support.addAnnouncement(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
-      expect(res.getBody()).to.have.a.property('announcementid').to.not.be.null;
-      demoAnnouncementId = res.get('announcementid');
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('announcementid').to.not.be.null;
+      demoAnnouncementId = res.announcementid;
     });
 
     it('should get announcements', async function () {
@@ -78,10 +72,9 @@ describe('Module "Support"', function () {
       };
 
       const res = await conf.whmcs.support.getAnnouncements(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
-      expect(res.getBody()).to.have.a.property('announcements').to.be.an.an('object');
-      expect(res.get('announcements')).to.have.a.property('announcement').to.be.an('array').to.have.length.above(0);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('announcements').to.be.an.an('object');
+      expect(res.announcements).to.have.a.property('announcement').to.be.an('array').to.have.length.above(0);
     });
 
     it('should delete an announcement', async function () {
@@ -89,8 +82,7 @@ describe('Module "Support"', function () {
         announcementid: demoAnnouncementId
       };
       const deleteRes = await conf.whmcs.support.deleteAnnouncement(deleteOpts);
-      expect(deleteRes).to.be.an.instanceOf(WhmcsResponse);
-      expect(deleteRes.getBody()).to.have.a.property('result').to.equal('success');
+      expect(deleteRes).to.have.a.property('result').to.equal('success');
     });
 
   });
@@ -107,12 +99,11 @@ describe('Module "Support"', function () {
       };
 
       const res = await conf.whmcs.support.openTicket(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
-      expect(res.getBody()).to.have.a.property('id').to.not.be.null;
-      expect(res.getBody()).to.have.a.property('tid').to.not.be.null;
-      expect(res.getBody()).to.have.a.property('c').to.not.be.null;
-      demoTicketId = res.get('id');
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('id').to.not.be.null;
+      expect(res).to.have.a.property('tid').to.not.be.null;
+      expect(res).to.have.a.property('c').to.not.be.null;
+      demoTicketId = res.id;
     });
 
     it('should add a note to the ticket', async function () {
@@ -122,8 +113,7 @@ describe('Module "Support"', function () {
       };
 
       const addRes = await conf.whmcs.support.addTicketNote(addOpts);
-      expect(addRes).to.be.an.instanceOf(WhmcsResponse);
-      expect(addRes.getBody()).to.have.a.property('result').to.equal('success');
+      expect(addRes).to.have.a.property('result').to.equal('success');
     });
 
     it('should add a reply to the ticket', async function () {
@@ -134,8 +124,7 @@ describe('Module "Support"', function () {
       };
 
       const res = await conf.whmcs.support.addTicketReply(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     });
 
     it('should update a ticket', async function () {
@@ -145,9 +134,8 @@ describe('Module "Support"', function () {
       };
 
       const res = await conf.whmcs.support.updateTicket(opts);
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
-      expect(res.getBody()).to.have.a.property('ticketid').to.equal(demoTicketId);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('ticketid').to.equal(demoTicketId);
     });
 
     it('should create another ticket and merge it', async function () {
@@ -159,22 +147,20 @@ describe('Module "Support"', function () {
       };
 
       const openRes = await conf.whmcs.support.openTicket(openOpts);
-      expect(openRes).to.be.an.instanceOf(WhmcsResponse);
-      expect(openRes.getBody()).to.have.a.property('result').to.equal('success');
-      expect(openRes.getBody()).to.have.a.property('id').to.not.be.null;
-      expect(openRes.getBody()).to.have.a.property('tid').to.not.be.null;
-      expect(openRes.getBody()).to.have.a.property('c').to.not.be.null;
+      expect(openRes).to.have.a.property('result').to.equal('success');
+      expect(openRes).to.have.a.property('id').to.not.be.null;
+      expect(openRes).to.have.a.property('tid').to.not.be.null;
+      expect(openRes).to.have.a.property('c').to.not.be.null;
 
       const mergeOpts = {
         ticketid: demoTicketId,
-        mergeticketids: openRes.get('id'),
+        mergeticketids: openRes.id,
         newsubject: 'this is a merged ticket'
       };
 
       const mergeRes = await conf.whmcs.support.mergeTicket(mergeOpts);
-      expect(mergeRes).to.be.an.instanceOf(WhmcsResponse);
-      expect(mergeRes.getBody()).to.have.a.property('result').to.equal('success');
-      expect(mergeRes.getBody()).to.have.a.property('ticketid').to.equal(demoTicketId);
+      expect(mergeRes).to.have.a.property('result').to.equal('success');
+      expect(mergeRes).to.have.a.property('ticketid').to.equal(demoTicketId);
     });
 
     it('should block a ticket sender', async function () {
@@ -184,8 +170,7 @@ describe('Module "Support"', function () {
 
       try {
         const res = await conf.whmcs.support.blockTicketSender(opts);
-        expect(res).to.be.an.instanceOf(WhmcsResponse);
-        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {
           const possibleErr = ['A Client Cannot Be Blocked'];
@@ -209,20 +194,18 @@ describe('Module "Support"', function () {
         };
 
         const replyRes = await conf.whmcs.support.addTicketReply(replyOpts);
-        expect(replyRes).to.be.an.instanceOf(WhmcsResponse);
-        expect(replyRes.getBody()).to.have.a.property('result').to.equal('success');
+        expect(replyRes).to.have.a.property('result').to.equal('success');
 
         const getOpts = {
           ticketid: demoTicketId
         };
 
         const getRes = await conf.whmcs.tickets.getTicket(getOpts);
-        expect(getRes).to.be.an.instanceOf(WhmcsResponse);
-        expect(getRes.getBody()).to.have.a.property('result').to.equal('success');
-        expect(getRes.getBody()).to.have.a.property('replies').to.be.an('object').to.have.a.property('reply').to.be.an('array').to.have.length.greaterThan(1);
-        const lastReply = getRes.get('replies').reply[getRes.get('replies').reply.length - 1];
+        expect(getRes).to.have.a.property('result').to.equal('success');
+        expect(getRes).to.have.a.property('replies').to.be.an('object').to.have.a.property('reply').to.be.an('array').to.have.length.greaterThan(1);
+        const lastReply = getRes.replies.reply[getRes.replies.reply.length - 1];
         expect(lastReply).to.have.a.property('replyid').to.not.be.null;
-        demoReplyId = getRes.get('replies').reply[1].replyid;
+        demoReplyId = getRes.replies.reply[1].replyid;
       });
 
       it('should update a ticket reply', async function () {
@@ -231,8 +214,7 @@ describe('Module "Support"', function () {
           message: 'this is an updated reply'
         };
         const res = await conf.whmcs.support.updateTicketReply(opts);
-        expect(res).to.be.an.instanceOf(WhmcsResponse);
-        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res).to.have.a.property('result').to.equal('success');
       });
 
       it('should delete a ticket reply', async function () {
@@ -241,8 +223,7 @@ describe('Module "Support"', function () {
           replyid: demoReplyId
         };
         const res = await conf.whmcs.support.deleteTicketReply(opts);
-        expect(res).to.be.an.instanceOf(WhmcsResponse);
-        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res).to.have.a.property('result').to.equal('success');
       });
     });
 
@@ -256,20 +237,18 @@ describe('Module "Support"', function () {
         };
 
         const addRes = await conf.whmcs.support.addTicketNote(addOpts);
-        expect(addRes).to.be.an.instanceOf(WhmcsResponse);
-        expect(addRes.getBody()).to.have.a.property('result').to.equal('success');
+        expect(addRes).to.have.a.property('result').to.equal('success');
 
         const ticketOpts = {
           ticketid: demoTicketId
         };
 
         const ticketRes = await conf.whmcs.tickets.getTicket(ticketOpts);
-        expect(ticketRes).to.be.an.instanceOf(WhmcsResponse);
-        expect(ticketRes.getBody()).to.have.a.property('result').to.equal('success');
-        expect(ticketRes.getBody()).to.have.a.property('notes').to.be.an('object').to.have.a.property('note').to.be.an('array').to.have.length.greaterThan(0);
-        expect(ticketRes.get('notes').note[0]).to.have.a.property('noteid');
+        expect(ticketRes).to.have.a.property('result').to.equal('success');
+        expect(ticketRes).to.have.a.property('notes').to.be.an('object').to.have.a.property('note').to.be.an('array').to.have.length.greaterThan(0);
+        expect(ticketRes.notes.note[0]).to.have.a.property('noteid');
 
-        demoTicketNoteId = ticketRes.get('notes').note[0].noteid;
+        demoTicketNoteId = ticketRes.notes.note[0].noteid;
       });
 
       it('should delete a ticket note', async function () {
@@ -278,8 +257,7 @@ describe('Module "Support"', function () {
         };
 
         const deleteRes = await conf.whmcs.support.deleteTicketNote(deleteOpts);
-        expect(deleteRes).to.be.an.instanceOf(WhmcsResponse);
-        expect(deleteRes.getBody()).to.have.a.property('result').to.equal('success');
+        expect(deleteRes).to.have.a.property('result').to.equal('success');
       });
 
     });
@@ -290,8 +268,7 @@ describe('Module "Support"', function () {
           ticketid: demoTicketId
         };
         const res = await conf.whmcs.support.deleteTicket(opts);
-        expect(res).to.be.an.instanceOf(WhmcsResponse);
-        expect(res.getBody()).to.have.a.property('result').to.equal('success');
+        expect(res).to.have.a.property('result').to.equal('success');
       });
     });
   });

@@ -1,7 +1,6 @@
 const WHMCS = require('../whmcs'),
   expect = require('chai').expect,
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 const config = {
   apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
@@ -40,15 +39,14 @@ const contactDetails = {
 
 async function addClient() {
   const clientRes = await whmcs.client.addClient(userDetails);
-  expect(clientRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(clientRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(clientRes.getBody()).to.have.a.property('owner_id').to.not.be.null;
-  expect(clientRes.getBody()).to.have.a.property('clientid').to.not.be.null;
+  expect(clientRes).to.have.a.property('result').to.equal('success');
+  expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
+  expect(clientRes).to.have.a.property('clientid').to.not.be.null;
 
-  module.exports.demoUserId = clientRes.get('owner_id');
-  module.exports.demoClientId = clientRes.get('clientid');
+  module.exports.demoUserId = clientRes.owner_id;
+  module.exports.demoClientId = clientRes.clientid;
 
-  contactDetails.clientid = clientRes.get('clientid');
+  contactDetails.clientid = clientRes.clientid;
   return clientRes;
 }
 
@@ -56,11 +54,10 @@ async function addContact() {
   let contactRes;
 
   contactRes = await whmcs.client.addContact(contactDetails)
-  expect(contactRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(contactRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(contactRes.getBody()).to.have.a.property('contactid').to.not.be.null;
+  expect(contactRes).to.have.a.property('result').to.equal('success');
+  expect(contactRes).to.have.a.property('contactid').to.not.be.null;
 
-  module.exports.demoContactId = contactRes.get('contactid');
+  module.exports.demoContactId = contactRes.contactid;
   return contactRes;
 }
 
@@ -75,9 +72,8 @@ async function addProduct() {
 
   try {
     productRes = await whmcs.products.addProduct(productOpts);
-    expect(productRes).to.be.an.instanceOf(WhmcsResponse);
-    expect(productRes.getBody()).to.have.a.property('result').to.equal('success');
-    expect(productRes.getBody()).to.have.a.property('pid').to.not.be.null;
+    expect(productRes).to.have.a.property('result').to.equal('success');
+    expect(productRes).to.have.a.property('pid').to.not.be.null;
   } catch (e) {
     if (e.message.indexOf('You must supply a valid Product Group ID') > -1) {
       throw new Error('There is no Product Group #' + productOpts.gid + '. You must create a Product Group in WHMCS and set the environment variable "WHMCS_TEST_GID" in order to proceed with the tests.');
@@ -86,7 +82,7 @@ async function addProduct() {
     }
   }
 
-  module.exports.demoProductId = productRes.get('pid');
+  module.exports.demoProductId = productRes.pid;
   return productRes;
 }
 
@@ -94,15 +90,14 @@ async function getPaymentMethod() {
   let methodsRes;
 
   methodsRes = await whmcs.system.getPaymentMethods();
-  expect(methodsRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(methodsRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(methodsRes.getBody()).to.have.a.property('totalresults').to.not.be.null;
-  if (methodsRes.get('totalresults') == 0) {
+  expect(methodsRes).to.have.a.property('result').to.equal('success');
+  expect(methodsRes).to.have.a.property('totalresults').to.not.be.null;
+  if (methodsRes.totalresults == 0) {
     throw new Error('Payment methods not found. You must create a new payment method first in order to proceed with the tests.');
   }
-  expect(methodsRes.getBody()).to.have.a.property('paymentmethods').to.be.an('object').to.have.a.property('paymentmethod').to.be.an('array').to.have.length.greaterThan(0);
-  expect(methodsRes.get('paymentmethods').paymentmethod[0]).to.have.a.property('module').to.be.a('string');
-  module.exports.demoPaymentMethod = methodsRes.get('paymentmethods').paymentmethod[0].module;
+  expect(methodsRes).to.have.a.property('paymentmethods').to.be.an('object').to.have.a.property('paymentmethod').to.be.an('array').to.have.length.greaterThan(0);
+  expect(methodsRes.paymentmethods.paymentmethod[0]).to.have.a.property('module').to.be.a('string');
+  module.exports.demoPaymentMethod = methodsRes.paymentmethods.paymentmethod[0].module;
   return methodsRes;
 }
 
@@ -116,10 +111,9 @@ async function createOrder() {
     'priceoverride[0]': 1
   };
   const orderRes = await whmcs.orders.addOrder(orderOpts);
-  expect(orderRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(orderRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(orderRes.getBody()).to.have.a.property('orderid').to.not.be.null;
-  module.exports.demoOrderId = orderRes.get('orderid');
+  expect(orderRes).to.have.a.property('result').to.equal('success');
+  expect(orderRes).to.have.a.property('orderid').to.not.be.null;
+  module.exports.demoOrderId = orderRes.orderid;
   return orderRes;
 }
 
@@ -131,26 +125,24 @@ async function getService() {
     limitnum: 1
   };
   const productsRes = await whmcs.client.getClientsProducts(productsOpts)
-  expect(productsRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(productsRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(productsRes.getBody()).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
-  expect(productsRes.get('products').product[0]).to.have.a.property('id').to.be.a('string');
-  module.exports.demoServiceId = productsRes.get('products').product[0].id;
+  expect(productsRes).to.have.a.property('result').to.equal('success');
+  expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
+  expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
+  module.exports.demoServiceId = productsRes.products.product[0].id;
   return productsRes;
 }
 
 async function getSupportDepartment() {
   const deptRes = await whmcs.tickets.getSupportDepartments();
-  expect(deptRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(deptRes.getBody()).to.have.a.property('result').to.equal('success');
-  expect(deptRes.getBody()).to.have.a.property('totalresults').to.not.be.null;
-  if (deptRes.get('totalresults') == 0) {
+  expect(deptRes).to.have.a.property('result').to.equal('success');
+  expect(deptRes).to.have.a.property('totalresults').to.not.be.null;
+  if (deptRes.totalresults == 0) {
     throw new Error('Support departments not found. You must create a support department and set the environment variable "WHMCS_TEST_DEPTID" in order to proceed with the tests.');
   }
-  expect(deptRes.getBody()).to.have.a.property('departments').to.be.an('object');
-  expect(deptRes.get('departments')).to.have.a.property('department').to.be.an('array');
-  expect(deptRes.get('departments').department[0]).to.have.a.property('id').to.be.a('string')
-  module.exports.demoDeptId = deptRes.get('departments').department[0].id;
+  expect(deptRes).to.have.a.property('departments').to.be.an('object');
+  expect(deptRes.departments).to.have.a.property('department').to.be.an('array');
+  expect(deptRes.departments.department[0]).to.have.a.property('id').to.be.a('string')
+  module.exports.demoDeptId = deptRes.departments.department[0].id;
   return deptRes;
 }
 
@@ -170,8 +162,7 @@ async function checkProjectManagementIsActive() {
       throw e;
     }
   }
-  expect(res).to.be.an.instanceOf(WhmcsResponse);
-  expect(res.getBody()).to.have.a.property('result').to.equal('success');
+  expect(res).to.have.a.property('result').to.equal('success');
 }
 
 async function initialize() {
@@ -194,8 +185,7 @@ async function removeClient() {
     deletetransactions: true
   };
   const delRes = await whmcs.client.deleteClient(opts);
-  expect(delRes).to.be.an.instanceOf(WhmcsResponse);
-  expect(delRes.getBody()).to.have.a.property('result').to.equal('success');
+  expect(delRes).to.have.a.property('result').to.equal('success');
   return delRes;
 }
 

@@ -2,8 +2,7 @@ const expect = require('chai').expect,
   conf = require('./conf'),
   WHMCS = require('../whmcs'),
   Bluebird = require('bluebird'),
-  WhmcsError = require('../lib/whmcserror'),
-  WhmcsResponse = require('../lib/whmcsresponse');
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Internal', function () {
   it('should call an action by name', async function () {
@@ -12,8 +11,7 @@ describe('Internal', function () {
       limitnum: 1
     }
     const res = await conf.whmcs.callApi('GetActivityLog', opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
   it('should handle callbacks', function (done) {
@@ -23,8 +21,7 @@ describe('Internal', function () {
     }
     conf.whmcs.callApi('GetActivityLog', opts, function (err, res) {
       expect(err).to.be.null;
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
       done();
     });
   });
@@ -39,8 +36,7 @@ describe('Internal', function () {
     expect(promise).to.be.instanceOf(Promise);
 
     return promise.then(function (res) {
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     });
   });
 
@@ -65,8 +61,7 @@ describe('Internal', function () {
     expect(promise).to.be.instanceOf(Bluebird);
 
     return promise.then(function (res) {
-      expect(res).to.be.an.instanceOf(WhmcsResponse);
-      expect(res.getBody()).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('result').to.equal('success');
     });
   });
 
@@ -105,9 +100,8 @@ describe('Internal', function () {
     };
 
     const res = await whmcs.system.getActivityLog(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
-    expect(res.getBody()).to.have.a.property('action').to.equal('getactivitylog');
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('action').to.equal('getactivitylog');
   });
 
   it('should authenticate with username and password', async function () {
@@ -127,7 +121,6 @@ describe('Internal', function () {
     };
 
     const res = await whmcs.system.getActivityLog(opts);
-    expect(res).to.be.an.instanceOf(WhmcsResponse);
-    expect(res.getBody()).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 });
