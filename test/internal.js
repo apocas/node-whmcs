@@ -6,30 +6,42 @@ const expect = require('chai').expect,
 
 describe('Internal', function () {
   it('should call an action by name', async function () {
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     }
-    let res = await conf.whmcs.callApi('GetActivityLog', opts);
+    const res = await conf.whmcs.callApi('GetActivityLog', opts);
     expect(res).to.have.a.property('result').to.equal('success');
   });
 
+  it('should handle callbacks', function (done) {
+    const opts = {
+      limitstart: 0,
+      limitnum: 1
+    }
+    conf.whmcs.callApi('GetActivityLog', opts, function (err, res) {
+      expect(err).to.be.null;
+      expect(res).to.have.a.property('result').to.equal('success');
+      done();
+    });
+  });
+
   it('should handle native promises', function () {
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    let promise = conf.whmcs.system.getActivityLog(opts);
+    const promise = conf.whmcs.system.getActivityLog(opts);
     expect(promise).to.be.instanceOf(Promise);
 
-    return promise.then(function (details) {
-      expect(details).to.have.a.property('result').to.equal('success');
+    return promise.then(function (res) {
+      expect(res).to.have.a.property('result').to.equal('success');
     });
   });
 
   it('should handle custom promises library', function () {
-    let config = {
+    const config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -38,23 +50,23 @@ describe('Internal', function () {
       Promise: Bluebird,
     };
 
-    let whmcs = new WHMCS(config);
+    const whmcs = new WHMCS(config);
 
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    let promise = whmcs.system.getActivityLog(opts);
+    const promise = whmcs.system.getActivityLog(opts);
     expect(promise).to.be.instanceOf(Bluebird);
 
-    return promise.then(function (details) {
-      expect(details).to.have.a.property('result').to.equal('success');
+    return promise.then(function (res) {
+      expect(res).to.have.a.property('result').to.equal('success');
     });
   });
 
   it('should throw an error if Promise library is invalid', function () {
-    let config = {
+    const config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -63,7 +75,7 @@ describe('Internal', function () {
       Promise: {}
     };
 
-    let fn = function () {
+    const fn = function () {
       return new WHMCS(config);
     };
 
@@ -71,7 +83,7 @@ describe('Internal', function () {
   });
 
   it('should handle XML response', async function () {
-    let config = {
+    const config = {
       apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
       apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -80,20 +92,20 @@ describe('Internal', function () {
       responseType: 'xml'
     };
 
-    let whmcs = new WHMCS(config);
+    const whmcs = new WHMCS(config);
 
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    let res = await whmcs.system.getActivityLog(opts);
+    const res = await whmcs.system.getActivityLog(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('action').to.equal('getactivitylog');
   });
 
   it('should authenticate with username and password', async function () {
-    let config = {
+    const config = {
       username: process.env.WHMCS_USER || 'username',
       password: process.env.WHMCS_PASSWORD || 'password',
       serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -101,14 +113,14 @@ describe('Internal', function () {
       accessKey: process.env.WHMCS_AK,
     };
 
-    let whmcs = new WHMCS(config);
+    const whmcs = new WHMCS(config);
 
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 1
     };
 
-    let res = await whmcs.system.getActivityLog(opts);
+    const res = await whmcs.system.getActivityLog(opts);
     expect(res).to.have.a.property('result').to.equal('success');
   });
 });

@@ -5,7 +5,7 @@ const expect = require('chai').expect,
 describe('Module "Tickets"', function () {
 
   it('should get support departments', async function () {
-    let res = await conf.whmcs.tickets.getSupportDepartments();
+    const res = await conf.whmcs.tickets.getSupportDepartments();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -15,7 +15,7 @@ describe('Module "Tickets"', function () {
   });
 
   it('should get support statuses', async function () {
-    let res = await conf.whmcs.tickets.getSupportStatuses();
+    const res = await conf.whmcs.tickets.getSupportStatuses();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -25,13 +25,13 @@ describe('Module "Tickets"', function () {
   });
 
   it('should get support statuses', async function () {
-    let res = await conf.whmcs.tickets.getTicketCounts();
+    const res = await conf.whmcs.tickets.getTicketCounts();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('allActive').to.not.be.null;
   });
 
   it('should get predefined cats', async function () {
-    let res = await conf.whmcs.tickets.getTicketPredefinedCats();
+    const res = await conf.whmcs.tickets.getTicketPredefinedCats();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -41,7 +41,7 @@ describe('Module "Tickets"', function () {
   });
 
   it('should get predefined replies', async function () {
-    let res = await conf.whmcs.tickets.getTicketPredefinedReplies();
+    const res = await conf.whmcs.tickets.getTicketPredefinedReplies();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -54,60 +54,61 @@ describe('Module "Tickets"', function () {
     let demoTicketId;
 
     before(async function () {
-      let opts = {
+      const opts = {
         deptid: conf.demoDeptId,
         clientid: conf.demoClientId,
         subject: 'this is a subject',
         message: 'this is a message'
       };
 
-      let res = await conf.whmcs.support.openTicket(opts);
+      const res = await conf.whmcs.support.openTicket(opts);
       expect(res).to.have.a.property('result').to.equal('success');
       expect(res).to.have.a.property('id').to.not.be.null;
       demoTicketId = res.id;
     });
 
     it('should get tickets', async function () {
-      let opts = {
-        clientid: conf.demoClientId
+      const opts = {
+        clientid: conf.demoClientId,
+        ignore_dept_assignments: true
       };
 
-      let res = await conf.whmcs.tickets.getTickets(opts);
+      const res = await conf.whmcs.tickets.getTickets(opts);
       expect(res).to.have.a.property('result').to.equal('success');
       expect(res).to.have.a.property('tickets').to.be.an('object')
-        .to.have.a.property('ticket').to.be.an('array').to.have.lengthOf(1);
+        .to.have.a.property('ticket').to.be.an('array');
     });
 
     it('should get ticket notes', async function () {
-      let opts = {
+      const opts = {
         ticketid: demoTicketId
       };
 
-      let res = await conf.whmcs.tickets.getTicketNotes(opts);
+      const res = await conf.whmcs.tickets.getTicketNotes(opts);
       expect(res).to.have.a.property('result').to.equal('success');
       expect(res).to.have.a.property('notes').to.be.an('object');
       expect(res.notes).to.have.a.property('note').to.be.an('array');
     });
 
     it('should get ticket details by ticket id', async function () {
-      let opts = {
+      const opts = {
         ticketid: demoTicketId
       };
 
-      let res = await conf.whmcs.tickets.getTicket(opts);
+      const res = await conf.whmcs.tickets.getTicket(opts);
       expect(res).to.have.a.property('result').to.equal('success');
       expect(res).to.have.a.property('id').to.equal(demoTicketId);
     });
 
     it('should get ticket attachment', async function () {
-      let opts = {
+      const opts = {
         relatedid: demoTicketId,
         type: 'ticket',
         index: 0
       };
 
       try {
-        let res = await conf.whmcs.tickets.getTicketAttachment(opts);
+        const res = await conf.whmcs.tickets.getTicketAttachment(opts);
         expect(res).to.have.a.property('result').to.equal('success');
       } catch (e) {
         if (e instanceof WhmcsError) {

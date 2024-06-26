@@ -6,7 +6,7 @@ describe('Module "Client"', function () {
 
   it('should create a client, create a contact, close the client and then delete both of them', async function () {
     this.timeout(30000);
-    let clientOpts = {
+    const clientOpts = {
       firstname: 'Major',
       lastname: 'Tom',
       email: 'majortom@john.doe',
@@ -19,14 +19,14 @@ describe('Module "Client"', function () {
       password2: 'liftoff'
     };
 
-    let clientRes = await conf.whmcs.client.addClient(clientOpts);
+    const clientRes = await conf.whmcs.client.addClient(clientOpts);
     expect(clientRes).to.have.a.property('result').to.equal('success');
     expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
     expect(clientRes).to.have.a.property('clientid').to.not.be.null;
 
-    let clientId = clientRes.clientid;
+    const clientId = clientRes.clientid;
 
-    let contactOpts = {
+    const contactOpts = {
       clientid: clientId,
       firstname: 'Ground',
       lastname: 'Control',
@@ -38,39 +38,39 @@ describe('Module "Client"', function () {
       country: 'US',
       phonenumber: '911911911'
     }
-    let contactRes = await conf.whmcs.client.addContact(contactOpts);
+    const contactRes = await conf.whmcs.client.addContact(contactOpts);
     expect(contactRes).to.have.a.property('result').to.equal('success');
     expect(contactRes).to.have.a.property('contactid').to.not.be.null;
 
-    let contactId = contactRes.contactid;
+    const contactId = contactRes.contactid;
 
-    let delContactOpts = {
+    const delContactOpts = {
       contactid: contactId
     }
-    let delContactRes = await conf.whmcs.client.deleteContact(delContactOpts);
+    const delContactRes = await conf.whmcs.client.deleteContact(delContactOpts);
     expect(delContactRes).to.have.a.property('result').to.equal('success');
 
-    let closeOpts = {
+    const closeOpts = {
       clientid: clientId
     }
-    let closeRes = await conf.whmcs.client.closeClient(closeOpts);
+    const closeRes = await conf.whmcs.client.closeClient(closeOpts);
     expect(closeRes).to.have.a.property('result').to.equal('success');
 
-    let delClientOpts = {
+    const delClientOpts = {
       clientid: clientId,
       deleteusers: true,
       deletetransactions: true
     }
-    let delClientRes = await conf.whmcs.client.deleteClient(delClientOpts);
+    const delClientRes = await conf.whmcs.client.deleteClient(delClientOpts);
     expect(delClientRes).to.have.a.property('result').to.equal('success');
   });
 
   it('should get cancellation requests', async function () {
-    let opts = {
+    const opts = {
       limitstart: 0,
       limitnum: 25
     };
-    let res = await conf.whmcs.client.getCancelledPackages(opts);
+    const res = await conf.whmcs.client.getCancelledPackages(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('numreturned').to.not.be.null;
     if (parseInt(res.numreturned) > 0) {
@@ -80,7 +80,7 @@ describe('Module "Client"', function () {
   });
 
   it('should get client groups', async function () {
-    let res = await conf.whmcs.client.getClientGroups();
+    const res = await conf.whmcs.client.getClientGroups();
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -91,27 +91,27 @@ describe('Module "Client"', function () {
   });
 
   it('should get the encrypted password, by user id', async function () {
-    let opts = {
+    const opts = {
       userid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getClientPassword(opts);
+    const res = await conf.whmcs.client.getClientPassword(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('password').to.be.a('string');
   });
 
   it('should get the encrypted password, by user email address', async function () {
-    let opts = {
+    const opts = {
       email: conf.demoUserDetails.email
     };
-    let res = await conf.whmcs.client.getClientPassword(opts);
+    const res = await conf.whmcs.client.getClientPassword(opts);
     expect(res).to.have.a.property('result').to.equal('success');
   });
-  
+
   it('should get clients by email', async function () {
-    let opts = {
+    const opts = {
       search: conf.demoUserDetails.email
     };
-    let res = await conf.whmcs.client.getClients(opts);
+    const res = await conf.whmcs.client.getClients(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('numreturned').to.equal(1);
     expect(res).to.have.a.property('clients').to.be.an.an('object');
@@ -120,32 +120,32 @@ describe('Module "Client"', function () {
   });
 
   it('should get client addons', async function () {
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getClientsAddons(opts);
+    const res = await conf.whmcs.client.getClientsAddons(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
-      expect(res).to.have.a.property('addons').to.be.an('object');
+      expect(res.gteBody()).to.have.a.property('addons').to.be.an('object');
       expect(res.addons).to.have.a.property('addon').to.be.an('array').to.have.length.greaterThan(0);
     }
   });
 
   it('should get client details by id', async function () {
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getClientsDetails(opts);
+    const res = await conf.whmcs.client.getClientsDetails(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('client').to.be.an.an('object');
   });
 
   it('should get client domains by client id', async function () {
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getClientsDomains(opts);
+    const res = await conf.whmcs.client.getClientsDomains(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -156,10 +156,10 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients products by client id', async function () {
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getClientsProducts(opts);
+    const res = await conf.whmcs.client.getClientsProducts(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('totalresults').to.not.be.null;
     if (parseInt(res.totalresults) > 0) {
@@ -170,10 +170,10 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients contacts by client id', async function () {
-    let opts = {
+    const opts = {
       userid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getContacts(opts);
+    const res = await conf.whmcs.client.getContacts(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('numreturned').to.not.be.null;
     if (parseInt(res.numreturned) > 0) {
@@ -184,10 +184,10 @@ describe('Module "Client"', function () {
   });
 
   it('should get clients emails', async function () {
-    let opts = {
+    const opts = {
       clientid: conf.demoClientId
     };
-    let res = await conf.whmcs.client.getEmails(opts);
+    const res = await conf.whmcs.client.getEmails(opts);
     expect(res).to.have.a.property('result').to.equal('success');
     expect(res).to.have.a.property('numreturned').to.not.be.null;
     if (parseInt(res.numreturned) > 0) {
@@ -198,21 +198,21 @@ describe('Module "Client"', function () {
   });
 
   it('should update client by clientid', async function () {
-    let updateOpts = {
+    const updateOpts = {
       clientid: conf.demoClientId,
       lastname: 'updated1'
     };
-    let updateRes = await conf.whmcs.client.updateClient(updateOpts);
+    const updateRes = await conf.whmcs.client.updateClient(updateOpts);
     expect(updateRes).to.have.a.property('result').to.equal('success');
     expect(updateRes).to.have.a.property('clientid').to.equal(conf.demoClientId.toString());
   });
 
   it('should update contact by contact id', async function () {
-    let updateOpts = {
+    const updateOpts = {
       contactid: conf.demoContactId,
       lastname: 'newlastname'
     };
-    let updateRes = await conf.whmcs.client.updateContact(updateOpts);
+    const updateRes = await conf.whmcs.client.updateContact(updateOpts);
     expect(updateRes).to.have.a.property('result').to.equal('success');
     expect(updateRes).to.have.a.property('contactid').to.equal(conf.demoContactId.toString());
   });

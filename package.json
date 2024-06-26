@@ -8,14 +8,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/joaograca/node-whmcs.git"
+    "url": "https://github.com/joaograca/node-whmcs.git"
   },
   "keywords": [
     "whmcs",
     "hosting"
   ],
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bluebird": "^3.7.2",
     "https-proxy-agent": "^5.0.0",
     "xml2js": "0.4.x"

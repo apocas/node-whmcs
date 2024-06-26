@@ -13,8 +13,8 @@ describe('Module "Addons"', function () {
       let res = await conf.whmcs.addons.updateClientAddon(opts);
       expect(res).to.have.a.property('result').to.equal('success');
     } catch (e) {
-      if (e instanceof WhmcsError){
-        let possibleErr = ['Addon ID Not Found', 'Nothing to Update'];
+      if (e instanceof WhmcsError) {
+        const possibleErr = ['Addon ID Not Found', 'Nothing to Update'];
         expect(possibleErr.indexOf(e.message) > -1).to.be.true;
       } else {
         throw e;

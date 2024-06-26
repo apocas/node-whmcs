@@ -2,7 +2,7 @@ const WHMCS = require('../whmcs'),
   expect = require('chai').expect,
   WhmcsError = require('../lib/whmcserror');
 
-let config = {
+const config = {
   apiIdentifier: process.env.WHMCS_API_IDENTIFIER || 'apiIdentifier',
   apiSecret: process.env.WHMCS_API_SECRET || 'apiSecret',
   serverUrl: process.env.WHMCS_URL || 'http://192.168.1.1',
@@ -12,7 +12,7 @@ let config = {
 
 const whmcs = new WHMCS(config);
 
-let userDetails = {
+const userDetails = {
   firstname: 'John',
   lastname: 'Doe',
   email: 'johndoe@john.doe',
@@ -25,7 +25,7 @@ let userDetails = {
   password2: '123qwe'
 };
 
-let contactDetails = {
+const contactDetails = {
   firstname: 'Ground',
   lastname: 'Control',
   email: 'groundcontrol@john.doe',
@@ -37,8 +37,8 @@ let contactDetails = {
   phonenumber: '911911911'
 }
 
-async function addClient () {
-  let clientRes = await whmcs.client.addClient(userDetails);
+async function addClient() {
+  const clientRes = await whmcs.client.addClient(userDetails);
   expect(clientRes).to.have.a.property('result').to.equal('success');
   expect(clientRes).to.have.a.property('owner_id').to.not.be.null;
   expect(clientRes).to.have.a.property('clientid').to.not.be.null;
@@ -52,8 +52,8 @@ async function addClient () {
 
 async function addContact() {
   let contactRes;
-  
-  contactRes = await whmcs.client.addContact(contactDetails);
+
+  contactRes = await whmcs.client.addContact(contactDetails)
   expect(contactRes).to.have.a.property('result').to.equal('success');
   expect(contactRes).to.have.a.property('contactid').to.not.be.null;
 
@@ -62,7 +62,7 @@ async function addContact() {
 }
 
 async function addProduct() {
-  let productOpts = {
+  const productOpts = {
     name: 'Test product',
     gid: process.env.WHMCS_TEST_GID || '1',
     type: 'hostingaccount'
@@ -88,7 +88,7 @@ async function addProduct() {
 
 async function getPaymentMethod() {
   let methodsRes;
-  
+
   methodsRes = await whmcs.system.getPaymentMethods();
   expect(methodsRes).to.have.a.property('result').to.equal('success');
   expect(methodsRes).to.have.a.property('totalresults').to.not.be.null;
@@ -102,7 +102,7 @@ async function getPaymentMethod() {
 }
 
 async function createOrder() {
-  let orderOpts = {
+  const orderOpts = {
     clientid: module.exports.demoClientId,
     paymentmethod: module.exports.demoPaymentMethod,
     'pid[0]': module.exports.demoProductId,
@@ -110,7 +110,7 @@ async function createOrder() {
     'billingcycle[0]': 'monthly',
     'priceoverride[0]': 1
   };
-  let orderRes = await whmcs.orders.addOrder(orderOpts);
+  const orderRes = await whmcs.orders.addOrder(orderOpts);
   expect(orderRes).to.have.a.property('result').to.equal('success');
   expect(orderRes).to.have.a.property('orderid').to.not.be.null;
   module.exports.demoOrderId = orderRes.orderid;
@@ -118,13 +118,13 @@ async function createOrder() {
 }
 
 async function getService() {
-  let productsOpts = {
+  const productsOpts = {
     domain: 'hostingtest.com',
     clientid: module.exports.demoClientId,
     limitstart: 0,
     limitnum: 1
   };
-  let productsRes = await whmcs.client.getClientsProducts(productsOpts);
+  const productsRes = await whmcs.client.getClientsProducts(productsOpts)
   expect(productsRes).to.have.a.property('result').to.equal('success');
   expect(productsRes).to.have.a.property('products').to.be.an('object').to.have.a.property('product').to.be.an('array');
   expect(productsRes.products.product[0]).to.have.a.property('id').to.be.a('string');
@@ -133,7 +133,7 @@ async function getService() {
 }
 
 async function getSupportDepartment() {
-  let deptRes = await whmcs.tickets.getSupportDepartments();
+  const deptRes = await whmcs.tickets.getSupportDepartments();
   expect(deptRes).to.have.a.property('result').to.equal('success');
   expect(deptRes).to.have.a.property('totalresults').to.not.be.null;
   if (deptRes.totalresults == 0) {
@@ -147,7 +147,7 @@ async function getSupportDepartment() {
 }
 
 async function checkProjectManagementIsActive() {
-  let opts = {
+  const opts = {
     title: 'test project',
     adminid: 1
   };
@@ -162,7 +162,6 @@ async function checkProjectManagementIsActive() {
       throw e;
     }
   }
- 
   expect(res).to.have.a.property('result').to.equal('success');
 }
 
@@ -180,13 +179,16 @@ async function initialize() {
 }
 
 async function removeClient() {
-  let opts = {
+  const opts = {
     clientid: module.exports.demoClientId,
     deleteusers: true,
     deletetransactions: true
   };
-  return await whmcs.client.deleteClient(opts);
+  const delRes = await whmcs.client.deleteClient(opts);
+  expect(delRes).to.have.a.property('result').to.equal('success');
+  return delRes;
 }
+
 async function rollback() {
   console.log('Removing the temporary data. Please wait...');
   await removeClient();
