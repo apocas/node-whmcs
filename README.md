@@ -31,12 +31,12 @@ const config = {
 const wclient = new WHMCS(config);
 ```
 
-Or you can instantiate with administrator username and MD5 hashed password:
+Or you can instantiate with administrator username and password:
 
 ```javascript
 const config = {
   username: process.env.WHMCS_USER || '<your_admin_username>',
-  password: process.env.WHMCS_PASSWORD || '<your_md5_hashed_password>',
+  password: process.env.WHMCS_PASSWORD || '<your_password>',
   accesskey: '<your_access_key>', //optional. use it to bypass IP restrictions
   serverUrl: 'http://127.0.0.1',
   userAgent: '<your_user_agent>'

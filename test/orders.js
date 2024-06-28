@@ -1,227 +1,173 @@
 const expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Orders"', function () {
 
-  it('should get orders', function (done) {
-    let opts = {
-      limitstart: 0,
-      limitnum: 1
+  it('should add an order', async function () {
+    const opts = {
+      clientid: conf.demoClientId,
+      paymentmethod: conf.demoPaymentMethod,
+      'domain[0]': 'domaintest.com',
+      'domaintype[0]': 'register',
+      'regperiod[0]': 1
     };
-
-    conf.whmcs.orders.getOrders(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('orders').to.be.an('object');
-      expect(details.orders).to.have.a.property('order').to.be.an('array');
-      done();
-    });
+    const res = await conf.whmcs.orders.addOrder(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('orderid').to.not.be.null;
   });
 
-  it('should get order statuses', function (done) {
-    conf.whmcs.orders.getOrderStatuses(function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('statuses').to.be.an('object');
-      expect(details.statuses).to.have.a.property('status').to.be.an('array');
-      done();
-    });
+  it('should get order statuses', async function () {
+    const res = await conf.whmcs.orders.getOrderStatuses();
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('statuses').to.be.an('object');
+    expect(res.statuses).to.have.a.property('status').to.be.an('array');
+  });
+
+  it('should get promotions', async function () {
+    const res = await conf.whmcs.orders.getPromotions();
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('totalresults').to.not.be.null;
+    if (parseInt(res.totalresults > 0)) {
+      expect(res).to.have.a.property('promotions').to.be.an('object');
+      expect(res.promotions.to.have.a.property('promotion').to.be.an('array'));
+    }
   });
 
   describe('Product', function () {
     let demoPid;
 
-    before(function (done) {
-      let opts = {
+    before(async function () {
+      const _this = this;
+      const opts = {
         name: 'Test product',
-        gid: 1,
+        gid: process.env.WHMCS_TEST_GID || '1',
         type: 'hostingaccount'
       };
-      conf.whmcs.products.addProduct(opts, function (err, details) {
-        if (err) {
-          throw err;
-        } else if (details.pid == undefined) {
-          throw new Error('Cannot get the created product ID. Cannot proceed.');
-        } else {
-          demoPid = details.pid;
-          done();
-        }
-      });
+      const res = await conf.whmcs.products.addProduct(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('pid');
+      demoPid = res.pid;
     });
 
-    it('should get products', function (done) {
-      let opts = {
+    it('should get product by ID', async function () {
+      const opts = {
         pid: demoPid
       };
-
-      conf.whmcs.orders.getProducts(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('products').to.be.an('object');
-        expect(details.products).to.have.a.property('product').to.be.an('array');
-        done();
-      });
-    });
-  });
-
-  it('should get promotions', function (done) {
-    conf.whmcs.orders.getPromotions(function (err, details) {
-      expect(details).to.have.a.property('result').to.equal('success');
-      if(details.totalResults > 0) {
-        expect(details).to.have.a.property('promotions').to.be.an('object');
-        expect(details.promotions).to.have.a.property('promotion').to.be.an('array');
-      }
-      done();
+      const res = await conf.whmcs.orders.getProducts(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('products')
+        .to.be.an('object')
+        .to.have.a.property('product')
+        .to.be.an('array').to.have.lengthOf(1);
+      expect(res.products.product[0]).to.have.a.property('pid').to.not.be.null;
+      expect(res.products.product[0].pid == demoPid).to.equal(true);
     });
   });
 
   describe('Order', function () {
-    let demoPaymentMethod, demoOrderId;
+    let demoOrderId;
 
-    before(function (done) {
-      conf.whmcs.system.getPaymentMethods(function (err, details) {
-        if (err) {
-          throw err;
-        } else if (!details.paymentmethods || !details.paymentmethods.paymentmethod || !details.paymentmethods.paymentmethod[0]) {
-          throw new Error('Payment methods do not exist. You must create a new payment method first.');
-        } else {
-          demoPaymentMethod = details.paymentmethods.paymentmethod[0].module;
-          done();
-        }
-      });
-    });
-
-    it('should add an order', function (done) {
-      let opts = {
+    beforeEach(async function () {
+      const opts = {
         clientid: conf.demoClientId,
-        paymentmethod: demoPaymentMethod,
+        paymentmethod: conf.demoPaymentMethod,
         'domain[0]': 'domaintest.com',
         'domaintype[0]': 'register',
         'regperiod[0]': 1
       };
-      conf.whmcs.orders.addOrder(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
-        expect(details).to.have.a.property('orderid');
-        demoOrderId = details.orderid;
-        done();
-      });
+      const res = await conf.whmcs.orders.addOrder(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('orderid').to.not.be.null;
+      demoOrderId = res.orderid;
     });
 
-    it('should mark the order as fraudulent', function (done) {
-      if (!demoOrderId) {
-        this.skip();
-      } else {
-        let opts = {
-          orderid: demoOrderId
-        };
-        conf.whmcs.orders.fraudOrder(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
+    it('should get order by ID', async function () {
+      const opts = {
+        id: demoOrderId
+      };
+
+      const res = await conf.whmcs.orders.getOrders(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+      expect(res).to.have.a.property('orders')
+        .to.be.an('object')
+        .to.have.a.property('order')
+        .to.be.an('array')
+        .to.have.lengthOf(1);
+      expect(res.orders.order[0]).to.have.a.property('id').to.not.be.null;
+      expect(res.orders.order[0].id == demoOrderId).to.equal(true);
     });
 
-    it('should run a fraud check', function (done) {
-      if (!demoOrderId) {
-        this.skip();
-      } else {
-        let opts = {
-          orderid: demoOrderId
-        };
-        conf.whmcs.orders.orderFraudCheck(opts, function (err, details) {
-          if (err && err.message.indexOf('No Active Fraud Module') > -1) {
-            done();
-          } else {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
-            done();
-          }
-        });
-      }
+    it('should mark the order as fraudulent', async function () {
+      const opts = {
+        orderid: demoOrderId
+      };
+      const res = await conf.whmcs.orders.fraudOrder(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
     });
 
-    it('should set an order to pending', function (done) {
-      if (!demoOrderId) {
-        this.skip();
-      } else {
-        let opts = {
-          orderid: demoOrderId
-        };
-        conf.whmcs.orders.pendingOrder(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
-    });
+    it('should run a fraud check', async function () {
+      const opts = {
+        orderid: demoOrderId
+      };
 
-    it('should cancel an order', function (done) {
-      if (!demoOrderId) {
-        this.skip();
-      } else {
-        let opts = {
-          orderid: demoOrderId
-        };
-        conf.whmcs.orders.cancelOrder(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
-    });
-
-    describe('Order accept', function () {
-      before(function (done) {
-        let opts = {
-          clientid: conf.demoClientId,
-          paymentmethod: demoPaymentMethod,
-          'domain[0]': 'domaintest.com',
-          'domaintype[0]': 'register',
-          'regperiod[0]': 1
-        };
-        conf.whmcs.orders.addOrder(opts, function (err, details) {
-          if (err) {
-            throw err;
-          } else if (details.orderid == undefined) {
-            throw new Error('Cannot get the order ID. Cannot proceed.');
-          } else {
-            demoOrderId = details.orderid;
-            done();
-          }
-        });
-      });
-
-      it('should accept an order', function (done) {
-        if (!demoOrderId) {
-          this.skip();
+      try {
+        const res = await conf.whmcs.orders.orderFraudCheck(opts);
+        expect(res).to.have.a.property('result').to.equal('success');
+      } catch (e) {
+        if (e instanceof WhmcsError) {
+          const possibleErr = ['No Active Fraud Module'];
+          expect(possibleErr.some(err => {
+            return e.message.indexOf(err) > -1;
+          })).to.be.true;
         } else {
-          let opts = {
-            orderid: demoOrderId
-          };
-          conf.whmcs.orders.acceptOrder(opts, function (err, details) {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
-            done();
-          });
+          throw e;
         }
-      });
+      }
     });
 
-    it('should delete an order', function (done) {
-      if (!demoOrderId) {
-        this.skip();
-      } else {
-        let opts = {
-          orderid: demoOrderId
-        };
-        conf.whmcs.orders.deleteOrder(opts, function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          done();
-        });
-      }
+    it('should set an order to pending', async function () {
+      const opts = {
+        orderid: demoOrderId
+      };
+      const res = await conf.whmcs.orders.pendingOrder(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    });
+
+    it('should cancel a pending order', async function () {
+      const pendingOpts = {
+        orderid: demoOrderId
+      };
+      const pendingRes = await conf.whmcs.orders.pendingOrder(pendingOpts);
+      expect(pendingRes).to.have.a.property('result').to.equal('success');
+
+      const cancelOpts = {
+        orderid: demoOrderId
+      };
+      const cancelRes = await conf.whmcs.orders.cancelOrder(cancelOpts);
+      expect(cancelRes).to.have.a.property('result').to.equal('success');
+    });
+
+    it('should accept an order', async function () {
+      const opts = {
+        orderid: demoOrderId
+      };
+      const res = await conf.whmcs.orders.acceptOrder(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
+    });
+
+    it('should delete a cancelled order', async function () {
+      const cancelOpts = {
+        orderid: demoOrderId
+      };
+      const cancelRes = await conf.whmcs.orders.cancelOrder(cancelOpts);
+      expect(cancelRes).to.have.a.property('result').to.equal('success');
+
+      const opts = {
+        orderid: demoOrderId
+      };
+      const res = await conf.whmcs.orders.deleteOrder(opts);
+      expect(res).to.have.a.property('result').to.equal('success');
     });
   });
 

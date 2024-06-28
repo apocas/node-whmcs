@@ -1,72 +1,60 @@
 const expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Authentication"', function () {
 
-  it('should validate user login credential', function (done) {
-    let opts = {
+  it('should validate user login credential', async function () {
+    const opts = {
       email: conf.demoUserDetails.email,
       password2: conf.demoUserDetails.password2
     };
-    conf.whmcs.authentication.validateLogin(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    const res = await conf.whmcs.authentication.validateLogin(opts);;
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 
-  it('should create, update, get and delete an OAuth credential', function (done) {
+  it('should create, update, get and delete an OAuth credential', async function () {
     this.timeout(30000);
-    let opts = {
+
+    const createOpts = {
       email: conf.demoUserDetails.email,
       grantType: 'authorization_code',
       scope: 'clientarea:sso',
       name: 'oauthtest'
     };
-    conf.whmcs.authentication.createOAuthCredential(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('credentialId');
-      let credentialId = details.credentialId;
 
-      let opts = {
-        credentialId: credentialId,
-        scope: 'clientarea:billing_info'
-      };
-      conf.whmcs.authentication.updateOAuthCredential(opts, function (err, details) {
-        expect(err).to.be.null;
-        expect(details).to.have.a.property('result').to.equal('success');
+    const createRes = await conf.whmcs.authentication.createOAuthCredential(createOpts);;
+    expect(createRes).to.have.a.property('result').to.equal('success');
+    expect(createRes).to.have.a.property('credentialId').to.not.be.null;
+    const credentialId = createRes.credentialId;
 
-        conf.whmcs.authentication.listOAuthCredentials(function (err, details) {
-          expect(err).to.be.null;
-          expect(details).to.have.a.property('result').to.equal('success');
-          expect(details).to.have.a.property('clients').to.be.an('array');
-          let c = details.clients.map(function (client) {
-            return client.credentialId;
-          });
-          expect(c).includes(credentialId);
+    const updateOpts = {
+      credentialId: credentialId,
+      scope: 'clientarea:billing_info'
+    };
+    const updateRes = await conf.whmcs.authentication.updateOAuthCredential(updateOpts);;
+    expect(updateRes).to.have.a.property('result').to.equal('success');
 
-          let opts = {
-            credentialId: credentialId
-          };
-          conf.whmcs.authentication.deleteOAuthCredential(opts, function (err, details) {
-            expect(err).to.be.null;
-            expect(details).to.have.a.property('result').to.equal('success');
-            done();
-          });
-        });
-      });
+    const listRes = await conf.whmcs.authentication.listOAuthCredentials();;
+    expect(listRes).to.have.a.property('result').to.equal('success');
+    expect(listRes).to.have.a.property('clients').to.be.an('array');
+    const c = listRes.clients.map(function (client) {
+      return client.credentialId;
     });
+    expect(c).includes(credentialId);
+
+    const deleteOpts = {
+      credentialId: credentialId
+    };
+    const deleteRes = await conf.whmcs.authentication.deleteOAuthCredential(deleteOpts);;
+    expect(deleteRes).to.have.a.property('result').to.equal('success');
   });
 
-  it('should create a SSO token', function (done) {
-    let opts = {
+  it('should create a SSO token', async function () {
+    const opts = {
       client_id: conf.demoClientId
     };
-    conf.whmcs.authentication.createSsoToken(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      done();
-    });
+    const res = await conf.whmcs.authentication.createSsoToken(opts);;
+    expect(res).to.have.a.property('result').to.equal('success');
   });
 });

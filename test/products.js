@@ -1,20 +1,20 @@
 const expect = require('chai').expect,
-  conf = require('./conf');
+  conf = require('./conf'),
+  WhmcsError = require('../lib/whmcserror');
 
 describe('Module "Products"', function () {
 
-  it('should create a new product', function (done) {
-    let opts = {
+  it('should create a new product', async function () {
+    const _this = this;
+    const opts = {
       name: 'Test product',
-      gid: 1,
+      gid: process.env.WHMCS_TEST_GID || '1',
       type: 'hostingaccount',
 
     };
-    conf.whmcs.products.addProduct(opts, function (err, details) {
-      expect(err).to.be.null;
-      expect(details).to.have.a.property('result').to.equal('success');
-      expect(details).to.have.a.property('pid');
-      done();
-    });
+
+    const res = await conf.whmcs.products.addProduct(opts);
+    expect(res).to.have.a.property('result').to.equal('success');
+    expect(res).to.have.a.property('pid').to.not.be.null;
   });
 });
